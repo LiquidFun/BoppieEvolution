@@ -1,5 +1,7 @@
 extends Node2D
 
+class_name AI
+
 func get_movement_factor():
 	return 0
 	

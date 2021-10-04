@@ -1,8 +1,17 @@
-extends Node2D
+extends AI
 
-export(NodePath) var boppie = null
+class_name RandomAI
 
-func _process(delta):
-	if boppie:
-		boppie.move(randf(), delta)
-		boppie.turn(randf(), delta)
+var curr_turn_factor = 0
+var remaining_calls = 0
+
+func get_movement_factor():
+	return 1
+	
+
+func get_turn_factor():
+	if remaining_calls <= 0:
+		curr_turn_factor = randf() - .5
+		remaining_calls = randi() % 200 + 20
+	remaining_calls -= 1
+	return curr_turn_factor

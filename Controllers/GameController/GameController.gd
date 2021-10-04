@@ -1,15 +1,11 @@
 extends Node2D
 
-
-export(NodePath) var controlled_boppie_path_on_start = null
-
 var boppie_scene = preload("res://Entities/Boppie/Boppie.tscn")
-var controlled_boppie = null
 var boppies = []
+var controlled_boppie: Boppie = null
+var player_ai = Player.new()
 
 func _ready():
-	if controlled_boppie_path_on_start != null:
-		take_control_of_boppie(get_node(controlled_boppie_path_on_start))
 	var boppies = get_tree().get_nodes_in_group("Boppie")
 	for boppie in boppies:
 		handle_boppie(boppie)
@@ -23,10 +19,11 @@ func handle_boppie(boppie):
 
 func add_boppie(at: Vector2):
 	var instance = boppie_scene.instance()
+	instance.add_temp_ai(RandomAI.new())
+	instance.rotation = randf() * 2 * PI
 	add_child(instance)
 	instance.global_position = at
 	handle_boppie(instance)
-	print("added at", at)
 	
 
 func add_random_boppies(count: int):
@@ -37,17 +34,15 @@ func add_random_boppies(count: int):
 func take_control_of_boppie(boppie):
 	if controlled_boppie != null:
 		controlled_boppie.set_selected(false)
+		controlled_boppie.pop_temp_ai()
 	controlled_boppie = boppie
 	if controlled_boppie != null:
 		controlled_boppie.set_selected(true)
+		controlled_boppie.add_temp_ai(player_ai)
 
 
 func _process(delta):
 	if controlled_boppie:
-		var movement = Input.get_action_strength("ui_up") - Input.get_action_strength("ui_down")
-		controlled_boppie.move(movement, delta)
-		var rotation = Input.get_action_strength("ui_right") - Input.get_action_strength("ui_left")
-		controlled_boppie.turn(rotation, delta)
 		$Camera.global_position = controlled_boppie.global_position
 		
 		

@@ -8,6 +8,34 @@
 
 config_version=4
 
+_global_script_classes=[ {
+"base": "Node2D",
+"class": "AI",
+"language": "GDScript",
+"path": "res://Controllers/AIs/AI.gd"
+}, {
+"base": "KinematicBody2D",
+"class": "Boppie",
+"language": "GDScript",
+"path": "res://Entities/Boppie/Boppie.gd"
+}, {
+"base": "AI",
+"class": "Player",
+"language": "GDScript",
+"path": "res://Controllers/AIs/Player.gd"
+}, {
+"base": "AI",
+"class": "RandomAI",
+"language": "GDScript",
+"path": "res://Controllers/AIs/RandomAI.gd"
+} ]
+_global_script_class_icons={
+"AI": "",
+"Boppie": "",
+"Player": "",
+"RandomAI": ""
+}
+
 [application]
 
 config/name="Boppies"
