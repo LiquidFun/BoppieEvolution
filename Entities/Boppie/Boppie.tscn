@@ -22,6 +22,7 @@ _data = [ Vector2( 0, 1 ), 0.0, 1.4, 0, 0, Vector2( 0.204348, 0.409091 ), 0.0, 0
 [node name="Boppie" type="KinematicBody2D" groups=[
 "Boppie",
 ]]
+pause_mode = 1
 self_modulate = Color( 0, 0.827451, 0.913725, 1 )
 z_index = 30
 input_pickable = true

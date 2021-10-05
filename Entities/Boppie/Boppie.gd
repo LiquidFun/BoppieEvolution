@@ -3,20 +3,20 @@ extends KinematicBody2D
 class_name Boppie
 
 export var radius = 20
-export var move_speed = 10000
+export var move_speed = 85
 export var turn_speed = 2
 export var dead = false
 export var can_die = true
 export var ray_count_additional = 2
 export var ray_angle = deg2rad(20)
-export var ray_length = 200
+export var ray_length = 400
 
 var vision_rays = []
 
 var energy = 8 + randf() * 4
 export var max_energy = 15
 var offspring_energy = 0
-export var required_offspring_energy = 20
+export var required_offspring_energy = 10
 var size_increases = [0.8, 1, 1.2]
 
 var ai = null
@@ -54,6 +54,7 @@ func _ready():
 func add_ray(angle_radians, push_back=true, ray=null):
 	if ray == null:
 		ray = $VisionRay.duplicate()
+		add_child(ray)
 	ray.cast_to = Vector2(cos(angle_radians), sin(angle_radians)) * ray_length
 	if push_back:
 		self.vision_rays.push_back(ray)
@@ -61,7 +62,7 @@ func add_ray(angle_radians, push_back=true, ray=null):
 		self.vision_rays.push_front(ray)
 	ai_input[Data.RAY_DIST].append(1)
 	ai_input[Data.RAY_TYPE].append(Raytype.NONE)
-	add_child(ray)
+
 	
 func add_temp_ai(ai):
 	if ai:
@@ -113,7 +114,7 @@ func rotation_vector():
 func move(factor, delta):
 	var rot = rotation_vector()
 	$Eyes.scale_eyes(factor)
-	var velocity = rot * factor * move_speed * delta / scale
+	var velocity = rot * factor * move_speed / scale
 	self.move_and_slide(velocity, Vector2.UP)
 	
 	
@@ -122,9 +123,9 @@ func turn(factor, delta):
 	self.rotation += factor * turn_speed * delta 
 	
 	
-func _process(delta):
+func _physics_process(delta):
 	if not self.dead:
-		update_energy(-delta)
+		update_energy(-delta / 2)
 		if energy >= 0 or not can_die:
 			if ai:
 				calc_ai_input()
@@ -147,7 +148,8 @@ func die():
 	if can_die:
 		self.dead = true
 		emit_signal("BoppieDied", self)
-		$DeathParticles.emitting = true
+		if not Globals.performance_mode:
+			$DeathParticles.emitting = true
 		$Eyes.eyes_dead()
 		pop_temp_ai()
 		yield(get_tree().create_timer(1.0), "timeout")

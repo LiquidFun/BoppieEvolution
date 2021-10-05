@@ -1,9 +1,9 @@
 extends Node2D
 
 # Simulation settings
-export var expected_food_count = 100
+export var expected_food_count = 50
 export var expected_boppie_count = 20
-export var spawn_food_on_death = true
+export var spawn_food_on_death = false
 
 # Game size
 export var total_width = 2000
@@ -11,7 +11,7 @@ export var total_height = 2000
 export var empty_zone_size = 100
 var total_size = Vector2(total_width, total_height)
 var world_zone_start = Vector2(empty_zone_size, empty_zone_size)
-var world_zone_end = total_size - world_zone_start
+var world_zone_end = total_size - world_zone_start 
 
 # Boppies
 var boppie_scene = preload("res://Entities/Boppie/Boppie.tscn")
@@ -90,12 +90,13 @@ func take_control_of_boppie(boppie):
 
 func _process(delta):
 	handle_user_input()
+	check_boppies()
 	keep_enough_food()
 	if controlled_boppie:
 		$Camera.global_position = controlled_boppie.global_position
 	else:
 		$Camera.global_position -= Utils.input_vectors() * 5
-	check_boppies()
+
 	
 func handle_user_input():
 	if Input.is_action_just_pressed("ui_cancel"):
@@ -105,6 +106,18 @@ func handle_user_input():
 			controlled_boppie.eat(Food.new())
 	if Input.is_action_just_pressed("ui_toggle_rays"):
 		Globals.draw_vision_rays = !Globals.draw_vision_rays
+	if Input.is_action_just_pressed("ui_increase_time"):
+		if Engine.time_scale < 1000:
+			Engine.time_scale *= 2
+			Engine.iterations_per_second *= 1.6
+	if Input.is_action_just_pressed("ui_decrease_time"):
+		if Engine.time_scale > .25:
+			Engine.time_scale /= 2
+			Engine.iterations_per_second /= 1.6
+	if Input.is_action_just_pressed("ui_pause"):
+		get_tree().paused = !get_tree().paused
+		
+
 			
 func check_boppies():
 	var boppies = get_tree().get_nodes_in_group("Boppie")
@@ -127,4 +140,4 @@ func _on_BoppieDied(boppie):
 		add_child(food)
 	
 func _on_BoppieOffspring(boppie):
-	add_boppie(boppie.global_position)
+	add_boppie(boppie.global_position - boppie.rotation_vector() * boppie.radius)

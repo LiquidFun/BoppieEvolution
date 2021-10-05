@@ -18,7 +18,7 @@ func collision_type():
 			return Boppie.Raytype.FOOD
 	return Boppie.Raytype.NONE
 
-func _physics_process(delta):
+func _process(delta):
 	if Globals.draw_vision_rays:
 		if is_colliding():
 			var collider = get_collider()
