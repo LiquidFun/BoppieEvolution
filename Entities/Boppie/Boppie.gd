@@ -6,17 +6,24 @@ export var radius = 20
 export var move_speed = 10000
 export var turn_speed = 2
 export var dead = false
-export var ray_count_additional = 1
-export var ray_angle = deg2rad(30)
-export var ray_length = 120
+export var can_die = true
+export var ray_count_additional = 2
+export var ray_angle = deg2rad(20)
+export var ray_length = 200
 
 var vision_rays = []
 
 var energy = 8 + randf() * 4
-var max_energy = 15
+export var max_energy = 15
+var offspring_energy = 0
+export var required_offspring_energy = 10
 
 var ai = null
 var orig_ai = null
+
+enum Data {ENERGY, RAY_DIST, RAY_TYPE}
+enum Raytype {NONE, BOPPIE, FOOD}
+export var ai_input = {}
 
 var energy_gradient: Gradient = load("res://Entities/Boppie/EnergyGradient.tres")
 var selected = false setget set_selected
@@ -27,22 +34,29 @@ signal BoppieDied(Boppie)
 
 func _init(ai = null):
 	if ai == null:
-		ai = load("res://Controllers/AIs/AI.tscn").instance()
+		ai = AI.new()
 	self.ai = ai
 
 	
 func _ready():
+	ai_input[Data.RAY_DIST] = []
+	ai_input[Data.RAY_TYPE] = []
 	var start_angle = 0
-	add_ray(start_angle, $VisionRay)
+	add_ray(start_angle, true, $VisionRay)
 	for i in range(1, ray_count_additional+1):
-		add_ray(start_angle + ray_angle * i)
-		add_ray(start_angle - ray_angle * i)
+		add_ray(start_angle + ray_angle * i, true)
+		add_ray(start_angle - ray_angle * i, true)
 	
-func add_ray(angle_radians, ray=null):
+func add_ray(angle_radians, push_back=true, ray=null):
 	if ray == null:
 		ray = $VisionRay.duplicate()
 	ray.cast_to = Vector2(cos(angle_radians), sin(angle_radians)) * ray_length
-	self.vision_rays.append(ray)
+	if push_back:
+		self.vision_rays.push_back(ray)
+	else:
+		self.vision_rays.push_front(ray)
+	ai_input[Data.RAY_DIST].append(1)
+	ai_input[Data.RAY_TYPE].append(Raytype.NONE)
 	add_child(ray)
 	
 func add_temp_ai(ai):
@@ -104,27 +118,36 @@ func turn(factor, delta):
 	self.rotation += factor * turn_speed * delta
 	
 	
-func _physics_process(delta):
+func _process(delta):
 	if not self.dead:
 		self.energy -= delta
-		if energy >= 0:
+		if energy >= 0 or not can_die:
 			if ai:
-				var movement = ai.get_movement_factor()
+				calc_ai_input()
+				var movement = ai.get_movement_factor(ai_input)
 				self.energy -= delta * movement * movement
 				self.move(movement, delta)
-				self.turn(ai.get_turn_factor(), delta)
+				self.turn(ai.get_turn_factor(ai_input), delta)
 		else:
 			die()
 		self.self_modulate = energy_gradient.interpolate(self.energy / (max_energy * .7))
-		
+	
+
+func calc_ai_input():
+	ai_input[Data.ENERGY] = energy / max_energy
+	for i in range(vision_rays.size()):
+		ai_input[Data.RAY_DIST][i] = vision_rays[i].collision_distance()
+		ai_input[Data.RAY_TYPE][i] = vision_rays[i].collision_type()
+
 func die():
-	self.dead = true
-	emit_signal("BoppieDied", self)
-	$DeathParticles.emitting = true
-	$Eyes.eyes_dead()
-	pop_temp_ai()
-	yield(get_tree().create_timer(1.0), "timeout")
-	queue_free()
+	if can_die:
+		self.dead = true
+		emit_signal("BoppieDied", self)
+		$DeathParticles.emitting = true
+		$Eyes.eyes_dead()
+		pop_temp_ai()
+		yield(get_tree().create_timer(1.0), "timeout")
+		queue_free()
 
 func _on_Boppie_input_event(viewport, event, shape_idx):
 	if event is InputEventMouseButton and event.pressed and event.button_index == BUTTON_LEFT:

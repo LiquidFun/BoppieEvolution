@@ -2,7 +2,7 @@ extends Node2D
 
 # Simulation settings
 export var expected_food_count = 100
-export var expected_boppie_count = 50
+export var expected_boppie_count = 20
 export var spawn_food_on_death = true
 
 # Game size
@@ -55,7 +55,7 @@ func handle_boppie(boppie):
 
 func add_boppie(at: Vector2):
 	var instance = boppie_scene.instance()
-	instance.add_temp_ai(RandomAI.new())
+	instance.add_temp_ai(SmartAI.new())
 	instance.rotation = randf() * 2 * PI
 	add_child(instance)
 	instance.global_position = at
@@ -76,7 +76,6 @@ func add_food(at: Vector2):
 func keep_enough_food():
 	while Globals.current_food_count < expected_food_count:
 		add_food(random_world_coordinate())
-		
 
 
 func take_control_of_boppie(boppie):
@@ -89,7 +88,8 @@ func take_control_of_boppie(boppie):
 		controlled_boppie.add_temp_ai(player_ai)
 
 
-func _physics_process(delta):
+func _process(delta):
+	handle_user_input()
 	keep_enough_food()
 	if controlled_boppie:
 		$Camera.global_position = controlled_boppie.global_position
@@ -97,6 +97,14 @@ func _physics_process(delta):
 		$Camera.global_position -= Utils.input_vectors() * 5
 	check_boppies()
 	
+func handle_user_input():
+	if Input.is_action_just_pressed("ui_cancel"):
+		take_control_of_boppie(null)
+	if Input.is_action_just_pressed("ui_eat"):
+		if controlled_boppie:
+			controlled_boppie.eat(Food.new())
+	if Input.is_action_just_pressed("ui_toggle_rays"):
+		Globals.draw_vision_rays = !Globals.draw_vision_rays
 			
 func check_boppies():
 	var boppies = get_tree().get_nodes_in_group("Boppie")

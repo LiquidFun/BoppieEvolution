@@ -9,7 +9,6 @@ var color = Color(1, 0, 0)
 
 func _init():
 	Globals.current_food_count += 1
-	
 
 
 func _draw():

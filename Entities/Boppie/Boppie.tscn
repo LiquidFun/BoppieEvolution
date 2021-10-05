@@ -88,6 +88,8 @@ enabled = true
 collide_with_areas = true
 script = ExtResource( 4 )
 
+[node name="Tween" type="Tween" parent="."]
+
 [connection signal="input_event" from="." to="." method="_on_Boppie_input_event"]
 [connection signal="mouse_entered" from="." to="." method="_on_Boppie_mouse_entered"]
 [connection signal="mouse_exited" from="." to="." method="_on_Boppie_mouse_exited"]
