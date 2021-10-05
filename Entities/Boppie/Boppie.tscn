@@ -1,8 +1,9 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://Entities/Boppie/Boppie.gd" type="Script" id=1]
 [ext_resource path="res://Entities/Boppie/Eyes.gd" type="Script" id=2]
 [ext_resource path="res://Entities/Boppie/Pupil.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Entities/Boppie/VisionRay.gd" type="Script" id=4]
 
 [sub_resource type="CircleShape2D" id=1]
 radius = 20.108
@@ -79,6 +80,13 @@ scale_amount_curve = SubResource( 4 )
 color = Color( 0.635294, 0.635294, 0.635294, 1 )
 hue_variation = -0.03
 hue_variation_random = 0.11
+
+[node name="VisionRay" type="RayCast2D" parent="."]
+position = Vector2( 0, 0.135612 )
+z_index = -5
+enabled = true
+collide_with_areas = true
+script = ExtResource( 4 )
 
 [connection signal="input_event" from="." to="." method="_on_Boppie_input_event"]
 [connection signal="mouse_entered" from="." to="." method="_on_Boppie_mouse_entered"]

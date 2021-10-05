@@ -1,5 +1,6 @@
 extends Area2D
 
+class_name Food
 
 export var nutrition = 5
 var food_eaten_particles = preload("res://Particles/FoodEaten.tscn")

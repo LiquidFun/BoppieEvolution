@@ -94,7 +94,7 @@ func _physics_process(delta):
 	if controlled_boppie:
 		$Camera.global_position = controlled_boppie.global_position
 	else:
-		$Camera.global_position -= Globals.input_vectors() * 5
+		$Camera.global_position -= Utils.input_vectors() * 5
 	check_boppies()
 	
 			

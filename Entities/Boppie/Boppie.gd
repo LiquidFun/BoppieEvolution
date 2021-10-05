@@ -6,9 +6,15 @@ export var radius = 20
 export var move_speed = 10000
 export var turn_speed = 2
 export var dead = false
+export var ray_count_additional = 1
+export var ray_angle = deg2rad(30)
+export var ray_length = 120
+
+var vision_rays = []
+
 var energy = 8 + randf() * 4
 var max_energy = 15
-# export(PackedScene) var ai = load("res://Controllers/AIs/AI.tscn").instance()
+
 var ai = null
 var orig_ai = null
 
@@ -23,6 +29,21 @@ func _init(ai = null):
 	if ai == null:
 		ai = load("res://Controllers/AIs/AI.tscn").instance()
 	self.ai = ai
+
+	
+func _ready():
+	var start_angle = 0
+	add_ray(start_angle, $VisionRay)
+	for i in range(1, ray_count_additional+1):
+		add_ray(start_angle + ray_angle * i)
+		add_ray(start_angle - ray_angle * i)
+	
+func add_ray(angle_radians, ray=null):
+	if ray == null:
+		ray = $VisionRay.duplicate()
+	ray.cast_to = Vector2(cos(angle_radians), sin(angle_radians)) * ray_length
+	self.vision_rays.append(ray)
+	add_child(ray)
 	
 func add_temp_ai(ai):
 	if ai:
@@ -88,18 +109,22 @@ func _physics_process(delta):
 		self.energy -= delta
 		if energy >= 0:
 			if ai:
-				self.move(ai.get_movement_factor(), delta)
+				var movement = ai.get_movement_factor()
+				self.energy -= delta * movement * movement
+				self.move(movement, delta)
 				self.turn(ai.get_turn_factor(), delta)
 		else:
-			self.dead = true
-			emit_signal("BoppieDied", self)
-			$DeathParticles.emitting = true
-			$Eyes.eyes_dead()
-			pop_temp_ai()
-			yield(get_tree().create_timer(1.0), "timeout")
-			queue_free()
+			die()
 		self.self_modulate = energy_gradient.interpolate(self.energy / (max_energy * .7))
-	
+		
+func die():
+	self.dead = true
+	emit_signal("BoppieDied", self)
+	$DeathParticles.emitting = true
+	$Eyes.eyes_dead()
+	pop_temp_ai()
+	yield(get_tree().create_timer(1.0), "timeout")
+	queue_free()
 
 func _on_Boppie_input_event(viewport, event, shape_idx):
 	if event is InputEventMouseButton and event.pressed and event.button_index == BUTTON_LEFT:
@@ -108,7 +133,6 @@ func _on_Boppie_input_event(viewport, event, shape_idx):
 func eat(food):
 	self.energy = min(self.energy + food.nutrition, self.max_energy)
 	
-
 
 func _on_Boppie_mouse_entered():
 	set_hovered(true)
