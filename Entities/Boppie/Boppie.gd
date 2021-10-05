@@ -5,15 +5,19 @@ class_name Boppie
 export var radius = 20
 export var move_speed = 10000
 export var turn_speed = 2
-var energy = 20
+export var dead = false
+var energy = 8 + randf() * 4
+var max_energy = 15
 # export(PackedScene) var ai = load("res://Controllers/AIs/AI.tscn").instance()
 var ai = null
 var orig_ai = null
 
+var energy_gradient: Gradient = load("res://Entities/Boppie/EnergyGradient.tres")
 var selected = false setget set_selected
 var hovered = false setget set_hovered
 
-signal BoppieClicked
+signal BoppieClicked(Boppie)
+signal BoppieDied(Boppie)
 
 func _init(ai = null):
 	if ai == null:
@@ -69,24 +73,40 @@ func rotation_vector():
 
 func move(factor, delta):
 	var rot = rotation_vector()
+	var eyes_scale = clamp(factor, 1, 1.2)
+	$Eyes.scale = Vector2(eyes_scale, eyes_scale)
 	self.move_and_slide(rot * factor * move_speed * delta, Vector2.UP)
 	
 	
 func turn(factor, delta):
+	$Eyes.rotate_pupils(factor * turn_speed)
 	self.rotation += factor * turn_speed * delta
 	
 	
 func _physics_process(delta):
-	self.move(ai.get_movement_factor(), delta)
-	self.turn(ai.get_turn_factor(), delta)
-	self.energy -= delta
+	if not self.dead:
+		self.energy -= delta
+		if energy >= 0:
+			if ai:
+				self.move(ai.get_movement_factor(), delta)
+				self.turn(ai.get_turn_factor(), delta)
+		else:
+			self.dead = true
+			emit_signal("BoppieDied", self)
+			$DeathParticles.emitting = true
+			$Eyes.eyes_dead()
+			pop_temp_ai()
+			yield(get_tree().create_timer(1.0), "timeout")
+			queue_free()
+		self.self_modulate = energy_gradient.interpolate(self.energy / (max_energy * .7))
+	
 
 func _on_Boppie_input_event(viewport, event, shape_idx):
 	if event is InputEventMouseButton and event.pressed and event.button_index == BUTTON_LEFT:
 		emit_signal("BoppieClicked", self)
 		
 func eat(food):
-	self.energy += food.nutrition
+	self.energy = min(self.energy + food.nutrition, self.max_energy)
 	
 
 

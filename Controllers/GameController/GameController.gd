@@ -1,22 +1,55 @@
 extends Node2D
 
+# Simulation settings
 export var expected_food_count = 100
+export var expected_boppie_count = 50
+export var spawn_food_on_death = true
 
+# Game size
+export var total_width = 2000
+export var total_height = 2000
+export var empty_zone_size = 100
+var total_size = Vector2(total_width, total_height)
+var world_zone_start = Vector2(empty_zone_size, empty_zone_size)
+var world_zone_end = total_size - world_zone_start
+
+# Boppies
 var boppie_scene = preload("res://Entities/Boppie/Boppie.tscn")
 var food_scene = preload("res://Entities/Food/Food.tscn")
-var boppies = []
 var controlled_boppie: Boppie = null
 var player_ai = Player.new()
 
+func random_coordinate():
+	return Vector2(randf(), randf())
+
+func random_world_coordinate():
+	return random_coordinate() * (world_zone_end - world_zone_start) + world_zone_start
+	
+func random_game_coordinate():
+	return random_coordinate() * total_size
+
+func is_within_game(pos: Vector2):
+	return (world_zone_start.x <= pos.x and pos.x <= world_zone_end.x
+			and world_zone_start.y <= pos.y and pos.y <= world_zone_end.y)
+	
+func make_within_game(pos: Vector2):
+	return Vector2(fposmod(pos.x, total_width), fposmod(pos.y, total_height))
+	
+func _draw():
+	var offset = Vector2(14, 14)
+	draw_rect(Rect2(-offset, total_size+offset), Color("#4d4d4d"))
+
+
 func _ready():
-	var boppies = get_tree().get_nodes_in_group("Boppie")
-	for boppie in boppies:
+	for boppie in get_tree().get_nodes_in_group("Boppie"):
 		handle_boppie(boppie)
-	add_random_boppies(100)
+	add_random_boppies(expected_boppie_count)
+	$Camera.position = total_size / 2
 		
 		
 func handle_boppie(boppie):
 	boppie.connect("BoppieClicked", self, "_on_BoppieClicked")
+	boppie.connect("BoppieDied", self, "_on_BoppieDied")
 	boppie.update()
 		
 
@@ -31,11 +64,7 @@ func add_boppie(at: Vector2):
 
 func add_random_boppies(count: int):
 	for i in range(count):
-		add_boppie(random_coordinate())
-		
-	
-func random_coordinate():
-	return Vector2(randf(), randf()) * Globals.game_size
+		add_boppie(random_world_coordinate())
 		
 		
 func add_food(at: Vector2):
@@ -46,7 +75,7 @@ func add_food(at: Vector2):
 
 func keep_enough_food():
 	while Globals.current_food_count < expected_food_count:
-		add_food(random_coordinate())
+		add_food(random_world_coordinate())
 		
 
 
@@ -60,14 +89,32 @@ func take_control_of_boppie(boppie):
 		controlled_boppie.add_temp_ai(player_ai)
 
 
-func _process(delta):
+func _physics_process(delta):
 	keep_enough_food()
 	if controlled_boppie:
 		$Camera.global_position = controlled_boppie.global_position
 	else:
 		$Camera.global_position -= Globals.input_vectors() * 5
+	check_boppies()
+	
+			
+func check_boppies():
+	var boppies = get_tree().get_nodes_in_group("Boppie")
+	for boppie in boppies:
+		if not is_within_game(boppie.global_position):
+			boppie.global_position = make_within_game(boppie.global_position)
+			
+	add_random_boppies(expected_boppie_count - boppies.size())
 		
 		
 func _on_BoppieClicked(boppie):
 	take_control_of_boppie(boppie)
+	
+func _on_BoppieDied(boppie):
+	if boppie == controlled_boppie:
+		take_control_of_boppie(null)
+	if spawn_food_on_death:
+		var food = food_scene.instance()
+		food.global_position = boppie.global_position
+		add_child(food)
 	

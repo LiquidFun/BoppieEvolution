@@ -16,7 +16,7 @@ func _draw():
 
 
 func _on_Food_body_entered(body):
-	if body is Boppie:
+	if body is Boppie and not body.dead:
 		body.eat(self)
 		var particles = food_eaten_particles.instance()
 		add_child(particles)
