@@ -3,7 +3,6 @@ extends Area2D
 class_name Food
 
 export var nutrition = 5
-var food_eaten_particles = preload("res://Particles/FoodEaten.tscn")
 
 var color = Color(1, 0, 0)
 
@@ -18,12 +17,9 @@ func _draw():
 func _on_Food_body_entered(body):
 	if body is Boppie and not body.dead:
 		body.eat(self)
-		var particles = food_eaten_particles.instance()
-		add_child(particles)
-		particles.position = Vector2.ZERO
 		color = Color(0, 0, 0, 0)
 		self.update()
-		particles.emitting = true
+		$FoodEaten.emitting = true
 		
 		yield(get_tree().create_timer(1.0), "timeout")
 		

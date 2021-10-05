@@ -82,6 +82,7 @@ hue_variation = -0.03
 hue_variation_random = 0.11
 
 [node name="VisionRay" type="RayCast2D" parent="."]
+modulate = Color( 1, 1, 1, 0 )
 position = Vector2( 0, 0.135612 )
 z_index = -5
 enabled = true

@@ -16,7 +16,8 @@ var vision_rays = []
 var energy = 8 + randf() * 4
 export var max_energy = 15
 var offspring_energy = 0
-export var required_offspring_energy = 10
+export var required_offspring_energy = 20
+var size_increases = [0.8, 1, 1.2]
 
 var ai = null
 var orig_ai = null
@@ -30,6 +31,7 @@ var selected = false setget set_selected
 var hovered = false setget set_hovered
 
 signal BoppieClicked(Boppie)
+signal BoppieOffspring(Boppie)
 signal BoppieDied(Boppie)
 
 func _init(ai = null):
@@ -41,6 +43,8 @@ func _init(ai = null):
 func _ready():
 	ai_input[Data.RAY_DIST] = []
 	ai_input[Data.RAY_TYPE] = []
+	self.scale = Vector2(size_increases[0], size_increases[0])
+	# self.mass = size_increases[0] * size_increases[0]
 	var start_angle = 0
 	add_ray(start_angle, true, $VisionRay)
 	for i in range(1, ray_count_additional+1):
@@ -108,24 +112,24 @@ func rotation_vector():
 
 func move(factor, delta):
 	var rot = rotation_vector()
-	var eyes_scale = clamp(factor, 1, 1.2)
-	$Eyes.scale = Vector2(eyes_scale, eyes_scale)
-	self.move_and_slide(rot * factor * move_speed * delta, Vector2.UP)
+	$Eyes.scale_eyes(factor)
+	var velocity = rot * factor * move_speed * delta / scale
+	self.move_and_slide(velocity, Vector2.UP)
 	
 	
 func turn(factor, delta):
 	$Eyes.rotate_pupils(factor * turn_speed)
-	self.rotation += factor * turn_speed * delta
+	self.rotation += factor * turn_speed * delta 
 	
 	
 func _process(delta):
 	if not self.dead:
-		self.energy -= delta
+		update_energy(-delta)
 		if energy >= 0 or not can_die:
 			if ai:
 				calc_ai_input()
 				var movement = ai.get_movement_factor(ai_input)
-				self.energy -= delta * movement * movement
+				update_energy(-delta * movement * movement)
 				self.move(movement, delta)
 				self.turn(ai.get_turn_factor(ai_input), delta)
 		else:
@@ -153,8 +157,32 @@ func _on_Boppie_input_event(viewport, event, shape_idx):
 	if event is InputEventMouseButton and event.pressed and event.button_index == BUTTON_LEFT:
 		emit_signal("BoppieClicked", self)
 		
+func curr_level():
+	return int(offspring_energy / required_offspring_energy)
+		
+func update_energy(add_energy):
+	energy += add_energy
+	if energy > max_energy:
+		var old_level = curr_level()
+		offspring_energy += energy - max_energy
+		energy = max_energy
+		if old_level != curr_level():
+			if curr_level() < size_increases.size():
+				level_up(size_increases[curr_level()])
+			else:
+				produce_offspring()
+			
+func level_up(new_scale):
+	$Tween.interpolate_property(self, "scale",
+		scale, Vector2(new_scale, new_scale), .5,
+		Tween.TRANS_BOUNCE, Tween.EASE_IN_OUT)
+	$Tween.start()
+			
+func produce_offspring():
+	emit_signal("BoppieOffspring", self)
+		
 func eat(food):
-	self.energy = min(self.energy + food.nutrition, self.max_energy)
+	update_energy(food.nutrition)
 	
 
 func _on_Boppie_mouse_entered():

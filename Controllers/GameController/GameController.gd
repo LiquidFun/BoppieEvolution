@@ -48,8 +48,8 @@ func _ready():
 		
 		
 func handle_boppie(boppie):
-	boppie.connect("BoppieClicked", self, "_on_BoppieClicked")
-	boppie.connect("BoppieDied", self, "_on_BoppieDied")
+	for signal_name in ["Clicked", "Died", "Offspring"]:
+		boppie.connect("Boppie" + signal_name, self, "_on_Boppie" + signal_name)
 	boppie.update()
 		
 
@@ -126,3 +126,5 @@ func _on_BoppieDied(boppie):
 		food.global_position = boppie.global_position
 		add_child(food)
 	
+func _on_BoppieOffspring(boppie):
+	add_boppie(boppie.global_position)

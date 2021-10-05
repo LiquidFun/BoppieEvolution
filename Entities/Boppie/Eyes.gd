@@ -6,6 +6,9 @@ export(Vector2) onready var pos_other = pos * Vector2(1, -1)
 export(Vector2) onready var eye_radius = radius * .3
 export(Vector2) onready var pupil_offset = Vector2(radius * .1, 0)
 
+
+onready var tween = get_parent().get_node("Tween")
+
 func _draw():
 	draw_circle(pos, eye_radius, Color.white)
 	draw_circle(pos_other, eye_radius, Color.white)
@@ -19,11 +22,26 @@ func eyes_dead():
 	$Pupil2.die()
 
 func rotate_pupils(rotation):
-	$Pupil1.rotation = rotation * .8
-	$Pupil2.rotation = rotation * .8
+	for pupil in [$Pupil1, $Pupil2]:
+		tween.interpolate_property(
+			pupil, "rotation", pupil.rotation, rotation * .8, 
+			.05, Tween.TRANS_BOUNCE, Tween.EASE_IN_OUT
+		)
+		
+func scale_eyes(factor):
+	factor = clamp(factor, 1, 1.2)
+	factor = Vector2(factor, factor)
+	# self.scale = factor
+	tween.interpolate_property(
+		self, "scale", scale, factor, 
+		.01, Tween.TRANS_BOUNCE, Tween.EASE_IN_OUT
+	)
 
 func scale_pupils(factor):
 	factor = clamp(factor, 1, 1.3)
 	factor = Vector2(factor, factor)
-	$Pupil1.scale = factor
-	$Pupil2.scale = factor
+	for pupil in [$Pupil1, $Pupil2]:
+		tween.interpolate_property(
+			pupil, "scale", pupil.scale, factor, 
+			.1, Tween.TRANS_BOUNCE, Tween.EASE_IN_OUT
+		)
