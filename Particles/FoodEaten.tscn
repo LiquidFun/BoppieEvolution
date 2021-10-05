@@ -1,0 +1,55 @@
+[gd_scene load_steps=8 format=2]
+
+[sub_resource type="ParticlesMaterial" id=1]
+
+[sub_resource type="Shader" id=2]
+
+[sub_resource type="ShaderMaterial" id=3]
+next_pass = SubResource( 1 )
+shader = SubResource( 2 )
+
+[sub_resource type="Curve" id=4]
+min_value = -200.0
+max_value = 200.0
+_data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 0.497836, 7.27274 ), 2569.41, 2569.41, 0, 0, Vector2( 1, 200 ), 1652.9, 0.0, 0, 0 ]
+
+[sub_resource type="Curve" id=5]
+max_value = 100.0
+_data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 0.632035, 99.0909 ), -25.3012, 0.0, 0, 0 ]
+
+[sub_resource type="Curve" id=6]
+_data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 1, 0 ), 0.0, 0.0, 0, 0 ]
+
+[sub_resource type="Gradient" id=7]
+offsets = PoolRealArray( 0, 0.995192, 1 )
+colors = PoolColorArray( 1, 0, 0, 1, 1, 0.867188, 0, 1, 1, 1, 1, 1 )
+
+[node name="FoodEaten" type="CPUParticles2D"]
+material = SubResource( 3 )
+emitting = false
+amount = 200
+one_shot = true
+speed_scale = 2.0
+explosiveness = 1.0
+emission_shape = 1
+emission_sphere_radius = 10.0
+flag_align_y = true
+direction = Vector2( 0, 0 )
+spread = 180.0
+gravity = Vector2( 0, 0 )
+initial_velocity = 1.0
+initial_velocity_random = 1.0
+angular_velocity = 10.0
+angular_velocity_random = 1.0
+orbit_velocity = -1.0
+orbit_velocity_random = 1.0
+linear_accel = 1.0
+linear_accel_random = 1.0
+radial_accel_curve = SubResource( 4 )
+damping = 2.0
+damping_random = 0.24
+damping_curve = SubResource( 5 )
+scale_amount_curve = SubResource( 6 )
+color_ramp = SubResource( 7 )
+hue_variation = 0.1
+hue_variation_random = 1.0

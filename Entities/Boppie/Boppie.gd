@@ -5,6 +5,7 @@ class_name Boppie
 export var radius = 20
 export var move_speed = 10000
 export var turn_speed = 2
+var energy = 20
 # export(PackedScene) var ai = load("res://Controllers/AIs/AI.tscn").instance()
 var ai = null
 var orig_ai = null
@@ -78,11 +79,15 @@ func turn(factor, delta):
 func _physics_process(delta):
 	self.move(ai.get_movement_factor(), delta)
 	self.turn(ai.get_turn_factor(), delta)
+	self.energy -= delta
 
 func _on_Boppie_input_event(viewport, event, shape_idx):
-	print("ah")
 	if event is InputEventMouseButton and event.pressed and event.button_index == BUTTON_LEFT:
 		emit_signal("BoppieClicked", self)
+		
+func eat(food):
+	self.energy += food.nutrition
+	
 
 
 func _on_Boppie_mouse_entered():

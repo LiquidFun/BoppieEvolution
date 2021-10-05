@@ -1,6 +1,9 @@
 extends Node2D
 
+export var expected_food_count = 100
+
 var boppie_scene = preload("res://Entities/Boppie/Boppie.tscn")
+var food_scene = preload("res://Entities/Food/Food.tscn")
 var boppies = []
 var controlled_boppie: Boppie = null
 var player_ai = Player.new()
@@ -28,7 +31,23 @@ func add_boppie(at: Vector2):
 
 func add_random_boppies(count: int):
 	for i in range(count):
-		add_boppie(Vector2(randf(), randf()) * 1000)
+		add_boppie(random_coordinate())
+		
+	
+func random_coordinate():
+	return Vector2(randf(), randf()) * Globals.game_size
+		
+		
+func add_food(at: Vector2):
+	var instance = food_scene.instance()
+	add_child(instance)
+	instance.global_position = at
+	
+
+func keep_enough_food():
+	while Globals.current_food_count < expected_food_count:
+		add_food(random_coordinate())
+		
 
 
 func take_control_of_boppie(boppie):
@@ -42,8 +61,11 @@ func take_control_of_boppie(boppie):
 
 
 func _process(delta):
+	keep_enough_food()
 	if controlled_boppie:
 		$Camera.global_position = controlled_boppie.global_position
+	else:
+		$Camera.global_position -= Globals.input_vectors() * 5
 		
 		
 func _on_BoppieClicked(boppie):
