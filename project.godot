@@ -68,6 +68,10 @@ window/size/test_width=1920
 window/size/test_height=1080
 window/vsync/use_vsync=false
 
+[global]
+
+80=false
+
 [input]
 
 ui_left={

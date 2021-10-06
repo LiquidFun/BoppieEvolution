@@ -11,6 +11,9 @@ export var ray_count_additional = 2
 export var ray_angle = deg2rad(20)
 export var ray_length = 400
 
+export var energy_consumption_existing = .25
+export var energy_consumption_walking = 1
+
 var vision_rays = []
 
 var energy = 8 + randf() * 4
@@ -125,12 +128,12 @@ func turn(factor, delta):
 	
 func _physics_process(delta):
 	if not self.dead:
-		update_energy(-delta / 2)
+		update_energy(-delta * energy_consumption_existing)
 		if energy >= 0 or not can_die:
 			if ai:
 				calc_ai_input()
 				var movement = ai.get_movement_factor(ai_input)
-				update_energy(-delta * movement * movement)
+				update_energy(-delta * movement * movement * energy_consumption_walking)
 				self.move(movement, delta)
 				self.turn(ai.get_turn_factor(ai_input), delta)
 		else:

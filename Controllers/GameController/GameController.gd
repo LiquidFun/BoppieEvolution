@@ -1,7 +1,8 @@
 extends Node2D
 
 # Simulation settings
-export var expected_food_count = 50
+export var max_food_count = 100
+export var food_per_100ms = 5
 export var expected_boppie_count = 20
 export var spawn_food_on_death = false
 
@@ -12,12 +13,16 @@ export var empty_zone_size = 100
 var total_size = Vector2(total_width, total_height)
 var world_zone_start = Vector2(empty_zone_size, empty_zone_size)
 var world_zone_end = total_size - world_zone_start 
+var unused_food_stack = []
+var unused_food_stack_index = 0
 
 # Boppies
 var boppie_scene = preload("res://Entities/Boppie/Boppie.tscn")
 var food_scene = preload("res://Entities/Food/Food.tscn")
 var controlled_boppie: Boppie = null
 var player_ai = Player.new()
+
+signal EngineTimeScaleChange
 
 func random_coordinate():
 	return Vector2(randf(), randf())
@@ -45,6 +50,18 @@ func _ready():
 		handle_boppie(boppie)
 	add_random_boppies(expected_boppie_count)
 	$Camera.position = total_size / 2
+	spawn_food()
+	if food_per_100ms > 0:
+		$FoodTimer.connect("timeout", self, "_reset_food_timer")
+		
+func _reset_food_timer():
+	spawn_food(food_per_100ms)
+#	print(unused_food_stack_index)
+#	var new_index = max(0, unused_food_stack_index - food_per_100ms)
+#	for i in range(unused_food_stack_index, new_index, -1):
+#		unused_food_stack[i].global_position = random_world_coordinate()
+#		unused_food_stack[i].reset()
+#	unused_food_stack_index = new_index
 		
 		
 func handle_boppie(boppie):
@@ -63,20 +80,26 @@ func add_boppie(at: Vector2):
 	
 
 func add_random_boppies(count: int):
-	for i in range(count):
+	for _i in range(count):
 		add_boppie(random_world_coordinate())
 		
 		
 func add_food(at: Vector2):
-	var instance = food_scene.instance()
-	add_child(instance)
-	instance.global_position = at
+	var food = food_scene.instance()
+	add_child(food)
+	food.global_position = at
+	food.connect("FoodEaten", self, "_on_FoodEaten")
+	return food
 	
+func _on_FoodEaten(food):
+	unused_food_stack[unused_food_stack_index] = food
+	unused_food_stack_index += 1
 
-func keep_enough_food():
-	while Globals.current_food_count < expected_food_count:
+
+func spawn_food(count=max_food_count):
+	var target_food_count = min(max_food_count, Globals.current_food_count + count)
+	while Globals.current_food_count < target_food_count:
 		add_food(random_world_coordinate())
-
 
 func take_control_of_boppie(boppie):
 	if controlled_boppie != null:
@@ -88,10 +111,9 @@ func take_control_of_boppie(boppie):
 		controlled_boppie.add_temp_ai(player_ai)
 
 
-func _process(delta):
+func _process(_delta):
 	handle_user_input()
 	check_boppies()
-	keep_enough_food()
 	if controlled_boppie:
 		$Camera.global_position = controlled_boppie.global_position
 	else:
@@ -103,17 +125,19 @@ func handle_user_input():
 		take_control_of_boppie(null)
 	if Input.is_action_just_pressed("ui_eat"):
 		if controlled_boppie:
-			controlled_boppie.eat(Food.new())
+			controlled_boppie.update_energy(5)
 	if Input.is_action_just_pressed("ui_toggle_rays"):
 		Globals.draw_vision_rays = !Globals.draw_vision_rays
 	if Input.is_action_just_pressed("ui_increase_time"):
-		if Engine.time_scale < 1000:
+		if Engine.time_scale < 256:
 			Engine.time_scale *= 2
-			Engine.iterations_per_second *= 1.6
+			Engine.iterations_per_second = 60 * max(1, pow(2, log(Engine.time_scale)))
+			emit_signal("EngineTimeScaleChange")
 	if Input.is_action_just_pressed("ui_decrease_time"):
-		if Engine.time_scale > .25:
+		if Engine.time_scale > .5:
 			Engine.time_scale /= 2
-			Engine.iterations_per_second /= 1.6
+			Engine.iterations_per_second = 60 * max(1, pow(2, log(Engine.time_scale)))
+			emit_signal("EngineTimeScaleChange")
 	if Input.is_action_just_pressed("ui_pause"):
 		get_tree().paused = !get_tree().paused
 		
@@ -124,20 +148,26 @@ func check_boppies():
 	for boppie in boppies:
 		if not is_within_game(boppie.global_position):
 			boppie.global_position = make_within_game(boppie.global_position)
-			
-	add_random_boppies(expected_boppie_count - boppies.size())
+		
+	var diff = expected_boppie_count - boppies.size()
+	if diff > 0:
+		Globals.boppies_spawned += diff
+		add_random_boppies(diff)
 		
 		
 func _on_BoppieClicked(boppie):
 	take_control_of_boppie(boppie)
 	
 func _on_BoppieDied(boppie):
+	Globals.boppies_died += 1
 	if boppie == controlled_boppie:
 		take_control_of_boppie(null)
 	if spawn_food_on_death:
 		var food = food_scene.instance()
 		food.global_position = boppie.global_position
+		food.modulate = food.modulate.darkened(.3)
 		add_child(food)
 	
 func _on_BoppieOffspring(boppie):
+	Globals.boppies_born += 1
 	add_boppie(boppie.global_position - boppie.rotation_vector() * boppie.radius)

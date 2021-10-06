@@ -3,7 +3,9 @@
 [ext_resource path="res://Controllers/GameController/GameController.gd" type="Script" id=1]
 [ext_resource path="res://UI/UI.tscn" type="PackedScene" id=2]
 
-[node name="GameController" type="Node2D"]
+[node name="GameController" type="Node2D" groups=[
+"GameController",
+]]
 pause_mode = 2
 z_index = -100
 script = ExtResource( 1 )
@@ -12,3 +14,8 @@ script = ExtResource( 1 )
 current = true
 
 [node name="UI" parent="." instance=ExtResource( 2 )]
+
+[node name="FoodTimer" type="Timer" parent="."]
+pause_mode = 1
+wait_time = 0.1
+autostart = true
