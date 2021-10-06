@@ -98,14 +98,17 @@ func draw_selection():
 func _draw():
 	if selected:
 		draw_selection()
-	var boppie_color = self.modulate
+	var boppie_color = Color.white
 	if hovered:
 		boppie_color = boppie_color.darkened(.3)
 	draw_circle(Vector2.ZERO, radius, boppie_color)
-	draw_polygon([Vector2.ZERO, $Eyes.pos * 1.2, Vector2(5, 0)], [boppie_color])
+	var start_point = Vector2(0, -15)
+	var end_point = Vector2(0, 18)
+	draw_colored_polygon([start_point, $Eyes.pos * 2, end_point], boppie_color)
+	draw_colored_polygon([-start_point, $Eyes.pos_other * 2, -end_point], boppie_color)
 	
 	draw_circle(Vector2.ZERO, 3, Color(1, 0, 0))
-	draw_line(Vector2.ZERO, Vector2(radius, 0), Color(0, 0, 0))
+	# draw_line(Vector2.ZERO, Vector2(radius, 0), Color(0, 0, 0))
 
 	
 	
@@ -164,6 +167,11 @@ func die():
 			$DeathParticles.emitting = true
 		$Eyes.eyes_dead()
 		pop_temp_ai()
+		$Tween.interpolate_property(self, "modulate:a",
+			1.0, 0.0, 1.0,
+			Tween.TRANS_SINE, Tween.EASE_IN_OUT
+		)
+		$Tween.start()
 		yield(get_tree().create_timer(1.0), "timeout")
 		queue_free()
 

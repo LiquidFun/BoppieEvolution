@@ -50,7 +50,6 @@ func _ready():
 		handle_boppie(boppie)
 	add_random_boppies(expected_boppie_count)
 	$Camera.position = total_size / 2
-	# spawn_food()
 	if food_per_500ms > 0:
 		$FoodTimer.connect("timeout", self, "_reset_food_timer")
 		
@@ -109,11 +108,11 @@ func spawn_food(count=max_food_count):
 func take_control_of_boppie(boppie):
 	if controlled_boppie != null:
 		controlled_boppie.set_selected(false)
-		controlled_boppie.pop_temp_ai()
+		if controlled_boppie.ai == player_ai:
+			controlled_boppie.pop_temp_ai()
 	controlled_boppie = boppie
 	if controlled_boppie != null:
 		controlled_boppie.set_selected(true)
-		controlled_boppie.add_temp_ai(player_ai)
 
 
 func _process(delta):
@@ -133,25 +132,28 @@ func _unhandled_input(event):
 	if event.is_action_pressed("ui_toggle_rays"):
 		Globals.draw_vision_rays = !Globals.draw_vision_rays
 	if event.is_action_pressed("ui_increase_time"):
-		if Engine.time_scale < 256:
-			Engine.time_scale *= 2
-			Engine.iterations_per_second = 60 * max(1, pow(2, log(Engine.time_scale)))
-			emit_signal("EngineTimeScaleChange")
+		change_time_scale(2)
 	if event.is_action_pressed("ui_decrease_time"):
-		if Engine.time_scale > .5:
-			Engine.time_scale /= 2
-			Engine.iterations_per_second = 60 * max(1, pow(2, log(Engine.time_scale)))
-			emit_signal("EngineTimeScaleChange")
+		change_time_scale(0.5)
 	if event.is_action_pressed("ui_pause"):
 		get_tree().paused = !get_tree().paused
+	if event.is_action_pressed("take_control_of_boppie"):
+		if controlled_boppie != null:
+			if controlled_boppie.ai != player_ai:
+				controlled_boppie.add_temp_ai(player_ai)
 
+func change_time_scale(factor):
+	var new_time_scale = Engine.time_scale * factor
+	if .5 <= new_time_scale and new_time_scale <= 256:
+		Engine.time_scale = new_time_scale
+		Engine.iterations_per_second = 60 * max(1, pow(2, log(Engine.time_scale)))
+		emit_signal("EngineTimeScaleChange")
 			
 func check_boppies():
 	var boppies = get_tree().get_nodes_in_group("Boppie")
 	for boppie in boppies:
 		if not is_within_game(boppie.global_position):
 			boppie.global_position = make_within_game(boppie.global_position)
-		
 	var diff = expected_boppie_count - boppies.size()
 	if diff > 0:
 		Globals.boppies_spawned += diff

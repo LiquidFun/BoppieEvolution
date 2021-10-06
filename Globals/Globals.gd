@@ -2,7 +2,7 @@ extends Node
 
 
 var current_food_count = 0
-var draw_vision_rays = true
+var draw_vision_rays = false
 var performance_mode = false
 var boppies_died = 0
 var boppies_born = 0

@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=2]
 
-[sub_resource type="Curve" id=4]
+[sub_resource type="Curve" id=1]
 _data = [ Vector2( 0, 1 ), 0.0, 1.4, 0, 0, Vector2( 0.204348, 0.409091 ), 0.0, 0.0, 0, 0, Vector2( 0.408696, 0.1 ), 0.0, 0.0, 0, 0, Vector2( 1, 0 ), 0.152993, 0.0, 0, 0 ]
 
 [node name="DeathParticlesCPU" type="CPUParticles2D"]
@@ -20,7 +20,7 @@ initial_velocity_random = 1.0
 orbit_velocity = 2.0
 orbit_velocity_random = 1.0
 scale_amount = 3.0
-scale_amount_curve = SubResource( 4 )
+scale_amount_curve = SubResource( 1 )
 color = Color( 0.635294, 0.635294, 0.635294, 1 )
 hue_variation = -0.03
 hue_variation_random = 0.11

@@ -77,10 +77,10 @@ func feed_forward(ai_input):
 			values[layer+1][right] = relu(sum)
 
 func get_movement_factor(ai_input=null):
-	#if thread.is_active():
-	#	thread.wait_to_finish()
-	#thread.start(self, "feed_forward", ai_input)
-	feed_forward(ai_input)
+	if thread.is_active():
+		thread.wait_to_finish()
+	thread.start(self, "feed_forward", ai_input)
+	# feed_forward(ai_input)
 	return values[-1][0]
 	
 

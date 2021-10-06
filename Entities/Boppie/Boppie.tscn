@@ -149,7 +149,6 @@ emitting = false
 amount = 100
 one_shot = true
 explosiveness = 1.0
-local_coords = false
 process_material = SubResource( 12 )
 __meta__ = {
 "_editor_description_": ""
