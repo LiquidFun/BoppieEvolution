@@ -136,7 +136,6 @@ position = Vector2( -0.280617, 0.14031 )
 
 [node name="VisionRay" type="RayCast2D" parent="."]
 modulate = Color( 1, 1, 1, 0 )
-position = Vector2( 13.4848, 2.75764 )
 z_index = -5
 enabled = true
 collide_with_areas = true

@@ -76,8 +76,8 @@ func feed_forward(ai_input):
 
 func get_movement_factor(ai_input=null):
 	feed_forward(ai_input)
-	return clamp(values[-1][0], -1, 2)
+	return values[-1][0]
 	
 
 func get_turn_factor(ai_input=null):
-	return clamp(values[-1][1], -1, 1)
+	return values[-1][1]

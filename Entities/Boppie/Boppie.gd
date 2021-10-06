@@ -137,9 +137,12 @@ func _physics_process(delta):
 			if ai:
 				calc_ai_input()
 				var movement = ai.get_movement_factor(ai_input)
+				movement = clamp(movement, -1, 2)
+				var turn = ai.get_turn_factor(ai_input)
+				turn = clamp(turn, -1, 1)
 				update_energy(-delta * movement * movement * energy_consumption_walking)
 				self.move(movement, delta)
-				self.turn(ai.get_turn_factor(ai_input), delta)
+				self.turn(turn, delta)
 		else:
 			die()
 		self.self_modulate = energy_gradient.interpolate(self.energy / (max_energy * .7))

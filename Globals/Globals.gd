@@ -7,6 +7,7 @@ var performance_mode = false
 var boppies_died = 0
 var boppies_born = 0
 var boppies_spawned = 0
+var nn_thread = Thread.new()
 
 var rng = RandomNumberGenerator.new()
 
