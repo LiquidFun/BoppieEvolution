@@ -11,8 +11,11 @@ export var ray_count_additional = 2
 export var ray_angle = deg2rad(20)
 export var ray_length = 400
 
-export var energy_consumption_existing = .25
-export var energy_consumption_walking = 1
+export var energy_consumption_existing = .7
+export var energy_consumption_walking = .7
+
+# up to 0.05 works well
+export var offspring_mutability = 0.03
 
 var vision_rays = []
 
@@ -185,7 +188,7 @@ func level_up(new_scale):
 			
 func produce_offspring():
 	emit_signal("BoppieOffspring", self)
-		
+	
 func eat(food):
 	update_energy(food.nutrition)
 	

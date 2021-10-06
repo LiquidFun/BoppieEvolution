@@ -8,3 +8,8 @@ var boppies_died = 0
 var boppies_born = 0
 var boppies_spawned = 0
 
+var rng = RandomNumberGenerator.new()
+
+func _ready():
+	rng.randomize()
+

@@ -2,6 +2,8 @@ extends AI
 
 class_name NeuralNetwork
 
+
+
 # Inputs:
 var input_layer = \
 	5  # ray food
@@ -17,17 +19,20 @@ var input_layer = \
 var output_layer = \
 	2  # outputs
 
-var layers = [input_layer, 3, output_layer]
 var weights = []
+var layers = [input_layer, 3, output_layer]
 var values = []
 
-func _init():
-	for layer in range(layers.size() - 1):
-		weights.append([])
-		for right in range(layers[layer+1]):
-			weights[-1].append([])
-			for left in range(layers[layer]+1):
-				weights[-1][-1].append(randf() * 2 - 1)
+func _init(parent_weights=null):
+	if parent_weights == null:
+		for layer in range(layers.size() - 1):
+			weights.append([])
+			for right in range(layers[layer+1]):
+				weights[-1].append([])
+				for left in range(layers[layer]+1):
+					weights[-1][-1].append(randf() * 2 - 1)
+	else:
+		weights = parent_weights
 	
 	for layer in range(layers.size()):
 		values.append([])
@@ -39,12 +44,23 @@ func _init():
 	# print(weights)
 	# print(values)
 	
+func get_mutated_weights(mutability):
+	var weights2 = self.weights.duplicate(true)
+	for layer in range(weights2.size()):
+		for right in range(weights2[layer].size()):
+			for left in range(weights2[layer][right].size()):
+				var mutation = mutability * Globals.rng.randfn()
+				# print(mutation)
+				weights2[layer][right][left] += mutation
+				
+	return weights2
+	
 				
 func calculate_inputs(ai_input):
 	var dists = ai_input[Boppie.Data.RAY_DIST]
 	var types = ai_input[Boppie.Data.RAY_TYPE]
 	for i in range(dists.size()):
-		values[0][i] = dists[i] if types[i] == Boppie.Raytype.FOOD else 2
+		values[0][i] = dists[i] if types[i] == Boppie.Raytype.FOOD else 2.0
 		
 func relu(num):
 	return max(0, num)
@@ -60,8 +76,8 @@ func feed_forward(ai_input):
 
 func get_movement_factor(ai_input=null):
 	feed_forward(ai_input)
-	# print(values[-1])
-	# print(values[0])
+	# print(Globals.rng.seed)
+	#print(values[0])
 	return values[-1][0]
 	
 
