@@ -47,6 +47,7 @@ func _init(ai = null):
 
 	
 func _ready():
+	$SpawnParticles.emitting = true
 	ai_input[Data.RAY_DIST] = []
 	ai_input[Data.RAY_TYPE] = []
 	self.scale = Vector2(size_increases[0], size_increases[0])

@@ -17,12 +17,12 @@ func _draw():
 	
 func reset():
 	eaten = false
-	visible = true
+	self_modulate.a = 1
 
 func _on_Food_body_entered(body):
 	if body is Boppie and not body.dead and not eaten:
 		eaten = true
-		visible = false
+		self_modulate.a = 0
 		if not Globals.performance_mode:
 			$FoodEatenParticles.emitting = true
 		body.eat(self)

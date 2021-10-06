@@ -75,7 +75,7 @@ func add_boppie(at: Vector2, parent = null):
 	var weights = null
 	if parent != null:
 		var nn = parent.ai if parent.ai is NeuralNetwork else parent.orig_ai
-		weights = parent.ai.get_mutated_weights(instance.offspring_mutability)
+		weights = nn.get_mutated_weights(instance.offspring_mutability)
 	instance.add_temp_ai(NeuralNetwork.new(weights))
 	#	instance.add_temp_ai(SmartAI.new())
 	instance.rotation = randf() * 2 * PI

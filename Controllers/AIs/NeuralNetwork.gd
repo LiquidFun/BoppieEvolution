@@ -76,10 +76,8 @@ func feed_forward(ai_input):
 
 func get_movement_factor(ai_input=null):
 	feed_forward(ai_input)
-	# print(Globals.rng.seed)
-	#print(values[0])
-	return values[-1][0]
+	return clamp(values[-1][0], -1, 2)
 	
 
 func get_turn_factor(ai_input=null):
-	return values[-1][1]
+	return clamp(values[-1][1], -1, 1)

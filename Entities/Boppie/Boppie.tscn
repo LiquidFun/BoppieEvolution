@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=21 format=2]
 
 [ext_resource path="res://Entities/Boppie/Boppie.gd" type="Script" id=1]
 [ext_resource path="res://Entities/Boppie/Eyes.gd" type="Script" id=2]
@@ -8,16 +8,110 @@
 [sub_resource type="CircleShape2D" id=1]
 radius = 20.108
 
-[sub_resource type="Curve" id=2]
+[sub_resource type="Curve" id=10]
+_data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 0.140449, 0.936364 ), -6.31091, -6.31091, 0, 0, Vector2( 0.404494, 0.2 ), -1.04399, -1.04399, 0, 0, Vector2( 1, 0 ), 0.0, 0.0, 0, 0 ]
+
+[sub_resource type="CurveTexture" id=11]
+curve = SubResource( 10 )
+
+[sub_resource type="ParticlesMaterial" id=12]
+emission_shape = 1
+emission_sphere_radius = 20.0
+flag_align_y = true
+flag_disable_z = true
+direction = Vector3( 0, 0, 0 )
+spread = 180.0
+gravity = Vector3( 0, 0, 0 )
+initial_velocity = 8.0
+initial_velocity_random = 1.0
+orbit_velocity = 2.0
+orbit_velocity_random = 1.0
+scale = 3.0
+scale_curve = SubResource( 11 )
+color = Color( 0.635294, 0.635294, 0.635294, 1 )
+hue_variation = 0.19
+hue_variation_random = 0.4
+
+[sub_resource type="Curve" id=6]
+max_value = 100.0
+_data = [ Vector2( 0, 0 ), 0.0, 0.0, 0, 0, Vector2( 0.47191, 100 ), -3.23638, 0.0, 0, 0 ]
+
+[sub_resource type="CurveTexture" id=7]
+curve = SubResource( 6 )
+
+[sub_resource type="Curve" id=8]
+_data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 1, 0.263636 ), 0.0, 0.0, 0, 0 ]
+
+[sub_resource type="CurveTexture" id=9]
+curve = SubResource( 8 )
+
+[sub_resource type="ParticlesMaterial" id=5]
+flag_align_y = true
+flag_disable_z = true
+spread = 180.0
+gravity = Vector3( 0, 0, 0 )
+initial_velocity = 50.0
+initial_velocity_random = 0.4
+orbit_velocity = 0.0
+orbit_velocity_random = 0.0
+damping = 40.0
+damping_random = 0.46
+damping_curve = SubResource( 7 )
+scale = 2.0
+scale_random = 0.2
+scale_curve = SubResource( 9 )
+color = Color( 0.937255, 0.823529, 0.768627, 1 )
+hue_variation = 0.08
+hue_variation_random = 0.25
+
+[sub_resource type="Curve" id=13]
+max_value = 100.0
+_data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 1, 100 ), 261.991, 0.0, 0, 0 ]
+
+[sub_resource type="CurveTexture" id=14]
+curve = SubResource( 13 )
+
+[sub_resource type="Curve" id=15]
 min_value = -200.0
 max_value = 200.0
-_data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 1, 3.63638 ), 0.0, 0.0, 0, 0 ]
+_data = [ Vector2( 0, 98.1818 ), 0.0, 0.0, 0, 0, Vector2( 0.185393, -65.4545 ), 0.0, 0.0, 0, 0, Vector2( 0.359551, 83.6364 ), 0.0, 0.0, 0, 0, Vector2( 0.539326, -112.727 ), 0.0, 0.0, 0, 0, Vector2( 1, -200 ), 0.0, 0.0, 0, 0 ]
 
-[sub_resource type="Curve" id=3]
-_data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 1, 0.527273 ), 0.0, 0.0, 0, 0 ]
+[sub_resource type="CurveTexture" id=16]
+curve = SubResource( 15 )
 
-[sub_resource type="Curve" id=4]
-_data = [ Vector2( 0, 1 ), 0.0, 1.4, 0, 0, Vector2( 0.204348, 0.409091 ), 0.0, 0.0, 0, 0, Vector2( 0.408696, 0.1 ), 0.0, 0.0, 0, 0, Vector2( 1, 0 ), 0.152993, 0.0, 0, 0 ]
+[sub_resource type="Curve" id=17]
+_data = [ Vector2( 0.00561798, 0.672727 ), 0.0, 33.1727, 0, 0, Vector2( 0.286517, 1 ), 0.0, 0.0, 0, 0, Vector2( 1, 0 ), 0.0, 0.0, 0, 0 ]
+
+[sub_resource type="CurveTexture" id=18]
+curve = SubResource( 17 )
+
+[sub_resource type="ParticlesMaterial" id=19]
+lifetime_randomness = 0.4
+emission_shape = 1
+emission_sphere_radius = 20.0
+flag_align_y = true
+flag_disable_z = true
+direction = Vector3( 0, 0, 0 )
+spread = 180.0
+gravity = Vector3( 0, 0, 0 )
+initial_velocity = 10.0
+initial_velocity_random = 1.0
+angular_velocity = -720.0
+orbit_velocity = 1.0
+orbit_velocity_random = 1.0
+linear_accel = 100.0
+linear_accel_random = 1.0
+radial_accel = 100.0
+radial_accel_random = 0.42
+radial_accel_curve = SubResource( 16 )
+damping = 10.0
+damping_random = 1.0
+damping_curve = SubResource( 14 )
+angle = 720.0
+angle_random = 1.0
+scale_curve = SubResource( 18 )
+hue_variation = 0.16
+hue_variation_random = 1.0
 
 [node name="Boppie" type="KinematicBody2D" groups=[
 "Boppie",
@@ -31,26 +125,6 @@ script = ExtResource( 1 )
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource( 1 )
 
-[node name="WalkingParticles" type="CPUParticles2D" parent="."]
-position = Vector2( -0.629227, -0.353554 )
-z_index = -10
-emitting = false
-amount = 30
-local_coords = false
-flag_align_y = true
-direction = Vector2( 0, 0 )
-spread = 180.0
-gravity = Vector2( 0, 0 )
-initial_velocity = 50.0
-initial_velocity_random = 0.44
-radial_accel_curve = SubResource( 2 )
-damping = 23.77
-scale_amount = 2.0
-scale_amount_curve = SubResource( 3 )
-color = Color( 0.654902, 0.654902, 0.654902, 1 )
-hue_variation = 0.01
-hue_variation_random = 0.06
-
 [node name="Eyes" type="Node2D" parent="."]
 script = ExtResource( 2 )
 
@@ -60,38 +134,47 @@ position = Vector2( -0.140305, 0.140308 )
 [node name="Pupil2" parent="Eyes" instance=ExtResource( 3 )]
 position = Vector2( -0.280617, 0.14031 )
 
-[node name="DeathParticles" type="CPUParticles2D" parent="."]
-z_index = 1
-emitting = false
-amount = 100
-one_shot = true
-explosiveness = 1.0
-local_coords = false
-emission_shape = 1
-emission_sphere_radius = 20.0
-flag_align_y = true
-direction = Vector2( 0, 0 )
-spread = 180.0
-gravity = Vector2( 0, 0 )
-initial_velocity = 8.2
-initial_velocity_random = 1.0
-orbit_velocity = 2.0
-orbit_velocity_random = 1.0
-scale_amount = 3.0
-scale_amount_curve = SubResource( 4 )
-color = Color( 0.635294, 0.635294, 0.635294, 1 )
-hue_variation = -0.03
-hue_variation_random = 0.11
-
 [node name="VisionRay" type="RayCast2D" parent="."]
 modulate = Color( 1, 1, 1, 0 )
-position = Vector2( 0, 0.135612 )
+position = Vector2( 13.4848, 2.75764 )
 z_index = -5
 enabled = true
 collide_with_areas = true
 script = ExtResource( 4 )
 
 [node name="Tween" type="Tween" parent="."]
+
+[node name="DeathParticles" type="Particles2D" parent="."]
+z_index = 1
+emitting = false
+amount = 100
+one_shot = true
+explosiveness = 1.0
+local_coords = false
+process_material = SubResource( 12 )
+__meta__ = {
+"_editor_description_": ""
+}
+
+[node name="WalkingParticles" type="Particles2D" parent="."]
+position = Vector2( -0.629227, -0.353554 )
+z_index = -10
+emitting = false
+amount = 30
+local_coords = false
+process_material = SubResource( 5 )
+__meta__ = {
+"_editor_description_": ""
+}
+
+[node name="SpawnParticles" type="Particles2D" parent="."]
+z_index = 10
+emitting = false
+amount = 400
+one_shot = true
+explosiveness = 1.0
+local_coords = false
+process_material = SubResource( 19 )
 
 [connection signal="input_event" from="." to="." method="_on_Boppie_input_event"]
 [connection signal="mouse_entered" from="." to="." method="_on_Boppie_mouse_entered"]
