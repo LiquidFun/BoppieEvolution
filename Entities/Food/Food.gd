@@ -22,10 +22,10 @@ func reset():
 func _on_Food_body_entered(body):
 	if body is Boppie and not body.dead and not eaten:
 		eaten = true
-		body.eat(self)
 		visible = false
 		if not Globals.performance_mode:
-			$FoodEaten.emitting = true
+			$FoodEatenParticles.emitting = true
+		body.eat(self)
 		
 		yield(get_tree().create_timer(1.0), "timeout")
 		

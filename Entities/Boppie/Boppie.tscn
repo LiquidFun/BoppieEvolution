@@ -34,6 +34,7 @@ shape = SubResource( 1 )
 [node name="WalkingParticles" type="CPUParticles2D" parent="."]
 position = Vector2( -0.629227, -0.353554 )
 z_index = -10
+emitting = false
 amount = 30
 local_coords = false
 flag_align_y = true

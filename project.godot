@@ -25,6 +25,11 @@ _global_script_classes=[ {
 "path": "res://Entities/Food/Food.gd"
 }, {
 "base": "AI",
+"class": "NeuralNetwork",
+"language": "GDScript",
+"path": "res://Controllers/AIs/NeuralNetwork.gd"
+}, {
+"base": "AI",
 "class": "Player",
 "language": "GDScript",
 "path": "res://Controllers/AIs/Player.gd"
@@ -43,6 +48,7 @@ _global_script_class_icons={
 "AI": "",
 "Boppie": "",
 "Food": "",
+"NeuralNetwork": "",
 "Player": "",
 "RandomAI": "",
 "SmartAI": ""
@@ -66,7 +72,7 @@ window/size/width=1920
 window/size/height=1080
 window/size/test_width=1920
 window/size/test_height=1080
-window/vsync/use_vsync=false
+window/vsync/vsync_via_compositor=true
 
 [global]
 

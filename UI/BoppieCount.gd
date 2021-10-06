@@ -3,6 +3,7 @@ extends Label
 func _process(_delta):
 	text = ""
 	text += "      #%d" % get_tree().get_nodes_in_group("Boppie").size()
+	text += "      F: %d" % Globals.current_food_count
 	text += "      B: %d" % Globals.boppies_born
 	text += "      D: %d" % Globals.boppies_died
 	text += "      S: %d" % Globals.boppies_spawned

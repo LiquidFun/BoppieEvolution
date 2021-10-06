@@ -17,5 +17,5 @@ current = true
 
 [node name="FoodTimer" type="Timer" parent="."]
 pause_mode = 1
-wait_time = 0.1
+wait_time = 0.5
 autostart = true

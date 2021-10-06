@@ -1,9 +1,9 @@
 extends Node2D
 
 # Simulation settings
-export var max_food_count = 100
-export var food_per_100ms = 5
-export var expected_boppie_count = 20
+export var max_food_count = 200
+export var food_per_500ms = 7
+export var expected_boppie_count = 10
 export var spawn_food_on_death = false
 
 # Game size
@@ -50,12 +50,12 @@ func _ready():
 		handle_boppie(boppie)
 	add_random_boppies(expected_boppie_count)
 	$Camera.position = total_size / 2
-	spawn_food()
-	if food_per_100ms > 0:
+	# spawn_food()
+	if food_per_500ms > 0:
 		$FoodTimer.connect("timeout", self, "_reset_food_timer")
 		
 func _reset_food_timer():
-	spawn_food(food_per_100ms)
+	spawn_food(food_per_500ms)
 #	print(unused_food_stack_index)
 #	var new_index = max(0, unused_food_stack_index - food_per_100ms)
 #	for i in range(unused_food_stack_index, new_index, -1):
@@ -72,7 +72,7 @@ func handle_boppie(boppie):
 
 func add_boppie(at: Vector2):
 	var instance = boppie_scene.instance()
-	instance.add_temp_ai(SmartAI.new())
+	instance.add_temp_ai(NeuralNetwork.new())
 	instance.rotation = randf() * 2 * PI
 	add_child(instance)
 	instance.global_position = at
@@ -111,13 +111,13 @@ func take_control_of_boppie(boppie):
 		controlled_boppie.add_temp_ai(player_ai)
 
 
-func _process(_delta):
+func _process(delta):
 	handle_user_input()
 	check_boppies()
 	if controlled_boppie:
 		$Camera.global_position = controlled_boppie.global_position
 	else:
-		$Camera.global_position -= Utils.input_vectors() * 5
+		$Camera.global_position -= Utils.input_vectors() * 7
 
 	
 func handle_user_input():
@@ -170,4 +170,4 @@ func _on_BoppieDied(boppie):
 	
 func _on_BoppieOffspring(boppie):
 	Globals.boppies_born += 1
-	add_boppie(boppie.global_position - boppie.rotation_vector() * boppie.radius)
+	call_deferred("add_boppie", boppie.global_position - boppie.rotation_vector() * boppie.radius)
