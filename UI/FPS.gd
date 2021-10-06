@@ -1,13 +1,15 @@
 extends Label
 
+var prev_msec = 0
+var prev_physics_frames = 0
 
 func _ready():
-	while true:
-		var old_physics_frames = Engine.get_physics_frames()
-		var start_time = OS.get_ticks_msec()
-		yield(get_tree().create_timer(Engine.time_scale / 2), "timeout")
+	Globals.connect("HalfSecondTimer", self, "_on_HalfSecondTimer")
 		
-		text = str(Engine.get_frames_per_second()) + " FPS       " 
-		var now = OS.get_ticks_msec()
-		text += str(1000 * (Engine.get_physics_frames() - old_physics_frames) / (now - start_time))
-		text += "/" + str(Engine.iterations_per_second) + " PFPS"
+func _on_HalfSecondTimer():
+	var fps = Engine.get_frames_per_second()
+	var tps = 1000 * (Engine.get_physics_frames() - prev_physics_frames) / (OS.get_ticks_msec() - prev_msec)
+	text = "%d FPS        %d/%d TPS" % [fps, tps, Engine.iterations_per_second]
+	
+	prev_msec = OS.get_ticks_msec()
+	prev_physics_frames = Engine.get_physics_frames()

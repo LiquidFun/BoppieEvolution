@@ -117,7 +117,6 @@ func take_control_of_boppie(boppie):
 
 
 func _process(delta):
-	handle_user_input()
 	check_boppies()
 	if controlled_boppie:
 		$Camera.global_position = controlled_boppie.global_position
@@ -125,27 +124,26 @@ func _process(delta):
 		$Camera.global_position -= Utils.input_vectors() * 7
 
 	
-func handle_user_input():
-	if Input.is_action_just_pressed("ui_cancel"):
+func _unhandled_input(event):
+	if event.is_action_pressed("ui_cancel"):
 		take_control_of_boppie(null)
-	if Input.is_action_just_pressed("ui_eat"):
+	if event.is_action_pressed("ui_eat"):
 		if controlled_boppie:
 			controlled_boppie.update_energy(5)
-	if Input.is_action_just_pressed("ui_toggle_rays"):
+	if event.is_action_pressed("ui_toggle_rays"):
 		Globals.draw_vision_rays = !Globals.draw_vision_rays
-	if Input.is_action_just_pressed("ui_increase_time"):
+	if event.is_action_pressed("ui_increase_time"):
 		if Engine.time_scale < 256:
 			Engine.time_scale *= 2
 			Engine.iterations_per_second = 60 * max(1, pow(2, log(Engine.time_scale)))
 			emit_signal("EngineTimeScaleChange")
-	if Input.is_action_just_pressed("ui_decrease_time"):
+	if event.is_action_pressed("ui_decrease_time"):
 		if Engine.time_scale > .5:
 			Engine.time_scale /= 2
 			Engine.iterations_per_second = 60 * max(1, pow(2, log(Engine.time_scale)))
 			emit_signal("EngineTimeScaleChange")
-	if Input.is_action_just_pressed("ui_pause"):
+	if event.is_action_pressed("ui_pause"):
 		get_tree().paused = !get_tree().paused
-		
 
 			
 func check_boppies():

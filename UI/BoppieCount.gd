@@ -1,6 +1,9 @@
 extends Label
 
-func _process(_delta):
+func _ready():
+	Globals.connect("HalfSecondTimer", self, "_on_HalfSecondTimer")
+	
+func _on_HalfSecondTimer():
 	text = ""
 	text += "      #%d" % get_tree().get_nodes_in_group("Boppie").size()
 	text += "      F: %d" % Globals.current_food_count

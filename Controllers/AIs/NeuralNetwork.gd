@@ -23,6 +23,8 @@ var weights = []
 var layers = [input_layer, 3, output_layer]
 var values = []
 
+var thread = Thread.new()
+
 func _init(parent_weights=null):
 	if parent_weights == null:
 		for layer in range(layers.size() - 1):
@@ -75,9 +77,15 @@ func feed_forward(ai_input):
 			values[layer+1][right] = relu(sum)
 
 func get_movement_factor(ai_input=null):
+	#if thread.is_active():
+	#	thread.wait_to_finish()
+	#thread.start(self, "feed_forward", ai_input)
 	feed_forward(ai_input)
 	return values[-1][0]
 	
 
 func get_turn_factor(ai_input=null):
 	return values[-1][1]
+
+func _exit_tree():
+	thread.wait_to_finish()

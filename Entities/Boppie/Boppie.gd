@@ -102,9 +102,11 @@ func _draw():
 	if hovered:
 		boppie_color = boppie_color.darkened(.3)
 	draw_circle(Vector2.ZERO, radius, boppie_color)
+	draw_polygon([Vector2.ZERO, $Eyes.pos * 1.2, Vector2(5, 0)], [boppie_color])
 	
 	draw_circle(Vector2.ZERO, 3, Color(1, 0, 0))
 	draw_line(Vector2.ZERO, Vector2(radius, 0), Color(0, 0, 0))
+
 	
 	
 func set_selected(select):
