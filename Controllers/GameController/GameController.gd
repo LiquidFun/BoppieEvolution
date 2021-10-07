@@ -75,9 +75,11 @@ func add_boppie(at: Vector2, parent = null):
 	if parent != null:
 		var nn = parent.ai if parent.ai is NeuralNetwork else parent.orig_ai
 		weights = nn.get_mutated_weights(instance.offspring_mutability)
+		instance.rotation = parent.rotation
+	else:
+		instance.rotation = randf() * 2 * PI
 	instance.add_temp_ai(NeuralNetwork.new(weights))
 	#	instance.add_temp_ai(SmartAI.new())
-	instance.rotation = randf() * 2 * PI
 	add_child(instance)
 	instance.global_position = at
 	handle_boppie(instance)
@@ -178,4 +180,4 @@ func _on_BoppieDied(boppie):
 	
 func _on_BoppieOffspring(boppie):
 	Globals.boppies_born += 1
-	call_deferred("add_boppie", boppie.global_position - boppie.rotation_vector() * boppie.radius, boppie)
+	call_deferred("add_boppie", boppie.global_position - boppie.rotation_vector() * boppie.radius * 2.7, boppie)

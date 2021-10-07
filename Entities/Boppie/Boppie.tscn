@@ -1,10 +1,11 @@
-[gd_scene load_steps=23 format=2]
+[gd_scene load_steps=24 format=2]
 
 [ext_resource path="res://Entities/Boppie/Boppie.gd" type="Script" id=1]
 [ext_resource path="res://Entities/Boppie/Eyes.gd" type="Script" id=2]
 [ext_resource path="res://Entities/Boppie/Pupil.tscn" type="PackedScene" id=3]
 [ext_resource path="res://Entities/Boppie/VisionRay.gd" type="Script" id=4]
 [ext_resource path="res://Entities/Boppie/ClickableArea.gd" type="Script" id=5]
+[ext_resource path="res://Particles/HairParticles.tscn" type="PackedScene" id=6]
 
 [sub_resource type="CircleShape2D" id=1]
 radius = 20.108
@@ -125,6 +126,9 @@ self_modulate = Color( 0, 0.827451, 0.913725, 1 )
 z_index = 30
 script = ExtResource( 1 )
 
+[node name="Hair" parent="." instance=ExtResource( 6 )]
+strains = 100
+
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 pause_mode = 2
 shape = SubResource( 1 )
@@ -181,6 +185,8 @@ process_material = SubResource( 16 )
 
 [node name="ClickableArea" type="Area2D" parent="."]
 pause_mode = 2
+collision_layer = 64
+collision_mask = 0
 script = ExtResource( 5 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="ClickableArea"]

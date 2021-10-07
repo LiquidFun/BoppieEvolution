@@ -44,19 +44,26 @@ func _init(ai = null):
 	if ai == null:
 		ai = AI.new()
 	self.ai = ai
+	
+var scale_tween = Tween.new()
 
 	
 func _ready():
+	add_child(scale_tween)
+	scale_tween.interpolate_property(
+		self, "scale", Vector2(.1, .1), Vector2(size_increases[0], size_increases[0]), 
+		1, Tween.TRANS_BOUNCE, Tween.EASE_IN_OUT
+	)
+	scale_tween.start()
 	$SpawnParticles.emitting = true
 	ai_input[Data.RAY_DIST] = []
 	ai_input[Data.RAY_TYPE] = []
-	self.scale = Vector2(size_increases[0], size_increases[0])
-	# self.mass = size_increases[0] * size_increases[0]
 	var start_angle = 0
 	add_ray(start_angle, true, $VisionRay)
 	for i in range(1, ray_count_additional+1):
 		add_ray(start_angle + ray_angle * i, true)
 		add_ray(start_angle - ray_angle * i, true)
+	
 	
 func add_ray(angle_radians, push_back=true, ray=null):
 	if ray == null:
@@ -156,6 +163,7 @@ func _physics_process(delta):
 			die()
 		self.self_modulate = energy_gradient.interpolate(self.energy / (max_energy * .7))
 		$WalkingParticles.modulate = self_modulate
+		$Hair.modulate = self_modulate
 	
 
 func calc_ai_input():
