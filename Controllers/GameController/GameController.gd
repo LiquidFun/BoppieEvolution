@@ -22,7 +22,7 @@ var food_scene = preload("res://Entities/Food/Food.tscn")
 var controlled_boppie: Boppie = null
 var player_ai = Player.new()
 
-signal EngineTimeScaleChange
+signal EngineTimeScaleChange(factor)
 
 func random_coordinate():
 	return Vector2(randf(), randf())
@@ -137,17 +137,20 @@ func _unhandled_input(event):
 		change_time_scale(0.5)
 	if event.is_action_pressed("ui_pause"):
 		get_tree().paused = !get_tree().paused
+		emit_signal("EngineTimeScaleChange", int(!get_tree().paused))
 	if event.is_action_pressed("take_control_of_boppie"):
 		if controlled_boppie != null:
 			if controlled_boppie.ai != player_ai:
 				controlled_boppie.add_temp_ai(player_ai)
+			else:
+				controlled_boppie.pop_temp_ai()
 
 func change_time_scale(factor):
 	var new_time_scale = Engine.time_scale * factor
 	if .5 <= new_time_scale and new_time_scale <= 256:
 		Engine.time_scale = new_time_scale
 		Engine.iterations_per_second = 60 * max(1, pow(2, log(Engine.time_scale)))
-		emit_signal("EngineTimeScaleChange")
+		emit_signal("EngineTimeScaleChange", factor)
 			
 func check_boppies():
 	var boppies = get_tree().get_nodes_in_group("Boppie")

@@ -5,5 +5,5 @@ func _ready():
 	for game_controller in game_controllers:
 		game_controller.connect("EngineTimeScaleChange", self, "_on_EngineTimeScaleChange")
 
-func _on_EngineTimeScaleChange():
+func _on_EngineTimeScaleChange(factor):
 	text = str(Engine.time_scale) + "x"

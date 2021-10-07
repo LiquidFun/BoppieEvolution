@@ -1,18 +1,32 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://UI/BoppieCount.gd" type="Script" id=1]
 [ext_resource path="res://UI/TimeScale.gd" type="Script" id=2]
 [ext_resource path="res://UI/FPS.gd" type="Script" id=3]
 [ext_resource path="res://UI/GameTime.gd" type="Script" id=4]
+[ext_resource path="res://UI/IconGameSpeed.gd" type="Script" id=5]
+
+[sub_resource type="DynamicFontData" id=6]
+font_path = "res://Resources/Fonts/FontAwesome/otfs/Font Awesome 5 Free-Solid-900.otf"
+
+[sub_resource type="DynamicFont" id=7]
+size = 80
+font_data = SubResource( 6 )
 
 [sub_resource type="DynamicFontData" id=1]
-font_path = "res://Resources/Fonts/FredokaOne-Regular.ttf"
+font_path = "res://Resources/Fonts/FontAwesome/otfs/Font Awesome 5 Free-Regular-400.otf"
 
 [sub_resource type="DynamicFont" id=2]
-size = 20
 font_data = SubResource( 1 )
 
-[sub_resource type="StyleBoxEmpty" id=3]
+[sub_resource type="DynamicFontData" id=3]
+font_path = "res://Resources/Fonts/FredokaOne-Regular.ttf"
+
+[sub_resource type="DynamicFont" id=4]
+size = 20
+font_data = SubResource( 3 )
+
+[sub_resource type="StyleBoxEmpty" id=5]
 
 [node name="UI" type="CanvasLayer"]
 pause_mode = 2
@@ -22,7 +36,7 @@ pause_mode = 1
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_top = -35.0
+margin_top = -223.0
 custom_constants/margin_right = 5
 custom_constants/margin_top = 5
 custom_constants/margin_left = 5
@@ -35,14 +49,42 @@ __meta__ = {
 margin_left = 5.0
 margin_top = 5.0
 margin_right = 1915.0
-margin_bottom = 30.0
+margin_bottom = 218.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="MarginContainer" type="MarginContainer" parent="UI/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/VBoxContainer"]
 margin_right = 1910.0
-margin_bottom = 25.0
+margin_bottom = 80.0
+alignment = 1
+
+[node name="IconGameSpeed" type="Label" parent="UI/VBoxContainer/HBoxContainer"]
+pause_mode = 2
+modulate = Color( 1, 1, 1, 0 )
+margin_left = 920.0
+margin_right = 990.0
+margin_bottom = 80.0
+hint_tooltip = "Game time elapsed since start of simulation hh:mm:ss"
+mouse_filter = 1
+custom_fonts/font = SubResource( 7 )
+text = ""
+valign = 2
+script = ExtResource( 5 )
+
+[node name="Tween" type="Tween" parent="UI/VBoxContainer/HBoxContainer/IconGameSpeed"]
+
+[node name="VSeparator" type="VSeparator" parent="UI/VBoxContainer"]
+modulate = Color( 1, 1, 1, 0 )
+margin_top = 84.0
+margin_right = 1910.0
+margin_bottom = 184.0
+rect_min_size = Vector2( 0, 100 )
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/VBoxContainer"]
+margin_top = 188.0
+margin_right = 1910.0
+margin_bottom = 213.0
 custom_constants/margin_right = 10
 custom_constants/margin_top = 0
 custom_constants/margin_left = 10
@@ -55,13 +97,27 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="IconTime" type="Label" parent="UI/VBoxContainer/MarginContainer/HBoxContainer"]
+margin_top = 4.0
+margin_right = 16.0
+margin_bottom = 20.0
+hint_tooltip = "Game time elapsed since start of simulation hh:mm:ss"
+mouse_filter = 1
+custom_fonts/font = SubResource( 2 )
+text = ""
+valign = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="GameTime" type="Label" parent="UI/VBoxContainer/MarginContainer/HBoxContainer"]
-margin_right = 115.0
+margin_left = 20.0
+margin_right = 135.0
 margin_bottom = 25.0
 rect_min_size = Vector2( 115, 0 )
 hint_tooltip = "Game time elapsed since start of simulation hh:mm:ss"
 mouse_filter = 1
-custom_fonts/font = SubResource( 2 )
+custom_fonts/font = SubResource( 4 )
 text = "hh:mm:ss"
 valign = 2
 script = ExtResource( 4 )
@@ -75,43 +131,43 @@ autostart = true
 autostart = true
 
 [node name="VSeparator" type="VSeparator" parent="UI/VBoxContainer/MarginContainer/HBoxContainer"]
-margin_left = 119.0
-margin_right = 149.0
+margin_left = 139.0
+margin_right = 169.0
 margin_bottom = 25.0
 rect_min_size = Vector2( 30, 0 )
-custom_styles/separator = SubResource( 3 )
+custom_styles/separator = SubResource( 5 )
 
 [node name="TimeScale" type="Label" parent="UI/VBoxContainer/MarginContainer/HBoxContainer"]
-margin_left = 153.0
-margin_right = 172.0
+margin_left = 173.0
+margin_right = 192.0
 margin_bottom = 25.0
-custom_fonts/font = SubResource( 2 )
+custom_fonts/font = SubResource( 4 )
 text = "1x"
 valign = 2
 script = ExtResource( 2 )
 
 [node name="VSeparator3" type="VSeparator" parent="UI/VBoxContainer/MarginContainer/HBoxContainer"]
-margin_left = 176.0
-margin_right = 206.0
+margin_left = 196.0
+margin_right = 226.0
 margin_bottom = 25.0
 rect_min_size = Vector2( 30, 0 )
-custom_styles/separator = SubResource( 3 )
+custom_styles/separator = SubResource( 5 )
 
 [node name="FPS" type="Label" parent="UI/VBoxContainer/MarginContainer/HBoxContainer"]
-margin_left = 210.0
-margin_right = 248.0
+margin_left = 230.0
+margin_right = 268.0
 margin_bottom = 25.0
-custom_fonts/font = SubResource( 2 )
+custom_fonts/font = SubResource( 4 )
 text = "FPS"
 valign = 2
 script = ExtResource( 3 )
 
 [node name="VSeparator2" type="VSeparator" parent="UI/VBoxContainer/MarginContainer/HBoxContainer"]
-margin_left = 252.0
-margin_right = 282.0
+margin_left = 272.0
+margin_right = 302.0
 margin_bottom = 25.0
 rect_min_size = Vector2( 30, 0 )
-custom_styles/separator = SubResource( 3 )
+custom_styles/separator = SubResource( 5 )
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="UI/VBoxContainer/MarginContainer"]
 margin_left = 10.0
@@ -123,7 +179,7 @@ alignment = 2
 margin_left = 1820.0
 margin_right = 1890.0
 margin_bottom = 25.0
-custom_fonts/font = SubResource( 2 )
+custom_fonts/font = SubResource( 4 )
 text = "#count"
 align = 2
 valign = 2

@@ -86,8 +86,8 @@ func draw_corner(corner: Vector2, add: Vector2):
 	var color = Color(1, 0, 0)
 	var from = corner + add * offset
 	var length = (radius + offset * 2) / 3
-	draw_line(from, from - Vector2(add.x, 0) * length, color, 1, true)
-	draw_line(from, from - Vector2(0, add.y) * length, color, 1, true)
+	draw_line(from, from - Vector2(add.x, 0) * length, color, 2, true)
+	draw_line(from, from - Vector2(0, add.y) * length, color, 2, true)
 	
 func draw_selection():
 	for x in [-1, 1]:
@@ -101,6 +101,10 @@ func _draw():
 	var boppie_color = Color.white
 	if hovered:
 		boppie_color = boppie_color.darkened(.3)
+	var shadow_color = Color(0, 0, 0, .02)
+	for i in range(3):
+		draw_circle(Vector2(-1, 0), radius + 4 - i, shadow_color)
+		shadow_color.a *= 2
 	draw_circle(Vector2.ZERO, radius, boppie_color)
 	var start_point = Vector2(0, -15)
 	var end_point = Vector2(0, 18)
@@ -151,6 +155,7 @@ func _physics_process(delta):
 		else:
 			die()
 		self.self_modulate = energy_gradient.interpolate(self.energy / (max_energy * .7))
+		$WalkingParticles.modulate = self_modulate
 	
 
 func calc_ai_input():
@@ -162,23 +167,18 @@ func calc_ai_input():
 func die():
 	if can_die:
 		self.dead = true
-		emit_signal("BoppieDied", self)
 		if not Globals.performance_mode:
 			$DeathParticles.emitting = true
 		$Eyes.eyes_dead()
-		pop_temp_ai()
 		$Tween.interpolate_property(self, "modulate:a",
 			1.0, 0.0, 1.0,
 			Tween.TRANS_SINE, Tween.EASE_IN_OUT
 		)
 		$Tween.start()
 		yield(get_tree().create_timer(1.0), "timeout")
+		emit_signal("BoppieDied", self)
 		queue_free()
 
-func _on_Boppie_input_event(viewport, event, shape_idx):
-	if event is InputEventMouseButton and event.pressed and event.button_index == BUTTON_LEFT:
-		emit_signal("BoppieClicked", self)
-		
 func curr_level():
 	return int(offspring_energy / required_offspring_energy)
 		
@@ -207,9 +207,3 @@ func eat(food):
 	update_energy(food.nutrition)
 	
 
-func _on_Boppie_mouse_entered():
-	set_hovered(true)
-
-
-func _on_Boppie_mouse_exited():
-	set_hovered(false)
