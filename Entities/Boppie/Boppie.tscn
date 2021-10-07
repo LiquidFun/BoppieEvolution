@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=2]
+[gd_scene load_steps=25 format=2]
 
 [ext_resource path="res://Entities/Boppie/Boppie.gd" type="Script" id=1]
 [ext_resource path="res://Entities/Boppie/Eyes.gd" type="Script" id=2]
@@ -6,6 +6,7 @@
 [ext_resource path="res://Entities/Boppie/VisionRay.gd" type="Script" id=4]
 [ext_resource path="res://Entities/Boppie/ClickableArea.gd" type="Script" id=5]
 [ext_resource path="res://Particles/HairParticles.tscn" type="PackedScene" id=6]
+[ext_resource path="res://Particles/ParticlesManager.gd" type="Script" id=7]
 
 [sub_resource type="CircleShape2D" id=1]
 radius = 20.108
@@ -158,6 +159,7 @@ amount = 100
 one_shot = true
 explosiveness = 1.0
 process_material = SubResource( 4 )
+script = ExtResource( 7 )
 __meta__ = {
 "_editor_description_": ""
 }
@@ -170,6 +172,7 @@ lifetime = 4.0
 randomness = 0.2
 local_coords = false
 process_material = SubResource( 9 )
+script = ExtResource( 7 )
 __meta__ = {
 "_editor_description_": ""
 }
@@ -182,6 +185,7 @@ one_shot = true
 explosiveness = 1.0
 local_coords = false
 process_material = SubResource( 16 )
+script = ExtResource( 7 )
 
 [node name="ClickableArea" type="Area2D" parent="."]
 pause_mode = 2

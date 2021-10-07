@@ -1,4 +1,4 @@
-extends Node2D
+extends ParticlesManager
 
 export var strains = 10
 

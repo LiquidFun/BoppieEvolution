@@ -1,4 +1,6 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://Particles/ParticlesManager.gd" type="Script" id=1]
 
 [sub_resource type="ParticlesMaterial" id=1]
 
@@ -24,7 +26,7 @@ _data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 1, 0 ), 0.0, 0.0, 0, 0 ]
 offsets = PoolRealArray( 0, 0.995192, 1 )
 colors = PoolColorArray( 1, 0, 0, 1, 1, 0.867188, 0, 1, 1, 1, 1, 1 )
 
-[node name="FoodEatenParticles" type="CPUParticles2D"]
+[node name="FoodEatenParticlesCPU" type="CPUParticles2D"]
 material = SubResource( 3 )
 emitting = false
 amount = 200
@@ -53,3 +55,4 @@ scale_amount_curve = SubResource( 6 )
 color_ramp = SubResource( 7 )
 hue_variation = 0.1
 hue_variation_random = 1.0
+script = ExtResource( 1 )

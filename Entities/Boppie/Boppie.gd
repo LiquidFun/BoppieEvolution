@@ -11,8 +11,8 @@ export var ray_count_additional = 2
 export var ray_angle = deg2rad(20)
 export var ray_length = 400
 
-export var energy_consumption_existing = .7
-export var energy_consumption_walking = .7
+export var energy_consumption_existing = .5
+export var energy_consumption_walking = .5
 
 # up to 0.05 works well
 export var offspring_mutability = 0.03
@@ -106,8 +106,8 @@ func _draw():
 	if selected:
 		draw_selection()
 	var boppie_color = Color.white
-	if hovered:
-		boppie_color = boppie_color.darkened(.3)
+	#if hovered:
+	#	boppie_color = boppie_color.darkened(.3)
 	var shadow_color = Color(0, 0, 0, .02)
 	for i in range(3):
 		draw_circle(Vector2(-1, 0), radius + 4 - i, shadow_color)
@@ -115,10 +115,13 @@ func _draw():
 	draw_circle(Vector2.ZERO, radius, boppie_color)
 	var start_point = Vector2(0, -15)
 	var end_point = Vector2(0, 18)
+	
+	# Draw ears
 	draw_colored_polygon([start_point, $Eyes.pos * 2, end_point], boppie_color)
 	draw_colored_polygon([-start_point, $Eyes.pos_other * 2, -end_point], boppie_color)
 	
-	draw_circle(Vector2.ZERO, 3, Color(1, 0, 0))
+	# Draw nose
+	# draw_circle(Vector2.ZERO, 3, Color(1, 0, 0))
 	# draw_line(Vector2.ZERO, Vector2(radius, 0), Color(0, 0, 0))
 
 	
@@ -127,9 +130,14 @@ func set_selected(select):
 	selected = select
 	self.update()
 	
-func set_hovered(hover):
-	hovered = hover
-	self.update()
+func set_hovered(new_value):
+	
+	if new_value != hovered:
+		hovered = new_value
+		if hovered:
+			self.modulate = self.modulate.darkened(.3)
+		else:
+			self.modulate = Color.white
 	
 func rotation_vector():
 	return Vector2(cos(self.rotation), sin(self.rotation))

@@ -29,6 +29,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://Controllers/AIs/NeuralNetwork.gd"
 }, {
+"base": "Node2D",
+"class": "ParticlesManager",
+"language": "GDScript",
+"path": "res://Particles/ParticlesManager.gd"
+}, {
 "base": "AI",
 "class": "Player",
 "language": "GDScript",
@@ -49,6 +54,7 @@ _global_script_class_icons={
 "Boppie": "",
 "Food": "",
 "NeuralNetwork": "",
+"ParticlesManager": "",
 "Player": "",
 "RandomAI": "",
 "SmartAI": ""
@@ -138,7 +144,6 @@ ui_decrease_time={
 ui_pause={
 "deadzone": 0.5,
 "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":32,"unicode":0,"echo":false,"script":null)
-, Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":80,"unicode":0,"echo":false,"script":null)
  ]
 }
 zoom_in={
@@ -154,6 +159,11 @@ zoom_out={
 take_control_of_boppie={
 "deadzone": 0.5,
 "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":67,"unicode":0,"echo":false,"script":null)
+ ]
+}
+toggle_performance_mode={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":80,"unicode":0,"echo":false,"script":null)
  ]
 }
 

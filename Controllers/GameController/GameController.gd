@@ -133,6 +133,8 @@ func _unhandled_input(event):
 			controlled_boppie.update_energy(5)
 	if event.is_action_pressed("ui_toggle_rays"):
 		Globals.draw_vision_rays = !Globals.draw_vision_rays
+	if event.is_action_pressed("toggle_performance_mode"):
+		Globals.performance_mode = !Globals.performance_mode
 	if event.is_action_pressed("ui_increase_time"):
 		change_time_scale(2)
 	if event.is_action_pressed("ui_decrease_time"):

@@ -13,6 +13,11 @@ func _draw():
 	draw_circle(pos, eye_radius, Color.white)
 	draw_circle(pos_other, eye_radius, Color.white)
 	
+	var nose_color = Color(.7, 0, 0)
+	var nose_shadow_color = Color(.4, 0, 0, .4)
+	draw_colored_polygon([Vector2(4, 0), Vector2(0, 3), Vector2(0, -3)], nose_color)
+	draw_colored_polygon([Vector2(-1, -3), Vector2(-1, 3), Vector2(0, 3), Vector2(0, -3)], nose_shadow_color)
+	
 func _ready():
 	$Pupil1.position = pos
 	$Pupil2.position = pos_other
