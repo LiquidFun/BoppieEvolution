@@ -1,7 +1,7 @@
 extends Camera2D
 
 # Script based on https://www.gdquest.com/tutorial/godot/2d/camera-zoom/
-export var min_zoom := 0.25
+export var min_zoom := 0.2
 export var max_zoom := 2.0
 export var zoom_factor := 0.1
 export var zoom_duration := 0.1

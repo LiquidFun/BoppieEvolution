@@ -35,9 +35,8 @@ func rotate_pupils(rotation):
 		tween.start()
 		
 func scale_eyes(factor):
-	factor = clamp(factor, 1, 1.2)
+	factor = clamp(factor, 1, 1.1)
 	factor = Vector2(factor, factor)
-	# self.scale = factor
 	tween.interpolate_property(
 		self, "scale", scale, factor, 
 		.05, Tween.TRANS_BOUNCE, Tween.EASE_IN_OUT

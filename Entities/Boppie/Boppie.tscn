@@ -1,12 +1,14 @@
-[gd_scene load_steps=25 format=2]
+[gd_scene load_steps=27 format=2]
 
 [ext_resource path="res://Entities/Boppie/Boppie.gd" type="Script" id=1]
-[ext_resource path="res://Entities/Boppie/Eyes.gd" type="Script" id=2]
+[ext_resource path="res://Entities/Boppie/Face.gd" type="Script" id=2]
 [ext_resource path="res://Entities/Boppie/Pupil.tscn" type="PackedScene" id=3]
 [ext_resource path="res://Entities/Boppie/VisionRay.gd" type="Script" id=4]
 [ext_resource path="res://Entities/Boppie/ClickableArea.gd" type="Script" id=5]
 [ext_resource path="res://Particles/HairParticles.tscn" type="PackedScene" id=6]
 [ext_resource path="res://Particles/ParticlesManager.gd" type="Script" id=7]
+[ext_resource path="res://Entities/Boppie/AboveFace.gd" type="Script" id=8]
+[ext_resource path="res://Entities/Boppie/BelowFace.gd" type="Script" id=9]
 
 [sub_resource type="CircleShape2D" id=1]
 radius = 20.108
@@ -134,13 +136,22 @@ strains = 100
 pause_mode = 2
 shape = SubResource( 1 )
 
-[node name="Eyes" type="Node2D" parent="."]
+[node name="Face" type="Node2D" parent="."]
+z_index = 5
 script = ExtResource( 2 )
 
-[node name="Pupil1" parent="Eyes" instance=ExtResource( 3 )]
+[node name="AboveFace" type="Node2D" parent="Face"]
+z_index = 1
+script = ExtResource( 8 )
+
+[node name="BelowFace" type="Node2D" parent="Face"]
+z_index = -1
+script = ExtResource( 9 )
+
+[node name="Pupil1" parent="Face" instance=ExtResource( 3 )]
 position = Vector2( -0.140305, 0.140308 )
 
-[node name="Pupil2" parent="Eyes" instance=ExtResource( 3 )]
+[node name="Pupil2" parent="Face" instance=ExtResource( 3 )]
 position = Vector2( -0.280617, 0.14031 )
 
 [node name="VisionRay" type="RayCast2D" parent="."]

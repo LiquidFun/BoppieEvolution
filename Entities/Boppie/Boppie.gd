@@ -51,7 +51,7 @@ var scale_tween = Tween.new()
 func _ready():
 	add_child(scale_tween)
 	scale_tween.interpolate_property(
-		self, "scale", Vector2(.1, .1), Vector2(size_increases[0], size_increases[0]), 
+		self, "scale", Vector2(.2, .2), Vector2(size_increases[0], size_increases[0]), 
 		1, Tween.TRANS_BOUNCE, Tween.EASE_IN_OUT
 	)
 	scale_tween.start()
@@ -113,19 +113,16 @@ func _draw():
 		draw_circle(Vector2(-1, 0), radius + 4 - i, shadow_color)
 		shadow_color.a *= 2
 	draw_circle(Vector2.ZERO, radius, boppie_color)
-	var start_point = Vector2(0, -15)
-	var end_point = Vector2(0, 18)
-	
+		
 	# Draw ears
-	draw_colored_polygon([start_point, $Eyes.pos * 2, end_point], boppie_color)
-	draw_colored_polygon([-start_point, $Eyes.pos_other * 2, -end_point], boppie_color)
-	
-	# Draw nose
-	# draw_circle(Vector2.ZERO, 3, Color(1, 0, 0))
-	# draw_line(Vector2.ZERO, Vector2(radius, 0), Color(0, 0, 0))
+	var ears_start_point = Vector2(0, -15)
+	var ears_end_point = Vector2(0, 18)
+	draw_colored_polygon([ears_start_point, $Face.pos * 2, ears_end_point], Color.white)
+	draw_colored_polygon([-ears_start_point, $Face.pos_other * 2, -ears_end_point], Color.white)
 
-	
-	
+
+
+
 func set_selected(select):
 	selected = select
 	self.update()
@@ -134,23 +131,20 @@ func set_hovered(new_value):
 	
 	if new_value != hovered:
 		hovered = new_value
-		if hovered:
-			self.modulate = self.modulate.darkened(.3)
-		else:
-			self.modulate = Color.white
-	
+		self.modulate = self.modulate.darkened(.3) if hovered else Color.white
+
 func rotation_vector():
 	return Vector2(cos(self.rotation), sin(self.rotation))
 
 func move(factor, delta):
 	var rot = rotation_vector()
-	$Eyes.scale_eyes(factor)
+	$Face.scale_eyes(factor)
 	var velocity = rot * factor * move_speed / scale
 	self.move_and_slide(velocity, Vector2.UP)
 	
 	
 func turn(factor, delta):
-	$Eyes.rotate_pupils(factor * turn_speed)
+	$Face.rotate_pupils(factor * turn_speed)
 	self.rotation += factor * turn_speed * delta 
 	
 	
@@ -163,7 +157,8 @@ func _physics_process(delta):
 				var movement = ai.get_movement_factor(ai_input)
 				movement = clamp(movement, -1, 2)
 				var turn = ai.get_turn_factor(ai_input)
-				turn = clamp(turn, -1, 1)
+				# Flip turning when movement is backwards
+				turn = clamp(turn, -1, 1) * (1 if movement >= 0 else -1)
 				update_energy(-delta * movement * movement * energy_consumption_walking)
 				self.move(movement, delta)
 				self.turn(turn, delta)
@@ -171,6 +166,8 @@ func _physics_process(delta):
 			die()
 		self.self_modulate = energy_gradient.interpolate(self.energy / (max_energy * .7))
 		$WalkingParticles.modulate = self_modulate
+		$Face.get_node("AboveFace").self_modulate = self_modulate
+		$Face.get_node("BelowFace").self_modulate = self_modulate
 		$Hair.modulate = self_modulate
 	
 
@@ -183,9 +180,8 @@ func calc_ai_input():
 func die():
 	if can_die:
 		self.dead = true
-		if not Globals.performance_mode:
-			$DeathParticles.emitting = true
-		$Eyes.eyes_dead()
+		$DeathParticles.emitting = true
+		$Face.eyes_dead()
 		$Tween.interpolate_property(self, "modulate:a",
 			1.0, 0.0, 1.0,
 			Tween.TRANS_SINE, Tween.EASE_IN_OUT
