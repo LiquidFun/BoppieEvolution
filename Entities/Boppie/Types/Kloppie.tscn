@@ -9,10 +9,18 @@ extents = Vector2( 5.1451, 9.782 )
 [node name="Kloppie" groups=[
 "Kloppie",
 ] instance=ExtResource( 1 )]
+position = Vector2( -1, 0 )
 z_index = 32
+collision_layer = 10
+collision_mask = 2
 script = ExtResource( 2 )
 
+[node name="VisionRay" parent="." index="3"]
+collision_mask = 4
+
 [node name="EatingArea" type="Area2D" parent="." index="9"]
+collision_layer = 0
+collision_mask = 4
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="EatingArea" index="0"]
 position = Vector2( 24.277, 0 )

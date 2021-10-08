@@ -14,7 +14,7 @@ class BoppieConfiguration:
 		
 var boppie_configurations = [
 	BoppieConfiguration.new("Owlie", Owlie, 10, preload("res://Entities/Boppie/Types/Owlie.tscn")),
-	BoppieConfiguration.new("Kloppie", Kloppie, 2, preload("res://Entities/Boppie/Types/Kloppie.tscn")),
+	BoppieConfiguration.new("Kloppie", Kloppie, 3, preload("res://Entities/Boppie/Types/Kloppie.tscn")),
 ]
 var lookup_boppie_class_to_scene = {}
 

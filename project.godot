@@ -179,9 +179,17 @@ toggle_performance_mode={
  ]
 }
 
+[layer_names]
+
+2d_physics/layer_1="Food"
+2d_physics/layer_2="Boppies"
+2d_physics/layer_3="Owlies"
+2d_physics/layer_4="Kloppies"
+
 [physics]
 
 common/enable_pause_aware_picking=true
+2d/thread_model=2
 
 [rendering]
 

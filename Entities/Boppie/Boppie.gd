@@ -12,6 +12,7 @@ var ray_length := 400.0
 var nutrition := 30.0
 var max_boost_factor := 2.0
 var max_backwards_factor := -1.0
+var movement = 0
 
 var energy_consumption_existing = .5
 var energy_consumption_walking = .5
@@ -55,13 +56,11 @@ signal BoppieOffspring(Boppie)
 signal BoppieDied(Boppie)
 
 func _init(ai=null):
-	print("Boppie init")
 	if ai == null:
 		ai = AI.new()
 	self.ai = ai
 	
 func _ready():
-	print("Boppie ready")
 	energy_gradient = load(energy_gradient)
 	$Tween.interpolate_property(
 		self, "scale", Vector2(.2, .2), Vector2(size_increases[0], size_increases[0]), 
@@ -191,8 +190,7 @@ func _physics_process(delta):
 		if energy >= 0 or not can_die:
 			if ai:
 				calc_ai_input()
-				var movement = ai.get_movement_factor(ai_input)
-				movement = clamp(movement, max_backwards_factor, max_boost_factor)
+				movement = clamp(ai.get_movement_factor(ai_input), max_backwards_factor, max_boost_factor)
 				var turn = ai.get_turn_factor(ai_input)
 				# Flip turning when movement is backwards
 				turn = clamp(turn, -1, 1) * (1 if movement >= 0 else -1)
