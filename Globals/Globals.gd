@@ -7,6 +7,7 @@ var boppies_died = 0
 var boppies_born = 0
 var boppies_spawned = 0
 var nn_thread: Thread = Thread.new()
+var elapsed_time := 0
 
 var rng = RandomNumberGenerator.new()
 
@@ -24,7 +25,8 @@ func set_performance_mode(new_value):
 signal HalfSecondTimer
 var last_emit_time = 0
 
-func _process(_delta):
+func _process(delta):
+	elapsed_time += delta
 	if last_emit_time + 500 < OS.get_ticks_msec():
 		last_emit_time = OS.get_ticks_msec()
 		emit_signal("HalfSecondTimer")

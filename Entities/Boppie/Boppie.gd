@@ -2,39 +2,32 @@ extends KinematicBody2D
 
 class_name Boppie
 
-export var radius = 20
-export var move_speed = 85
-export var turn_speed = 2
-export var can_die = true
-export var ray_count_additional = 2
-export var ray_angle = deg2rad(20)
-export var ray_length = 400
-export var nutrition = 10
+var radius := 20.0
+var move_speed := 85.0
+var turn_speed := 2.0
+var can_die := true
+var ray_count_additional := 2
+var ray_angle := deg2rad(20)
+var ray_length := 400.0
+var nutrition := 30.0
+var max_boost_factor := 2.0
+var max_backwards_factor := -1.0
 
-export var energy_consumption_existing = .5
-export var energy_consumption_walking = .5
+var energy_consumption_existing = .5
+var energy_consumption_walking = .5
 
 # up to 0.05 works well
-export var offspring_mutability = 0.03
+var offspring_mutability = 0.03
 
 var vision_rays = []
 
 var dead = false
 
-export var max_energy = 15
-export var required_offspring_energy = 10
-var energy = 8 + randf() * 4
-var offspring_energy = 0
-var size_increases = [0.8, 1, 1.2]
-
 var ai = null
 var orig_ai = null
 
-enum BoppieType {OWLIE, KLOPPIE}
-var boppie_type
-
-enum Data {ENERGY, RAY_DIST, RAY_TYPE}
-enum Raytype {NONE, BOPPIE, FOOD}
+enum Data {ENERGY, RAY_DIST, RAY_TYPE, EATS}
+enum Raytype {NONE, OWLIE, KLOPPIE, FOOD}
 var ai_input = {}
 
 var energy_gradient = "res://Entities/Boppie/DefaultEnergyGradient.tres"
@@ -50,16 +43,25 @@ var draw_nose = true
 var draw_teeth = false
 var draw_hair = false
 
+var max_energy = 15
+var required_offspring_energy = 10
+var size_increases = [0.8, 1, 1.2]
+var energy = max_energy * .8 + randf() * max_energy * .2
+var offspring_energy = 0
+var eats = Raytype.FOOD
+
 signal BoppieClicked(Boppie)
 signal BoppieOffspring(Boppie)
 signal BoppieDied(Boppie)
 
 func _init(ai=null):
+	print("Boppie init")
 	if ai == null:
 		ai = AI.new()
 	self.ai = ai
 	
 func _ready():
+	print("Boppie ready")
 	energy_gradient = load(energy_gradient)
 	$Tween.interpolate_property(
 		self, "scale", Vector2(.2, .2), Vector2(size_increases[0], size_increases[0]), 
@@ -67,6 +69,7 @@ func _ready():
 	)
 	$Tween.start()
 	$SpawnParticles.emitting = true
+	ai_input[Data.EATS] = eats
 	ai_input[Data.RAY_DIST] = []
 	ai_input[Data.RAY_TYPE] = []
 	var start_angle = 0
@@ -136,10 +139,11 @@ func _get_hexagon(size, center=Vector2.ZERO):
 func draw_hexagonal_body():	
 	var boppie_color = Color.white
 	var shadow_color = Color(0, 0, 0, .02)
+	var adjusted_radius = radius * 1.1
 	for i in range(3):
-		draw_colored_polygon(_get_hexagon(radius + 4 - i, Vector2(-1, 0)), shadow_color)
+		draw_colored_polygon(_get_hexagon(adjusted_radius + 4 - i, Vector2(-1, 0)), shadow_color)
 		shadow_color.a *= 2
-	draw_colored_polygon(_get_hexagon(radius), boppie_color)
+	draw_colored_polygon(_get_hexagon(adjusted_radius), boppie_color)
 
 
 func draw_round_body():	
@@ -188,7 +192,7 @@ func _physics_process(delta):
 			if ai:
 				calc_ai_input()
 				var movement = ai.get_movement_factor(ai_input)
-				movement = clamp(movement, -1, 2)
+				movement = clamp(movement, max_backwards_factor, max_boost_factor)
 				var turn = ai.get_turn_factor(ai_input)
 				# Flip turning when movement is backwards
 				turn = clamp(turn, -1, 1) * (1 if movement >= 0 else -1)
@@ -238,6 +242,10 @@ func update_energy(add_energy):
 				level_up(size_increases[curr_level()])
 			else:
 				produce_offspring()
+				
+func take_damage(damage):
+	update_energy(-damage)
+	return energy < 0
 			
 func level_up(new_scale):
 	$Tween.interpolate_property(self, "scale",

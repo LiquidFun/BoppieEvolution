@@ -12,8 +12,10 @@ func collision_distance():
 func collision_type():
 	if is_colliding():
 		var collider = get_collider()
-		if collider is Boppie:
-			return Boppie.Raytype.BOPPIE
+		if collider is Owlie:
+			return Boppie.Raytype.OWLIE
+		elif collider is Kloppie:
+			return Boppie.Raytype.KLOPPIE
 		elif collider is Food:
 			return Boppie.Raytype.FOOD
 	return Boppie.Raytype.NONE
@@ -22,8 +24,10 @@ func _physics_process(_delta):
 	if Globals.draw_vision_rays:
 		if is_colliding():
 			var collider = get_collider()
-			if collider is Boppie:
+			if collider is Owlie:
 				self.modulate = Color.green
+			elif collider is Kloppie:
+				self.modulate = Color.cyan
 			elif collider is Food:
 				self.modulate = Color.red
 		else:

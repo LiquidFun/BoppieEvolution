@@ -5,16 +5,16 @@ class_name NeuralNetwork
 
 
 # Inputs:
-var input_layer = \
-	5  # ray food
-#   +1 # bias implicit
-
-#   1 # a 1 second timer
+var input_layer = (
+	5 # ray food 
+#   +1  # bias implicit
+	+ 1 # a 5 second timer
 #   1 # energy
 
 #   5 # ray boppie
 #   2 # previous inputs
 #   ? # memory? from last n steps?
+)
 
 var output_layer = \
 	2  # outputs
@@ -62,13 +62,16 @@ func calculate_inputs(ai_input):
 	var dists = ai_input[Boppie.Data.RAY_DIST]
 	var types = ai_input[Boppie.Data.RAY_TYPE]
 	for i in range(dists.size()):
-		values[0][i] = dists[i] if types[i] == Boppie.Raytype.FOOD else 2.0
+		values[0][i] = dists[i] if types[i] == ai_input[Boppie.Data.EATS] else 2.0
+	values[0][5] = fmod(Globals.elapsed_time / 5.0, 1.0)
 		
 func relu(num):
 	return max(0, num)
 
 func feed_forward(ai_input):
 	calculate_inputs(ai_input)
+	#if ai_input[Boppie.Data.EATS] == Boppie.Raytype.OWLIE:
+	#	print(values )
 	for layer in range(layers.size() - 1):
 		for right in range(layers[layer+1]):
 			var sum = 0
