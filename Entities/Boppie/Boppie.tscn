@@ -125,7 +125,6 @@ radius = 30.0938
 "Boppie",
 ]]
 pause_mode = 1
-self_modulate = Color( 0, 0.827451, 0.913725, 1 )
 z_index = 30
 script = ExtResource( 1 )
 

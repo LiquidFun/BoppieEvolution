@@ -5,11 +5,11 @@ class_name Boppie
 export var radius = 20
 export var move_speed = 85
 export var turn_speed = 2
-export var dead = false
 export var can_die = true
 export var ray_count_additional = 2
 export var ray_angle = deg2rad(20)
 export var ray_length = 400
+export var nutrition = 10
 
 export var energy_consumption_existing = .5
 export var energy_consumption_walking = .5
@@ -19,42 +19,53 @@ export var offspring_mutability = 0.03
 
 var vision_rays = []
 
-var energy = 8 + randf() * 4
+var dead = false
+
 export var max_energy = 15
-var offspring_energy = 0
 export var required_offspring_energy = 10
+var energy = 8 + randf() * 4
+var offspring_energy = 0
 var size_increases = [0.8, 1, 1.2]
 
 var ai = null
 var orig_ai = null
 
+enum BoppieType {OWLIE, KLOPPIE}
+var boppie_type
+
 enum Data {ENERGY, RAY_DIST, RAY_TYPE}
 enum Raytype {NONE, BOPPIE, FOOD}
-export var ai_input = {}
+var ai_input = {}
 
-var energy_gradient: Gradient = load("res://Entities/Boppie/EnergyGradient.tres")
+var energy_gradient = "res://Entities/Boppie/DefaultEnergyGradient.tres"
 var selected = false setget set_selected
 var hovered = false setget set_hovered
+
+enum BodyType {ROUND, HEXAGONAL}
+var draw_body_type =  BodyType.ROUND
+var draw_ears = false
+var draw_eyebrows = false
+var draw_eyes = true
+var draw_nose = true
+var draw_teeth = false
+var draw_hair = false
 
 signal BoppieClicked(Boppie)
 signal BoppieOffspring(Boppie)
 signal BoppieDied(Boppie)
 
-func _init(ai = null):
+func _init(ai=null):
 	if ai == null:
 		ai = AI.new()
 	self.ai = ai
 	
-var scale_tween = Tween.new()
-
-	
 func _ready():
-	add_child(scale_tween)
-	scale_tween.interpolate_property(
+	energy_gradient = load(energy_gradient)
+	$Tween.interpolate_property(
 		self, "scale", Vector2(.2, .2), Vector2(size_increases[0], size_increases[0]), 
 		1, Tween.TRANS_BOUNCE, Tween.EASE_IN_OUT
 	)
-	scale_tween.start()
+	$Tween.start()
 	$SpawnParticles.emitting = true
 	ai_input[Data.RAY_DIST] = []
 	ai_input[Data.RAY_TYPE] = []
@@ -63,6 +74,7 @@ func _ready():
 	for i in range(1, ray_count_additional+1):
 		add_ray(start_angle + ray_angle * i, true)
 		add_ray(start_angle - ray_angle * i, true)
+
 	
 	
 func add_ray(angle_radians, push_back=true, ray=null):
@@ -87,6 +99,19 @@ func pop_temp_ai():
 	if orig_ai:
 		self.ai = orig_ai
 		orig_ai = null
+		
+# ==========================================================================
+# Drawing methods
+# ==========================================================================
+
+func _draw():
+	if selected:
+		draw_selection()
+	match draw_body_type:
+		BodyType.ROUND: draw_round_body()
+		BodyType.HEXAGONAL: draw_hexagonal_body()
+	if draw_ears:
+		draw_ears()
 
 func draw_corner(corner: Vector2, add: Vector2):
 	var offset = 3
@@ -101,26 +126,35 @@ func draw_selection():
 		for y in [-1, 1]:
 			var corner = Vector2(x, y) * radius
 			draw_corner(corner, Vector2(x, y))
-
-func _draw():
-	if selected:
-		draw_selection()
+	
+func _get_hexagon(size, center=Vector2.ZERO):
+	var points = []
+	for deg in range(30, 360, 60):
+		points.append(Vector2(cos(deg2rad(deg)), sin(deg2rad(deg))) * size)
+	return points
+	
+func draw_hexagonal_body():	
 	var boppie_color = Color.white
-	#if hovered:
-	#	boppie_color = boppie_color.darkened(.3)
+	var shadow_color = Color(0, 0, 0, .02)
+	for i in range(3):
+		draw_colored_polygon(_get_hexagon(radius + 4 - i, Vector2(-1, 0)), shadow_color)
+		shadow_color.a *= 2
+	draw_colored_polygon(_get_hexagon(radius), boppie_color)
+
+
+func draw_round_body():	
+	var boppie_color = Color.white
 	var shadow_color = Color(0, 0, 0, .02)
 	for i in range(3):
 		draw_circle(Vector2(-1, 0), radius + 4 - i, shadow_color)
 		shadow_color.a *= 2
 	draw_circle(Vector2.ZERO, radius, boppie_color)
 		
-	# Draw ears
+func draw_ears():
 	var ears_start_point = Vector2(0, -15)
 	var ears_end_point = Vector2(0, 18)
 	draw_colored_polygon([ears_start_point, $Face.pos * 2, ears_end_point], Color.white)
 	draw_colored_polygon([-ears_start_point, $Face.pos_other * 2, -ears_end_point], Color.white)
-
-
 
 
 func set_selected(select):
@@ -128,8 +162,7 @@ func set_selected(select):
 	self.update()
 	
 func set_hovered(new_value):
-	
-	if new_value != hovered:
+	if hovered != new_value:
 		hovered = new_value
 		self.modulate = self.modulate.darkened(.3) if hovered else Color.white
 

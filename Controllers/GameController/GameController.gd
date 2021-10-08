@@ -1,9 +1,26 @@
 extends Node2D
 
+
+class BoppieConfiguration:
+	var group
+	var boppie_class
+	var min_count
+	var scene
+	func _init(group: String, boppie_class, min_count: int, scene: PackedScene):
+		self.group = group
+		self.boppie_class = boppie_class
+		self.min_count = min_count
+		self.scene = scene
+		
+var boppie_configurations = [
+	BoppieConfiguration.new("Owlie", Owlie, 10, preload("res://Entities/Boppie/Types/Owlie.tscn")),
+	BoppieConfiguration.new("Kloppie", Kloppie, 2, preload("res://Entities/Boppie/Types/Kloppie.tscn")),
+]
+var lookup_boppie_class_to_scene = {}
+
 # Simulation settings
 export var max_food_count = 200
 export var food_per_500ms = 7
-export var expected_boppie_count = 10
 export var spawn_food_on_death = false
 
 # Game size
@@ -17,7 +34,6 @@ var unused_food_stack = []
 var unused_food_stack_index = 0
 
 # Boppies
-var boppie_scene = preload("res://Entities/Boppie/Boppie.tscn")
 var food_scene = preload("res://Entities/Food/Food.tscn")
 var controlled_boppie: Boppie = null
 var player_ai = Player.new()
@@ -48,10 +64,11 @@ func _draw():
 func _ready():
 	for boppie in get_tree().get_nodes_in_group("Boppie"):
 		handle_boppie(boppie)
-	add_random_boppies(expected_boppie_count)
 	$Camera.position = total_size / 2
 	if food_per_500ms > 0:
 		$FoodTimer.connect("timeout", self, "_reset_food_timer")
+	for config in boppie_configurations:
+		lookup_boppie_class_to_scene[config.boppie_class] = config.scene
 		
 func _reset_food_timer():
 	spawn_food(food_per_500ms)
@@ -69,8 +86,8 @@ func handle_boppie(boppie):
 	boppie.update()
 		
 
-func add_boppie(at: Vector2, parent = null):
-	var instance = boppie_scene.instance()
+func add_boppie(at: Vector2, scene: PackedScene, parent = null):
+	var instance = scene.instance()
 	var weights = null
 	if parent != null:
 		var nn = parent.ai if parent.ai is NeuralNetwork else parent.orig_ai
@@ -85,9 +102,9 @@ func add_boppie(at: Vector2, parent = null):
 	handle_boppie(instance)
 	
 
-func add_random_boppies(count: int):
+func add_random_boppies(count: int, scene: PackedScene):
 	for _i in range(count):
-		add_boppie(random_world_coordinate())
+		add_boppie(random_world_coordinate(), scene)
 		
 		
 func add_food(at: Vector2):
@@ -157,14 +174,15 @@ func change_time_scale(factor):
 		emit_signal("EngineTimeScaleChange", factor)
 			
 func check_boppies():
-	var boppies = get_tree().get_nodes_in_group("Boppie")
-	for boppie in boppies:
-		if not is_within_game(boppie.global_position):
-			boppie.global_position = make_within_game(boppie.global_position)
-	var diff = expected_boppie_count - boppies.size()
-	if diff > 0:
-		Globals.boppies_spawned += diff
-		add_random_boppies(diff)
+	for config in boppie_configurations:
+		var boppies = get_tree().get_nodes_in_group(config.group)
+		for boppie in boppies:
+			if not is_within_game(boppie.global_position):
+				boppie.global_position = make_within_game(boppie.global_position)
+		var diff = config.min_count - boppies.size()
+		if diff > 0:
+			Globals.boppies_spawned += diff
+			add_random_boppies(diff, config.scene)
 		
 		
 func _on_BoppieClicked(boppie):
@@ -182,4 +200,10 @@ func _on_BoppieDied(boppie):
 	
 func _on_BoppieOffspring(boppie):
 	Globals.boppies_born += 1
-	call_deferred("add_boppie", boppie.global_position - boppie.rotation_vector() * boppie.radius * 2.7, boppie)
+	var offspring_position = boppie.global_position - boppie.rotation_vector() * boppie.radius * 2.7
+	var scene
+	for config in boppie_configurations:
+		if boppie is config.boppie_class:
+			scene = config.scene
+			break
+	call_deferred("add_boppie", offspring_position, scene, boppie)
