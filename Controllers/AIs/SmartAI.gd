@@ -5,7 +5,7 @@ class_name SmartAI
 
 
 func get_movement_factor(ai_input=null):
-	if ai_input[Boppie.Data.RAY_TYPE][0] == Boppie.Raytype.FOOD and ai_input[Boppie.Data.ENERGY] > 0.9:
+	if ai_input[Boppie.Data.RAY_TYPE][0] == ai_input[Boppie.Data.EATS] and ai_input[Boppie.Data.ENERGY] > 0.9:
 		return 2
 	return 1
 	

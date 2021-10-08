@@ -41,7 +41,7 @@ var player_ai = Player.new()
 signal EngineTimeScaleChange(factor)
 
 func random_coordinate():
-	return Vector2(randf(), randf())
+	return Vector2(Globals.rng.randf(), Globals.rng.randf())
 
 func random_world_coordinate():
 	return random_coordinate() * (world_zone_end - world_zone_start) + world_zone_start
@@ -94,7 +94,7 @@ func add_boppie(at: Vector2, scene: PackedScene, parent = null):
 		weights = nn.get_mutated_weights(instance.offspring_mutability)
 		instance.rotation = parent.rotation
 	else:
-		instance.rotation = randf() * 2 * PI
+		instance.rotation = Globals.rng.randf() * 2 * PI
 	instance.add_temp_ai(NeuralNetwork.new(weights))
 	#	instance.add_temp_ai(SmartAI.new())
 	add_child(instance)

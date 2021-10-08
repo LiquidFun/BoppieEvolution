@@ -6,10 +6,11 @@ var curr_index = 0
 var plot = Image.new()
 var owlie_pixel_indeces = []
 var kloppie_pixel_indeces = []
+var reset_color = Color(1, 1, 1, .1)
 
 func _ready():
 	plot.create(width, height, false, Image.FORMAT_RGBA8)
-	plot.fill(Color(1, 1, 1, .1))
+	plot.fill(reset_color)
 	self.texture = ImageTexture.new()
 	rect_size = Vector2(width, height)
 	rect_min_size = Vector2(width, height)
@@ -27,9 +28,10 @@ func _on_HalfSecondTimer():
 func draw_next_pixel():
 	var owlies = get_tree().get_nodes_in_group("Owlie").size()
 	var kloppies = get_tree().get_nodes_in_group("Kloppie").size()
+	var some_pixels_ahead = (curr_index + 10) % width
 	plot.lock()
-	plot.set_pixel(curr_index, owlie_pixel_indeces[curr_index], Color(0, 0, 0, 0))
-	plot.set_pixel(curr_index, kloppie_pixel_indeces[curr_index], Color(0, 0, 0, 0))
+	plot.set_pixel(some_pixels_ahead, owlie_pixel_indeces[curr_index], reset_color)
+	plot.set_pixel(some_pixels_ahead, kloppie_pixel_indeces[curr_index], reset_color)
 	plot.set_pixel(curr_index, height - owlies, Color.green)
 	plot.set_pixel(curr_index, height - kloppies, Color.cyan)
 	plot.unlock()

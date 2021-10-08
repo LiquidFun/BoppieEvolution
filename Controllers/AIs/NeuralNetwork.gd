@@ -32,7 +32,7 @@ func _init(parent_weights=null):
 			for right in range(layers[layer+1]):
 				weights[-1].append([])
 				for left in range(layers[layer]+1):
-					weights[-1][-1].append(randf() * 2 - 1)
+					weights[-1][-1].append(Globals.rng.randf() * 2 - 1)
 	else:
 		weights = parent_weights
 	
@@ -77,7 +77,7 @@ func feed_forward(ai_input):
 			var sum = 0
 			for left in range(layers[layer]+1):
 				sum += weights[layer][right][left] * values[layer][left]
-			values[layer+1][right] = relu(sum)
+			values[layer+1][right] = sum if layers.size() - 1 == layer + 1 else relu(sum)
 
 func get_movement_factor(ai_input=null):
 	if thread.is_active():

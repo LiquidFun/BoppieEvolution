@@ -9,13 +9,13 @@ var can_die := true
 var ray_count_additional := 2
 var ray_angle := deg2rad(20)
 var ray_length := 400.0
-var nutrition := 30.0
+var nutrition := 20.0
 var max_boost_factor := 2.0
 var max_backwards_factor := -1.0
 var movement = 0
 
-var energy_consumption_existing = .5
-var energy_consumption_walking = .5
+var energy_consumption_existing = 1 * Globals.difficulty
+var energy_consumption_walking = 1 * Globals.difficulty
 
 # up to 0.05 works well
 var offspring_mutability = 0.03
@@ -47,7 +47,7 @@ var draw_hair = false
 var max_energy = 15
 var required_offspring_energy = 10
 var size_increases = [0.8, 1, 1.2]
-var energy = max_energy * .8 + randf() * max_energy * .2
+var energy = max_energy * .8 + Globals.rng.randf() * max_energy * .2
 var offspring_energy = 0
 var eats = Raytype.FOOD
 

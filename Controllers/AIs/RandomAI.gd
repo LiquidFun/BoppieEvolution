@@ -11,7 +11,7 @@ func get_movement_factor(ai_input=null):
 
 func get_turn_factor(ai_input=null):
 	if remaining_calls <= 0:
-		curr_turn_factor = randf() - .5
-		remaining_calls = randi() % 200 + 20
+		curr_turn_factor = Globals.rng.randf() - .5
+		remaining_calls = Globals.rng.randi() % 200 + 20
 	remaining_calls -= 1
 	return curr_turn_factor
