@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=2]
+[gd_scene load_steps=30 format=2]
 
 [ext_resource path="res://Entities/Boppie/Boppie.gd" type="Script" id=1]
 [ext_resource path="res://Entities/Boppie/Face.gd" type="Script" id=2]
@@ -118,6 +118,31 @@ scale_curve = SubResource( 15 )
 hue_variation = 0.16
 hue_variation_random = 1.0
 
+[sub_resource type="Curve" id=18]
+_data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 1, 0 ), 0.0, 0.0, 0, 0 ]
+
+[sub_resource type="CurveTexture" id=19]
+curve = SubResource( 18 )
+
+[sub_resource type="ParticlesMaterial" id=20]
+lifetime_randomness = 1.0
+emission_shape = 1
+emission_sphere_radius = 15.0
+flag_align_y = true
+flag_disable_z = true
+direction = Vector3( 0, 0, 0 )
+spread = 180.0
+gravity = Vector3( 0, 0, 0 )
+initial_velocity = 150.0
+initial_velocity_random = 0.69
+orbit_velocity = 0.0
+orbit_velocity_random = 0.0
+scale = 3.0
+scale_curve = SubResource( 19 )
+color = Color( 1, 0, 0, 1 )
+hue_variation = 0.05
+hue_variation_random = 1.0
+
 [sub_resource type="CircleShape2D" id=17]
 radius = 30.0938
 
@@ -198,6 +223,14 @@ one_shot = true
 explosiveness = 1.0
 local_coords = false
 process_material = SubResource( 16 )
+script = ExtResource( 7 )
+
+[node name="BloodParticles" type="Particles2D" parent="."]
+emitting = false
+amount = 100
+one_shot = true
+explosiveness = 0.88
+process_material = SubResource( 20 )
 script = ExtResource( 7 )
 
 [node name="ClickableArea" type="Area2D" parent="."]

@@ -242,6 +242,8 @@ func update_energy(add_energy):
 				produce_offspring()
 				
 func take_damage(damage):
+	$BloodParticles.amount = damage * damage
+	$BloodParticles.emitting = true
 	update_energy(-damage)
 	return energy < 0
 			
