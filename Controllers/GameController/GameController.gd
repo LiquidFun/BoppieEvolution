@@ -6,7 +6,7 @@ class BoppieConfiguration:
 	var boppie_class
 	var min_count
 	var scene
-	var fittest = []
+	var fittest: Array = []
 	func _init(group: String, boppie_class, min_count: int, scene: PackedScene):
 		self.group = group
 		self.boppie_class = boppie_class
@@ -23,6 +23,8 @@ var lookup_boppie_type_to_config = {}
 export var max_food_count = 150
 export var food_per_500ms = 7
 export var spawn_food_on_death = false
+export var keep_n_fittest_boppies = 10
+export var spawn_ratio_new_dna = 0.5
 
 # Game size
 export var total_width = 2000
@@ -72,7 +74,7 @@ func _ready():
 	if food_per_500ms > 0:
 		$FoodTimer.connect("timeout", self, "_reset_food_timer")
 	for config in boppie_configurations:
-		lookup_boppie_type_to_config[config.boppie_class] = config
+		lookup_boppie_type_to_config[config.group] = config
 		
 func _reset_food_timer():
 	spawn_food(food_per_500ms * 2)
@@ -90,25 +92,28 @@ func handle_boppie(boppie):
 	boppie.update()
 		
 
-func add_boppie(at: Vector2, scene: PackedScene, parent = null):
+func add_boppie(at: Vector2, scene: PackedScene, dna=null):
 	var instance = scene.instance()
-	var weights = null
-	if parent != null:
-		var nn = parent.ai if parent.ai is NeuralNetwork else parent.orig_ai
-		weights = nn.get_mutated_weights(instance.offspring_mutability)
-		instance.rotation = parent.rotation
+	instance.ai = NeuralNetwork.new()
+	if dna != null:
+		instance.set_dna(dna.duplicate(true), true)
+		# weights = parent.ai.get_mutated_weights(instance.offspring_mutability)
+		# instance.rotation = parent.rotation
 	else:
 		instance.rotation = Globals.rng.randf() * 2 * PI
-	instance.add_temp_ai(NeuralNetwork.new(weights))
+	# instance.add_temp_ai(NeuralNetwork.new(weights))
 	#	instance.add_temp_ai(SmartAI.new())
 	add_child(instance)
 	instance.global_position = at
 	handle_boppie(instance)
 	
 
-func add_random_boppies(count: int, scene: PackedScene):
+func add_random_boppies(count: int, config: BoppieConfiguration):
 	for _i in range(count):
-		add_boppie(random_world_coordinate(), scene)
+		var old_dna = null
+		if config.fittest.size() == keep_n_fittest_boppies and Globals.rng.randf() > spawn_ratio_new_dna:
+			old_dna = config.fittest[Globals.rng.randi() % keep_n_fittest_boppies][1]
+		add_boppie(random_world_coordinate(), config.scene, old_dna)
 		
 		
 func add_food(at: Vector2):
@@ -131,7 +136,7 @@ func spawn_food(count=max_food_count):
 func take_control_of_boppie(boppie):
 	if controlled_boppie != null:
 		controlled_boppie.set_selected(false)
-		if controlled_boppie.ai == player_ai:
+		if controlled_boppie.temp_ai == player_ai:
 			controlled_boppie.pop_temp_ai()
 	controlled_boppie = boppie
 	emit_signal("BoppieControlChanged", controlled_boppie)
@@ -180,7 +185,7 @@ func _unhandled_input(event):
 		emit_signal("EngineTimeScaleChange", int(!get_tree().paused))
 	if event.is_action_pressed("take_control_of_boppie"):
 		if controlled_boppie != null:
-			if controlled_boppie.ai != player_ai:
+			if controlled_boppie.temp_ai != player_ai:
 				controlled_boppie.add_temp_ai(player_ai)
 			else:
 				controlled_boppie.pop_temp_ai()
@@ -212,13 +217,27 @@ func check_boppies():
 		var diff = config.min_count - boppies.size()
 		if diff > 0:
 			Globals.boppies_spawned += diff
-			add_random_boppies(diff, config.scene)
+			add_random_boppies(diff, config)
+			
+func possibly_replace_weakest_boppie(boppie):
+	var fittest_boppies = lookup_boppie_type_to_config[boppie.type].fittest
+	var tuple = [boppie.fitness(), boppie.dna.duplicate(true)]
+	if fittest_boppies.size() < keep_n_fittest_boppies:
+		fittest_boppies.append(tuple)
+		return
+	var weakest_index = 0
+	for index in range(fittest_boppies.size()):
+		if fittest_boppies[weakest_index][0] < fittest_boppies[index][0]:
+			weakest_index = index
+	if fittest_boppies[weakest_index][0] < tuple[0]:
+		fittest_boppies[weakest_index] = tuple
 
 func _on_BoppieClicked(boppie):
 	take_control_of_boppie(boppie)
 	
 func _on_BoppieDied(boppie):
 	Globals.boppies_died += 1
+	call_deferred("possibly_replace_weakest_boppie", boppie)
 	if boppie == controlled_boppie:
 		if follow_fittest_boppie:
 			take_control_of_fittest_boppie_in_group(boppie.type)
@@ -238,4 +257,4 @@ func _on_BoppieOffspring(boppie):
 		if boppie is config.boppie_class:
 			scene = config.scene
 			break
-	call_deferred("add_boppie", offspring_position, scene, boppie)
+	call_deferred("add_boppie", offspring_position, scene, boppie.dna)

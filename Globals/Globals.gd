@@ -8,7 +8,7 @@ var boppies_born := 0
 var boppies_spawned := 0
 var nn_thread: Thread = Thread.new()
 var elapsed_time := 0.0
-var difficulty = .5
+var difficulty = .7
 var dna_clipboard = null
 
 var rng = RandomNumberGenerator.new()

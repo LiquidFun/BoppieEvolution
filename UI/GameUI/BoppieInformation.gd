@@ -28,8 +28,7 @@ func _on_BoppieControlChanged(controlled_boppie):
 		)
 		$Tween.start()
 	if should_open:
-		var nn = boppie.ai if boppie.ai is NeuralNetwork else boppie.orig_ai
-		$Neurons.neural_network = nn
+		$Neurons.neural_network = boppie.ai
 		
 	
 func _process(_delta):

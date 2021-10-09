@@ -46,16 +46,16 @@ func _init(parent_weights=null):
 	# print(weights)
 	# print(values)
 	
-func get_mutated_weights(mutability):
-	var weights2 = self.weights.duplicate(true)
-	for layer in range(weights2.size()):
-		for right in range(weights2[layer].size()):
-			for left in range(weights2[layer][right].size()):
+func mutate(property, mutability):
+	if property == "weights":
+		mutate_weights(mutability)
+	
+func mutate_weights(mutability):
+	for layer in range(weights.size()):
+		for right in range(weights[layer].size()):
+			for left in range(weights[layer][right].size()):
 				var mutation = mutability * Globals.rng.randfn()
-				# print(mutation)
-				weights2[layer][right][left] += mutation
-				
-	return weights2
+				weights[layer][right][left] += mutation
 	
 				
 func calculate_inputs(ai_input):
