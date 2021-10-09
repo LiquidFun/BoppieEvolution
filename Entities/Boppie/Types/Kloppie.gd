@@ -22,8 +22,5 @@ func _init():
 
 func _on_EatingArea_body_entered(body):
 	if can_attack and body is Owlie:
-		can_attack = false
 		if body.take_damage(damage * self.scale.x * max(.5, movement)):
 			eat(body)
-		yield(get_tree().create_timer(attack_delay), "timeout")
-		can_attack = true

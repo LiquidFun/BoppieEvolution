@@ -7,8 +7,8 @@ class_name NeuralNetwork
 # Inputs:
 var input_layer = (
 	5 # ray food 
-#   +1  # bias implicit
-	+ 1 # a 5 second timer
+#   + 1  # bias implicit
+#	+ 1 # a 5 second timer
 #   1 # energy
 
 #   5 # ray boppie
@@ -63,7 +63,7 @@ func calculate_inputs(ai_input):
 	var types = ai_input[Boppie.Data.RAY_TYPE]
 	for i in range(dists.size()):
 		values[0][i] = dists[i] if types[i] == ai_input[Boppie.Data.EATS] else 2.0
-	values[0][5] = fmod(Globals.elapsed_time / 5.0, 1.0)
+	#values[0][5] = fmod(Globals.elapsed_time / 5.0, 1.0)
 		
 func relu(num):
 	return max(0, num)

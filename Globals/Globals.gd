@@ -1,13 +1,13 @@
 extends Node
 
 
-var current_food_count = 0
-var draw_vision_rays = false
-var boppies_died = 0
-var boppies_born = 0
-var boppies_spawned = 0
+var current_food_count := 0
+var draw_vision_rays := false
+var boppies_died := 0
+var boppies_born := 0
+var boppies_spawned := 0
 var nn_thread: Thread = Thread.new()
-var elapsed_time := 0
+var elapsed_time := 0.0
 var difficulty = .5
 
 var rng = RandomNumberGenerator.new()

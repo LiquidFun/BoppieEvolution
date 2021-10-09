@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://UI/BoppieCount.gd" type="Script" id=1]
 [ext_resource path="res://UI/TimeScale.gd" type="Script" id=2]
@@ -6,6 +6,8 @@
 [ext_resource path="res://UI/GameTime.gd" type="Script" id=4]
 [ext_resource path="res://UI/IconGameSpeed.gd" type="Script" id=5]
 [ext_resource path="res://UI/BoppieCountHistoryPlot.gd" type="Script" id=6]
+[ext_resource path="res://UI/BoppieInformation.gd" type="Script" id=7]
+[ext_resource path="res://UI/Neurons.gd" type="Script" id=8]
 
 [sub_resource type="DynamicFontData" id=1]
 font_path = "res://Resources/Fonts/FontAwesome/otfs/Font Awesome 5 Free-Solid-900.otf"
@@ -29,10 +31,13 @@ font_data = SubResource( 5 )
 
 [sub_resource type="StyleBoxEmpty" id=7]
 
+[sub_resource type="StyleBoxFlat" id=8]
+bg_color = Color( 1, 1, 1, 0.0980392 )
+
 [node name="UI" type="CanvasLayer"]
 pause_mode = 2
 
-[node name="UI" type="MarginContainer" parent="."]
+[node name="StatusBar" type="MarginContainer" parent="."]
 pause_mode = 1
 anchor_top = 1.0
 anchor_right = 1.0
@@ -48,7 +53,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="VBoxContainer" type="VBoxContainer" parent="UI"]
+[node name="VBoxContainer" type="VBoxContainer" parent="StatusBar"]
 margin_left = 5.0
 margin_top = 5.0
 margin_right = 1915.0
@@ -58,13 +63,13 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UI/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="StatusBar/VBoxContainer"]
 margin_right = 1910.0
 margin_bottom = 80.0
 mouse_filter = 2
 alignment = 1
 
-[node name="IconGameSpeed" type="Label" parent="UI/VBoxContainer/HBoxContainer"]
+[node name="IconGameSpeed" type="Label" parent="StatusBar/VBoxContainer/HBoxContainer"]
 pause_mode = 2
 modulate = Color( 1, 1, 1, 0 )
 margin_left = 920.0
@@ -75,9 +80,9 @@ text = ""
 valign = 2
 script = ExtResource( 5 )
 
-[node name="Tween" type="Tween" parent="UI/VBoxContainer/HBoxContainer/IconGameSpeed"]
+[node name="Tween" type="Tween" parent="StatusBar/VBoxContainer/HBoxContainer/IconGameSpeed"]
 
-[node name="VSeparator" type="VSeparator" parent="UI/VBoxContainer"]
+[node name="VSeparator" type="VSeparator" parent="StatusBar/VBoxContainer"]
 modulate = Color( 1, 1, 1, 0 )
 margin_top = 84.0
 margin_right = 1910.0
@@ -85,7 +90,7 @@ margin_bottom = 184.0
 rect_min_size = Vector2( 0, 100 )
 mouse_filter = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="UI/VBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="StatusBar/VBoxContainer"]
 margin_top = 188.0
 margin_right = 1910.0
 margin_bottom = 213.0
@@ -94,7 +99,7 @@ custom_constants/margin_right = 10
 custom_constants/margin_top = 0
 custom_constants/margin_left = 10
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UI/VBoxContainer/MarginContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="StatusBar/VBoxContainer/MarginContainer"]
 margin_left = 10.0
 margin_right = 1900.0
 margin_bottom = 25.0
@@ -103,7 +108,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="IconTime" type="Label" parent="UI/VBoxContainer/MarginContainer/HBoxContainer"]
+[node name="IconTime" type="Label" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer"]
 margin_top = 4.0
 margin_right = 16.0
 margin_bottom = 20.0
@@ -114,7 +119,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="GameTime" type="Label" parent="UI/VBoxContainer/MarginContainer/HBoxContainer"]
+[node name="GameTime" type="Label" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer"]
 margin_left = 20.0
 margin_right = 135.0
 margin_bottom = 25.0
@@ -124,15 +129,15 @@ text = "hh:mm:ss"
 valign = 2
 script = ExtResource( 4 )
 
-[node name="GameTimer" type="Timer" parent="UI/VBoxContainer/MarginContainer/HBoxContainer/GameTime"]
+[node name="GameTimer" type="Timer" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer/GameTime"]
 wait_time = 1e+07
 one_shot = true
 autostart = true
 
-[node name="SecondTimer" type="Timer" parent="UI/VBoxContainer/MarginContainer/HBoxContainer/GameTime"]
+[node name="SecondTimer" type="Timer" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer/GameTime"]
 autostart = true
 
-[node name="VSeparator" type="VSeparator" parent="UI/VBoxContainer/MarginContainer/HBoxContainer"]
+[node name="VSeparator" type="VSeparator" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer"]
 margin_left = 139.0
 margin_right = 169.0
 margin_bottom = 25.0
@@ -140,7 +145,7 @@ rect_min_size = Vector2( 30, 0 )
 mouse_filter = 2
 custom_styles/separator = SubResource( 7 )
 
-[node name="TimeScale" type="Label" parent="UI/VBoxContainer/MarginContainer/HBoxContainer"]
+[node name="TimeScale" type="Label" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer"]
 margin_left = 173.0
 margin_right = 192.0
 margin_bottom = 25.0
@@ -149,7 +154,7 @@ text = "1x"
 valign = 2
 script = ExtResource( 2 )
 
-[node name="VSeparator3" type="VSeparator" parent="UI/VBoxContainer/MarginContainer/HBoxContainer"]
+[node name="VSeparator3" type="VSeparator" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer"]
 margin_left = 196.0
 margin_right = 226.0
 margin_bottom = 25.0
@@ -157,7 +162,7 @@ rect_min_size = Vector2( 30, 0 )
 mouse_filter = 2
 custom_styles/separator = SubResource( 7 )
 
-[node name="FPS" type="Label" parent="UI/VBoxContainer/MarginContainer/HBoxContainer"]
+[node name="FPS" type="Label" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer"]
 margin_left = 230.0
 margin_right = 268.0
 margin_bottom = 25.0
@@ -166,7 +171,7 @@ text = "FPS"
 valign = 2
 script = ExtResource( 3 )
 
-[node name="VSeparator2" type="VSeparator" parent="UI/VBoxContainer/MarginContainer/HBoxContainer"]
+[node name="VSeparator2" type="VSeparator" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer"]
 margin_left = 272.0
 margin_right = 302.0
 margin_bottom = 25.0
@@ -174,14 +179,14 @@ rect_min_size = Vector2( 30, 0 )
 mouse_filter = 2
 custom_styles/separator = SubResource( 7 )
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="UI/VBoxContainer/MarginContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="StatusBar/VBoxContainer/MarginContainer"]
 margin_left = 10.0
 margin_right = 1900.0
 margin_bottom = 25.0
 mouse_filter = 2
 alignment = 2
 
-[node name="BoppieCount" type="Label" parent="UI/VBoxContainer/MarginContainer/HBoxContainer2"]
+[node name="BoppieCount" type="Label" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer2"]
 margin_left = 1820.0
 margin_right = 1890.0
 margin_bottom = 25.0
@@ -197,6 +202,7 @@ anchor_right = 1.0
 margin_bottom = 1080.0
 grow_horizontal = 0
 rect_min_size = Vector2( 300, 0 )
+mouse_filter = 2
 custom_constants/margin_right = 10
 custom_constants/margin_top = 10
 custom_constants/margin_left = 10
@@ -210,10 +216,12 @@ margin_left = 10.0
 margin_top = 10.0
 margin_right = 310.0
 margin_bottom = 1070.0
+mouse_filter = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="RightSidePanel/VBoxContainer"]
 margin_right = 300.0
 margin_bottom = 25.0
+mouse_filter = 2
 alignment = 1
 
 [node name="PlotTitle" type="Label" parent="RightSidePanel/VBoxContainer/HBoxContainer"]
@@ -230,6 +238,7 @@ margin_top = 29.0
 margin_right = 300.0
 margin_bottom = 179.0
 rect_min_size = Vector2( 300, 150 )
+mouse_filter = 2
 expand = true
 script = ExtResource( 6 )
 
@@ -237,7 +246,122 @@ script = ExtResource( 6 )
 wait_time = 5.0
 autostart = true
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="RightSidePanel/VBoxContainer"]
-margin_top = 183.0
+[node name="LeftSidePanel" type="MarginContainer" parent="."]
+margin_right = 340.0
+margin_bottom = 400.0
+mouse_filter = 2
+custom_constants/margin_right = 10
+custom_constants/margin_top = 10
+custom_constants/margin_left = 10
+custom_constants/margin_bottom = 10
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="PanelContainer" type="PanelContainer" parent="LeftSidePanel"]
+margin_left = 10.0
+margin_top = 10.0
+margin_right = 330.0
+margin_bottom = 390.0
+mouse_filter = 2
+custom_styles/panel = SubResource( 8 )
+
+[node name="InsideMargin" type="MarginContainer" parent="LeftSidePanel/PanelContainer"]
+margin_right = 320.0
+margin_bottom = 380.0
+mouse_filter = 2
+custom_constants/margin_right = 10
+custom_constants/margin_top = 10
+custom_constants/margin_left = 10
+custom_constants/margin_bottom = 10
+
+[node name="BoppieInformation" type="VBoxContainer" parent="LeftSidePanel/PanelContainer/InsideMargin"]
+margin_left = 10.0
+margin_top = 10.0
+margin_right = 310.0
+margin_bottom = 370.0
+custom_constants/separation = 0
+script = ExtResource( 7 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="BoppieName" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
 margin_right = 300.0
-margin_bottom = 183.0
+margin_bottom = 25.0
+custom_fonts/font = SubResource( 6 )
+text = "Name #123"
+align = 1
+valign = 2
+
+[node name="HSeparator" type="HSeparator" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
+margin_top = 25.0
+margin_right = 300.0
+margin_bottom = 35.0
+custom_constants/separation = 10
+
+[node name="Energy" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
+margin_top = 35.0
+margin_right = 300.0
+margin_bottom = 60.0
+custom_fonts/font = SubResource( 6 )
+text = "Energy/Max"
+valign = 2
+
+[node name="OffspringEnergy" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
+margin_top = 60.0
+margin_right = 300.0
+margin_bottom = 85.0
+custom_fonts/font = SubResource( 6 )
+text = "Offspring energy/max"
+valign = 2
+
+[node name="OffspringCount" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
+margin_top = 85.0
+margin_right = 300.0
+margin_bottom = 110.0
+custom_fonts/font = SubResource( 6 )
+text = "Offspring Count: X"
+valign = 2
+
+[node name="Level" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
+margin_top = 110.0
+margin_right = 300.0
+margin_bottom = 135.0
+custom_fonts/font = SubResource( 6 )
+text = "Level: x/max (size)"
+valign = 2
+
+[node name="Survived" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
+margin_top = 135.0
+margin_right = 300.0
+margin_bottom = 160.0
+custom_fonts/font = SubResource( 6 )
+text = "Survived: mm:hh"
+valign = 2
+
+[node name="Eaten" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
+margin_top = 160.0
+margin_right = 300.0
+margin_bottom = 185.0
+custom_fonts/font = SubResource( 6 )
+text = "Eaten: x"
+valign = 2
+
+[node name="DNA" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
+margin_top = 185.0
+margin_right = 300.0
+margin_bottom = 210.0
+custom_fonts/font = SubResource( 6 )
+text = "DNA: To be implemented"
+valign = 2
+
+[node name="Neurons" type="PanelContainer" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
+margin_top = 210.0
+margin_right = 300.0
+margin_bottom = 360.0
+rect_min_size = Vector2( 300, 150 )
+mouse_filter = 2
+script = ExtResource( 8 )
+
+[node name="Tween" type="Tween" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]

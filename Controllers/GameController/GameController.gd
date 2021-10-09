@@ -19,13 +19,13 @@ var boppie_configurations = [
 var lookup_boppie_class_to_scene = {}
 
 # Simulation settings
-export var max_food_count = 200
+export var max_food_count = 150
 export var food_per_500ms = 7
 export var spawn_food_on_death = false
 
 # Game size
 export var total_width = 2000
-export var total_height = 2000
+export var total_height = 1500
 export var empty_zone_size = 100
 var total_size = Vector2(total_width, total_height)
 var world_zone_start = Vector2(empty_zone_size, empty_zone_size)
@@ -39,6 +39,7 @@ var controlled_boppie: Boppie = null
 var player_ai = Player.new()
 
 signal EngineTimeScaleChange(factor)
+signal BoppieControlChanged(boppie)
 
 func random_coordinate():
 	return Vector2(Globals.rng.randf(), Globals.rng.randf())
@@ -71,7 +72,7 @@ func _ready():
 		lookup_boppie_class_to_scene[config.boppie_class] = config.scene
 		
 func _reset_food_timer():
-	spawn_food(food_per_500ms)
+	spawn_food(food_per_500ms * 2)
 #	print(unused_food_stack_index)
 #	var new_index = max(0, unused_food_stack_index - food_per_100ms)
 #	for i in range(unused_food_stack_index, new_index, -1):
@@ -130,6 +131,7 @@ func take_control_of_boppie(boppie):
 		if controlled_boppie.ai == player_ai:
 			controlled_boppie.pop_temp_ai()
 	controlled_boppie = boppie
+	emit_signal("BoppieControlChanged", controlled_boppie)
 	if controlled_boppie != null:
 		controlled_boppie.set_selected(true)
 

@@ -1,7 +1,8 @@
 extends TextureRect
 
-var height = 150
+var height = 40
 var width = 300
+var scale_height = 4
 var curr_index = 0
 var plot = Image.new()
 var owlie_pixel_indeces = []
@@ -12,12 +13,13 @@ func _ready():
 	plot.create(width, height, false, Image.FORMAT_RGBA8)
 	plot.fill(reset_color)
 	self.texture = ImageTexture.new()
-	rect_size = Vector2(width, height)
-	rect_min_size = Vector2(width, height)
+	rect_size = Vector2(width, height * scale_height)
+	rect_min_size = Vector2(width, height * scale_height)
 	update()
-	for i in range(width):
+	for _i in range(width):
 		owlie_pixel_indeces.append(0)
 		kloppie_pixel_indeces.append(0)
+	self.rect_scale.y = scale_height
 	
 	$Timer.connect("timeout", self, "_on_HalfSecondTimer")
 	#Globals.connect("HalfSecondTimer", self, "_on_HalfSecondTimer")
@@ -26,17 +28,21 @@ func _on_HalfSecondTimer():
 	draw_next_pixel()
 
 func draw_next_pixel():
-	var owlies = get_tree().get_nodes_in_group("Owlie").size()
-	var kloppies = get_tree().get_nodes_in_group("Kloppie").size()
-	var some_pixels_ahead = (curr_index + 10) % width
+	var owlies = get_tree().get_nodes_in_group("Owlie").size() / 2
+	var kloppies = get_tree().get_nodes_in_group("Kloppie").size() / 2
+	var some_pixels_ahead = (curr_index + 30) % width
+	var next_index = (curr_index + 1) % width
 	plot.lock()
-	plot.set_pixel(some_pixels_ahead, owlie_pixel_indeces[curr_index], reset_color)
-	plot.set_pixel(some_pixels_ahead, kloppie_pixel_indeces[curr_index], reset_color)
+	for i in range(10):
+		plot.set_pixel(next_index, i, Color.white)
+		plot.set_pixel(curr_index, i, reset_color)
+	plot.set_pixel(some_pixels_ahead, owlie_pixel_indeces[some_pixels_ahead], reset_color)
+	plot.set_pixel(some_pixels_ahead, kloppie_pixel_indeces[some_pixels_ahead], reset_color)
 	plot.set_pixel(curr_index, height - owlies, Color.green)
 	plot.set_pixel(curr_index, height - kloppies, Color.cyan)
 	plot.unlock()
 	texture.create_from_image(plot)
 	owlie_pixel_indeces[curr_index] = height - owlies
 	kloppie_pixel_indeces[curr_index] = height - kloppies
-	curr_index = (curr_index + 1) % width
+	curr_index = next_index
 

@@ -8,7 +8,7 @@ var turn_speed := 2.0
 var can_die := true
 var ray_count_additional := 2
 var ray_angle := deg2rad(20)
-var ray_length := 400.0
+var ray_length := 250.0
 var nutrition := 20.0
 var max_boost_factor := 2.0
 var max_backwards_factor := -1.0
@@ -47,9 +47,14 @@ var draw_hair = false
 var max_energy = 15
 var required_offspring_energy = 10
 var size_increases = [0.8, 1, 1.2]
+var level = 1
 var energy = max_energy * .8 + Globals.rng.randf() * max_energy * .2
 var offspring_energy = 0
 var eats = Raytype.FOOD
+
+var offspring_count = 0
+var times_eaten = 0
+var spawn_time = 0
 
 signal BoppieClicked(Boppie)
 signal BoppieOffspring(Boppie)
@@ -61,6 +66,7 @@ func _init(ai=null):
 	self.ai = ai
 	
 func _ready():
+	spawn_time = Globals.elapsed_time
 	energy_gradient = load(energy_gradient)
 	$Tween.interpolate_property(
 		self, "scale", Vector2(.2, .2), Vector2(size_increases[0], size_increases[0]), 
@@ -242,12 +248,16 @@ func update_energy(add_energy):
 				produce_offspring()
 				
 func take_damage(damage):
-	$BloodParticles.amount = damage * damage
-	$BloodParticles.emitting = true
-	update_energy(-damage)
-	return energy < 0
+	if dead:
+		return false
+	else:
+		$BloodParticles.amount = damage * damage
+		$BloodParticles.emitting = true
+		update_energy(-damage)
+		return energy < 0
 			
 func level_up(new_scale):
+	level += 1
 	$Tween.interpolate_property(self, "scale",
 		scale, Vector2(new_scale, new_scale), .5,
 		Tween.TRANS_BOUNCE, Tween.EASE_IN_OUT)
@@ -257,6 +267,7 @@ func produce_offspring():
 	emit_signal("BoppieOffspring", self)
 	
 func eat(food):
+	times_eaten += 1
 	update_energy(food.nutrition)
 	
 
