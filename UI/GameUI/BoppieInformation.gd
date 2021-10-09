@@ -1,7 +1,7 @@
 extends VBoxContainer
 
 var boppie = null
-var show_dna = false
+onready var show_dna = $HBoxContainer/ShowDNA.pressed
 var opened = false
 onready var left_side_panel = get_parent().get_parent().get_parent()
 

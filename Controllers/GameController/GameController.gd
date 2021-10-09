@@ -7,6 +7,7 @@ class BoppieConfiguration:
 	var min_count
 	var scene
 	var fittest: Array = []
+	var new_dna_chance = 0.2
 	func _init(group: String, boppie_class, min_count: int, scene: PackedScene):
 		self.group = group
 		self.boppie_class = boppie_class
@@ -15,7 +16,7 @@ class BoppieConfiguration:
 		
 var boppie_configurations = [
 	BoppieConfiguration.new("Owlie", Owlie, 10, preload("res://Entities/Boppie/Types/Owlie.tscn")),
-	BoppieConfiguration.new("Kloppie", Kloppie, 3, preload("res://Entities/Boppie/Types/Kloppie.tscn")),
+	BoppieConfiguration.new("Kloppie", Kloppie, 0, preload("res://Entities/Boppie/Types/Kloppie.tscn")),
 ]
 var lookup_boppie_type_to_config = {}
 
@@ -24,7 +25,6 @@ export var max_food_count = 150
 export var food_per_500ms = 7
 export var spawn_food_on_death = false
 export var keep_n_fittest_boppies = 10
-export var spawn_ratio_new_dna = 0.5
 
 # Game size
 export var total_width = 2000
@@ -36,6 +36,8 @@ var world_zone_end = total_size - world_zone_start
 var unused_food_stack = []
 var unused_food_stack_index = 0
 var follow_fittest_boppie = false
+var difficulty_level = 1
+var last_difficulty_level_change_time = 0
 
 # Boppies
 var food_scene = preload("res://Entities/Food/Food.tscn")
@@ -96,7 +98,7 @@ func add_boppie(at: Vector2, scene: PackedScene, dna=null):
 	var instance = scene.instance()
 	instance.ai = NeuralNetwork.new()
 	if dna != null:
-		instance.set_dna(dna.duplicate(true), true)
+		instance.set_dna(dna, true)
 		# weights = parent.ai.get_mutated_weights(instance.offspring_mutability)
 		# instance.rotation = parent.rotation
 	else:
@@ -111,7 +113,7 @@ func add_boppie(at: Vector2, scene: PackedScene, dna=null):
 func add_random_boppies(count: int, config: BoppieConfiguration):
 	for _i in range(count):
 		var old_dna = null
-		if config.fittest.size() == keep_n_fittest_boppies and Globals.rng.randf() > spawn_ratio_new_dna:
+		if config.fittest.size() == keep_n_fittest_boppies and Globals.rng.randf() > config.new_dna_chance:
 			old_dna = config.fittest[Globals.rng.randi() % keep_n_fittest_boppies][1]
 		add_boppie(random_world_coordinate(), config.scene, old_dna)
 		
@@ -211,6 +213,13 @@ func change_time_scale(factor):
 func check_boppies():
 	for config in boppie_configurations:
 		var boppies = get_tree().get_nodes_in_group(config.group)
+		if Globals.elapsed_time - last_difficulty_level_change_time > 300:
+			if boppies.size() > 40:
+				# lookup_boppie_type_to_config["Kloppie"].min_count += 2
+				difficulty_level += 1
+				last_difficulty_level_change_time = Globals.elapsed_time
+				Globals.difficulty += .1
+				config.new_dna_chance = 1 - ((1 - config.new_dna_chance) * .9)
 		for boppie in boppies:
 			if not is_within_game(boppie.global_position):
 				boppie.global_position = make_within_game(boppie.global_position)
@@ -220,6 +229,8 @@ func check_boppies():
 			add_random_boppies(diff, config)
 			
 func possibly_replace_weakest_boppie(boppie):
+	if boppie.offspring_count == 0:
+		return
 	var fittest_boppies = lookup_boppie_type_to_config[boppie.type].fittest
 	var tuple = [boppie.fitness(), boppie.dna.duplicate(true)]
 	if fittest_boppies.size() < keep_n_fittest_boppies:
@@ -237,7 +248,7 @@ func _on_BoppieClicked(boppie):
 	
 func _on_BoppieDied(boppie):
 	Globals.boppies_died += 1
-	call_deferred("possibly_replace_weakest_boppie", boppie)
+	possibly_replace_weakest_boppie(boppie)
 	if boppie == controlled_boppie:
 		if follow_fittest_boppie:
 			take_control_of_fittest_boppie_in_group(boppie.type)

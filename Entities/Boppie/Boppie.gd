@@ -6,7 +6,7 @@ class_name Boppie
 var type = "Boppie"
 var radius := 20.0  # (too much hardcoded)
 var can_die := true
-var nutrition := 10.0
+var nutrition := 20.0
 
 # DNA
 var move_speed := 85.0
@@ -33,7 +33,7 @@ var dna_allowed_values = {
 var dna := {} setget set_dna
 
 var energy_consumption_existing = 1 * Globals.difficulty
-var energy_consumption_walking = 1 * Globals.difficulty
+var energy_consumption_walking = .7 * Globals.difficulty
 
 var vision_rays = []
 
@@ -114,6 +114,7 @@ func initialize_dna():
 			dna[property] = dna[property].get(subproperty)
 
 func set_dna(new_dna: Dictionary, mutate=false):
+	new_dna = new_dna.duplicate(true)
 	for property in new_dna:
 		var resolved_subproperty = self
 		var subproperties = property.split(".")

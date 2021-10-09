@@ -9,6 +9,7 @@
 [ext_resource path="res://UI/GameUI/Neurons.gd" type="Script" id=7]
 [ext_resource path="res://UI/GameUI/TimeScale.gd" type="Script" id=8]
 [ext_resource path="res://UI/GameUI/CheckFollowFittest.gd" type="Script" id=9]
+[ext_resource path="res://UI/GameUI/Difficulty.gd" type="Script" id=10]
 
 [sub_resource type="DynamicFontData" id=1]
 font_path = "res://Resources/Fonts/FontAwesome/otfs/Font Awesome 5 Free-Solid-900.otf"
@@ -29,8 +30,6 @@ font_path = "res://Resources/Fonts/FredokaOne-Regular.ttf"
 [sub_resource type="DynamicFont" id=6]
 size = 20
 font_data = SubResource( 5 )
-
-[sub_resource type="StyleBoxEmpty" id=7]
 
 [sub_resource type="StyleBoxFlat" id=8]
 bg_color = Color( 1, 1, 1, 0.0980392 )
@@ -105,11 +104,16 @@ margin_left = 10.0
 margin_right = 1900.0
 margin_bottom = 25.0
 mouse_filter = 2
+custom_constants/separation = 50
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="IconTime" type="Label" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer"]
+[node name="Time" type="HBoxContainer" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer"]
+margin_right = 135.0
+margin_bottom = 25.0
+
+[node name="IconTime" type="Label" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer/Time"]
 margin_top = 4.0
 margin_right = 16.0
 margin_bottom = 20.0
@@ -120,7 +124,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="GameTime" type="Label" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer"]
+[node name="GameTime" type="Label" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer/Time"]
 margin_left = 20.0
 margin_right = 135.0
 margin_bottom = 25.0
@@ -130,68 +134,48 @@ text = "hh:mm:ss"
 valign = 2
 script = ExtResource( 5 )
 
-[node name="GameTimer" type="Timer" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer/GameTime"]
+[node name="GameTimer" type="Timer" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer/Time/GameTime"]
 wait_time = 1e+07
 one_shot = true
 autostart = true
 
-[node name="SecondTimer" type="Timer" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer/GameTime"]
+[node name="SecondTimer" type="Timer" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer/Time/GameTime"]
 autostart = true
 
-[node name="VSeparator" type="VSeparator" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer"]
-margin_left = 139.0
-margin_right = 169.0
-margin_bottom = 25.0
-rect_min_size = Vector2( 30, 0 )
-mouse_filter = 2
-custom_styles/separator = SubResource( 7 )
-
 [node name="TimeScale" type="Label" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer"]
-margin_left = 173.0
-margin_right = 192.0
+margin_left = 185.0
+margin_right = 204.0
 margin_bottom = 25.0
 custom_fonts/font = SubResource( 6 )
 text = "1x"
 valign = 2
 script = ExtResource( 8 )
 
-[node name="VSeparator3" type="VSeparator" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer"]
-margin_left = 196.0
-margin_right = 226.0
-margin_bottom = 25.0
-rect_min_size = Vector2( 30, 0 )
-mouse_filter = 2
-custom_styles/separator = SubResource( 7 )
-
 [node name="FPS" type="Label" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer"]
-margin_left = 230.0
-margin_right = 268.0
+margin_left = 254.0
+margin_right = 292.0
 margin_bottom = 25.0
 custom_fonts/font = SubResource( 6 )
 text = "FPS"
 valign = 2
 script = ExtResource( 4 )
 
-[node name="VSeparator2" type="VSeparator" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer"]
-margin_left = 272.0
-margin_right = 302.0
+[node name="HBoxContainer" type="HBoxContainer" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer"]
+margin_left = 342.0
+margin_right = 501.0
 margin_bottom = 25.0
-rect_min_size = Vector2( 30, 0 )
-mouse_filter = 2
-custom_styles/separator = SubResource( 7 )
 
-[node name="FollowFittest" type="Label" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer"]
-margin_left = 306.0
-margin_right = 445.0
+[node name="FollowFittest" type="Label" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer/HBoxContainer"]
+margin_right = 139.0
 margin_bottom = 25.0
 custom_fonts/font = SubResource( 6 )
 text = "Follow fittest:"
 valign = 2
 
-[node name="CheckFollowFittest" type="Label" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer"]
-margin_left = 449.0
+[node name="CheckFollowFittest" type="Label" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer/HBoxContainer"]
+margin_left = 143.0
 margin_top = 4.0
-margin_right = 465.0
+margin_right = 159.0
 margin_bottom = 20.0
 custom_fonts/font = SubResource( 4 )
 text = ""
@@ -200,6 +184,15 @@ script = ExtResource( 9 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="Difficulty" type="Label" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer"]
+margin_left = 551.0
+margin_right = 664.0
+margin_bottom = 25.0
+custom_fonts/font = SubResource( 6 )
+text = "Difficulty: x"
+valign = 2
+script = ExtResource( 10 )
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="StatusBar/VBoxContainer/MarginContainer"]
 margin_left = 10.0
@@ -436,6 +429,8 @@ margin_left = 13.0
 margin_right = 91.0
 margin_bottom = 20.0
 toggle_mode = true
+pressed = true
+action_mode = 0
 text = "Show DNA"
 
 [node name="CopyDNA" type="Button" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/HBoxContainer"]

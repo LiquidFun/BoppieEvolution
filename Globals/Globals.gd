@@ -8,7 +8,6 @@ var boppies_born := 0
 var boppies_spawned := 0
 var nn_thread: Thread = Thread.new()
 var elapsed_time := 0.0
-var difficulty = .7
 var dna_clipboard = null
 
 var rng = RandomNumberGenerator.new()
@@ -32,4 +31,11 @@ func _process(delta):
 	if last_emit_time + 500 < OS.get_ticks_msec():
 		last_emit_time = OS.get_ticks_msec()
 		emit_signal("HalfSecondTimer")
-		
+
+
+signal DifficultyChanged(new_value)
+var difficulty = .5 setget set_difficulty
+
+func set_difficulty(new_value):
+	difficulty = new_value
+	emit_signal("DifficultyChanged", difficulty)

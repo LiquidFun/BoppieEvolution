@@ -16,7 +16,7 @@ func _init():
 	draw_eyebrows = true
 	eats = Raytype.OWLIE
 	max_boost_factor = 3.0
-	max_energy = 20
+	max_energy = 30
 	required_offspring_energy = 20
 	size_increases = [1, 1.2, 1.4]
 	type = "Kloppie"
