@@ -115,7 +115,6 @@ func initialize_dna():
 
 func set_dna(new_dna: Dictionary):
 	for property in new_dna:
-		print(property)
 		var resolve_subproperty = self
 		var subproperties = property.split(".")
 		var last = subproperties[-1]
@@ -123,8 +122,6 @@ func set_dna(new_dna: Dictionary):
 		for subproperty in subproperties:
 			resolve_subproperty = resolve_subproperty.get(subproperty)
 		dna[property] = new_dna[property]
-		print(resolve_subproperty)
-		print(subproperties)
 		resolve_subproperty.set(last, new_dna[property])
 	
 func set_dna_str(new_dna: String):

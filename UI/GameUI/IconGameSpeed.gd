@@ -6,11 +6,11 @@ func _ready():
 		game_controller.connect("EngineTimeScaleChange", self, "_on_EngineTimeScaleChange")
 
 func _on_EngineTimeScaleChange(factor):
-	match factor:  # Warning! Each of these strings contains a fontawesome unicode icon, godot doesn't display them
-		0: text = ""  # pause
-		0.5: text = ""  # double arrow left
-		1: text = ""  # play
-		2: text = ""  # double arrow right
+	match min(2, factor):  # Warning! Each of these strings contains a fontawesome unicode icon, godot doesn't display them
+		0.0: text = ""  # pause
+		1.0: text = ""  # play
+		2.0: text = ""  # double arrow right
+		_: text = ""  # double arrow left
 	$Tween.stop_all()
 	var s = Engine.time_scale
 	if factor != 1:

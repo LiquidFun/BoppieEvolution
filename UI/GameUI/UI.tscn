@@ -285,13 +285,13 @@ __meta__ = {
 margin_left = 10.0
 margin_top = 10.0
 margin_right = 330.0
-margin_bottom = 476.0
+margin_bottom = 500.0
 mouse_filter = 2
 custom_styles/panel = SubResource( 8 )
 
 [node name="InsideMargin" type="MarginContainer" parent="LeftSidePanel/PanelContainer"]
 margin_right = 320.0
-margin_bottom = 466.0
+margin_bottom = 490.0
 mouse_filter = 2
 custom_constants/margin_right = 10
 custom_constants/margin_top = 10
@@ -302,7 +302,7 @@ custom_constants/margin_bottom = 10
 margin_left = 10.0
 margin_top = 10.0
 margin_right = 310.0
-margin_bottom = 456.0
+margin_bottom = 480.0
 custom_constants/separation = 0
 script = ExtResource( 1 )
 __meta__ = {
@@ -453,7 +453,7 @@ text = "Paste DNA"
 [node name="DNA" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
 margin_top = 445.0
 margin_right = 300.0
-margin_bottom = 446.0
+margin_bottom = 470.0
 custom_fonts/font = SubResource( 6 )
 text = "{ ... }"
 clip_text = true

@@ -161,6 +161,9 @@ func _unhandled_input(event):
 		change_time_scale(2)
 	if event.is_action_pressed("ui_decrease_time"):
 		change_time_scale(0.5)
+	if event.is_action_pressed("number"):
+		var new_time_scale = 1 << (event.scancode - KEY_1)
+		change_time_scale(new_time_scale / Engine.time_scale)
 	if event.is_action_pressed("save"):
 		$SaveDialog.show(true)
 	if event.is_action_pressed("load"):
@@ -195,7 +198,7 @@ func take_control_of_fittest_boppie_in_group(group):
 
 func change_time_scale(factor):
 	var new_time_scale = Engine.time_scale * factor
-	if .5 <= new_time_scale and new_time_scale <= 256:
+	if .5 <= new_time_scale and new_time_scale <= 256 and new_time_scale != Engine.time_scale:
 		Engine.time_scale = new_time_scale
 		Engine.iterations_per_second = 60 * max(1, pow(2, log(Engine.time_scale)))
 		emit_signal("EngineTimeScaleChange", factor)
@@ -210,8 +213,7 @@ func check_boppies():
 		if diff > 0:
 			Globals.boppies_spawned += diff
 			add_random_boppies(diff, config.scene)
-		
-		
+
 func _on_BoppieClicked(boppie):
 	take_control_of_boppie(boppie)
 	
