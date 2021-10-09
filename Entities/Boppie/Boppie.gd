@@ -2,28 +2,40 @@ extends KinematicBody2D
 
 class_name Boppie
 
-var radius := 20.0
+# Properties
+var type = "Boppie"
+var radius := 20.0  # (too much hardcoded)
+var can_die := true
+var nutrition := 10.0
+
+# DNA
 var move_speed := 85.0
 var turn_speed := 2.0
-var can_die := true
 var ray_count_additional := 2
 var ray_angle := deg2rad(20)
 var ray_length := 250.0
-var nutrition := 20.0
 var max_boost_factor := 2.0
 var max_backwards_factor := -1.0
-var movement = 0
-var type = "Boppie"
+var offspring_mutability := 0.03
+
+var dna_allowed_values = {
+	"move_speed": Vector2(10, 100), 
+	"turn_speed": Vector2(.5, 3),
+	"ray_count_additional": Vector2(0, 3),
+	"ray_angle": Vector2(deg2rad(5), deg2rad(50)),
+	"ray_length": Vector2(50, 500),
+	"max_boost_factor": Vector2(1.5, 2.5),
+	"max_backwards_factor": Vector2(-0.5, -1.5),
+	"offspring_mutability": Vector2(0.001, .5),
+	"ai.weights": null,
+}
+
+var dna := {} setget set_dna
 
 var energy_consumption_existing = 1 * Globals.difficulty
 var energy_consumption_walking = 1 * Globals.difficulty
 
-# up to 0.05 works well
-var offspring_mutability = 0.03
-
 var vision_rays = []
-
-var dead = false
 
 var ai = null
 var orig_ai = null
@@ -45,6 +57,7 @@ var draw_nose = true
 var draw_teeth = false
 var draw_hair = false
 
+# Energy and offspring
 var max_energy = 15
 var required_offspring_energy = 10
 var size_increases = [0.8, 1, 1.2]
@@ -53,6 +66,10 @@ var energy = max_energy * .8 + Globals.rng.randf() * max_energy * .2
 var offspring_energy = 0
 var eats = Raytype.FOOD
 
+var movement := 0.0
+var dead = false
+
+# Counters
 var offspring_count = 0
 var times_eaten = 0
 var spawn_time = 0
@@ -60,6 +77,10 @@ var spawn_time = 0
 signal BoppieClicked(Boppie)
 signal BoppieOffspring(Boppie)
 signal BoppieDied(Boppie)
+
+# ==========================================================================
+# Init and draw
+# ==========================================================================
 
 func _init(ai=null):
 	if ai == null:
@@ -78,13 +99,58 @@ func _ready():
 	ai_input[Data.EATS] = eats
 	ai_input[Data.RAY_DIST] = []
 	ai_input[Data.RAY_TYPE] = []
+	initialize_rays()
+	initialize_dna()
+
+# ==========================================================================
+# DNA
+# ==========================================================================
+
+func initialize_dna():
+	dna = {}
+	for property in dna_allowed_values:
+		dna[property] = self
+		for subproperty in property.split("."):
+			dna[property] = dna[property].get(subproperty)
+
+func set_dna(new_dna: Dictionary):
+	for property in new_dna:
+		print(property)
+		var resolve_subproperty = self
+		var subproperties = property.split(".")
+		var last = subproperties[-1]
+		subproperties.remove(subproperties.size() - 1)
+		for subproperty in subproperties:
+			resolve_subproperty = resolve_subproperty.get(subproperty)
+		dna[property] = new_dna[property]
+		print(resolve_subproperty)
+		print(subproperties)
+		resolve_subproperty.set(last, new_dna[property])
+	
+func set_dna_str(new_dna: String):
+	set_dna(str2var(new_dna))
+	
+func get_dna_str():
+	return var2str(dna)
+	
+func get_fancy_dna_str():
+	var fancy := ""
+	var bytes := var2str(dna).to_ascii()
+	var l := "ACGT"
+	for b in bytes:
+		fancy += l[(b / 64) % 4] + l[(b / 16) % 4] + l[(b / 4) % 4] + l[b % 4]
+	return fancy
+	
+# ==========================================================================
+# Rays
+# ==========================================================================
+
+func initialize_rays():
 	var start_angle = 0
 	add_ray(start_angle, true, $VisionRay)
 	for i in range(1, ray_count_additional+1):
 		add_ray(start_angle + ray_angle * i, true)
 		add_ray(start_angle - ray_angle * i, true)
-
-	
 	
 func add_ray(angle_radians, push_back=true, ray=null):
 	if ray == null:
@@ -98,6 +164,9 @@ func add_ray(angle_radians, push_back=true, ray=null):
 	ai_input[Data.RAY_DIST].append(1)
 	ai_input[Data.RAY_TYPE].append(Raytype.NONE)
 
+# ==========================================================================
+# AI
+# ==========================================================================
 	
 func add_temp_ai(ai):
 	if ai:
@@ -108,6 +177,12 @@ func pop_temp_ai():
 	if orig_ai:
 		self.ai = orig_ai
 		orig_ai = null
+		
+func calc_ai_input():
+	ai_input[Data.ENERGY] = energy / max_energy
+	for i in range(vision_rays.size()):
+		ai_input[Data.RAY_DIST][i] = vision_rays[i].collision_distance()
+		ai_input[Data.RAY_TYPE][i] = vision_rays[i].collision_type()
 		
 # ==========================================================================
 # Drawing methods
@@ -151,7 +226,6 @@ func draw_hexagonal_body():
 		shadow_color.a *= 2
 	draw_colored_polygon(_get_hexagon(adjusted_radius), boppie_color)
 
-
 func draw_round_body():	
 	var boppie_color = Color.white
 	var shadow_color = Color(0, 0, 0, .02)
@@ -166,7 +240,6 @@ func draw_ears():
 	draw_colored_polygon([ears_start_point, $Face.pos * 2, ears_end_point], Color.white)
 	draw_colored_polygon([-ears_start_point, $Face.pos_other * 2, -ears_end_point], Color.white)
 
-
 func set_selected(select):
 	selected = select
 	self.update()
@@ -175,6 +248,10 @@ func set_hovered(new_value):
 	if hovered != new_value:
 		hovered = new_value
 		self.modulate = self.modulate.darkened(.3) if hovered else Color.white
+		
+# ==========================================================================
+# Movement
+# ==========================================================================
 
 func rotation_vector():
 	return Vector2(cos(self.rotation), sin(self.rotation))
@@ -189,7 +266,7 @@ func move(factor, delta):
 func turn(factor, delta):
 	$Face.rotate_pupils(factor * turn_speed)
 	self.rotation += factor * turn_speed * delta 
-	
+
 	
 func _physics_process(delta):
 	if not self.dead:
@@ -213,11 +290,10 @@ func _physics_process(delta):
 		$Hair.modulate = self_modulate
 	
 
-func calc_ai_input():
-	ai_input[Data.ENERGY] = energy / max_energy
-	for i in range(vision_rays.size()):
-		ai_input[Data.RAY_DIST][i] = vision_rays[i].collision_distance()
-		ai_input[Data.RAY_TYPE][i] = vision_rays[i].collision_type()
+		
+# ==========================================================================
+# Life and death
+# ==========================================================================
 
 func die():
 	if can_die:

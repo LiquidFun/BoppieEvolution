@@ -1,0 +1,17 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://UI/SaveUI/SaveUI.gd" type="Script" id=1]
+
+[node name="CanvasLayer" type="CanvasLayer"]
+script = ExtResource( 1 )
+
+[node name="SaveDialog" type="FileDialog" parent="."]
+margin_right = 393.0
+margin_bottom = 278.0
+window_title = "Save current simulation"
+resizable = true
+access = 1
+current_dir = "user://saves"
+current_path = "user://saves/"
+
+[connection signal="file_selected" from="SaveDialog" to="." method="_on_SaveDialog_file_selected"]

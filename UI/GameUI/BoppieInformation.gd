@@ -1,6 +1,7 @@
 extends VBoxContainer
 
 var boppie = null
+var show_dna = false
 var opened = false
 onready var left_side_panel = get_parent().get_parent().get_parent()
 
@@ -32,15 +33,30 @@ func _on_BoppieControlChanged(controlled_boppie):
 		
 	
 func _process(_delta):
-	if boppie != null:
-		$BoppieName.text = "Boppie"
-		$Energy.text = "Energy: %.1f/%.1f" % [abs(boppie.energy), boppie.max_energy]
-		$OffspringEnergy.text = "Offspring energy: %.1f/%.1f" % [
-			fmod(boppie.offspring_energy, boppie.required_offspring_energy), 
-			boppie.required_offspring_energy,
-		]
-		$OffspringCount.text = "Offspring count: %d" % boppie.offspring_count
-		$Level.text = "Level: %d (size: %.1f)" % [boppie.level, boppie.scale.x]
-		$Survived.text = "Survived: %.1f" % (Globals.elapsed_time - boppie.spawn_time)
-		$Eaten.text = "Eaten: %d" % boppie.times_eaten
+	if boppie == null:
+		return
+	$BoppieName.text = "Boppie"
+	$Energy.text = "Energy: %.1f/%.1f" % [abs(boppie.energy), boppie.max_energy]
+	$OffspringEnergy.text = "Offspring energy: %.1f/%.1f" % [
+		fmod(boppie.offspring_energy, boppie.required_offspring_energy), 
+		boppie.required_offspring_energy,
+	]
+	$OffspringCount.text = "Offspring count: %d" % boppie.offspring_count
+	$Level.text = "Level: %d (size: %.1f)" % [boppie.level, boppie.scale.x]
+	$Survived.text = "Survived: %.1f" % (Globals.elapsed_time - boppie.spawn_time)
+	$Eaten.text = "Eaten: %d" % boppie.times_eaten
+	$DNA.text = ("%s" % boppie.get_dna_str()) if show_dna else "{ ... }"
+
+
+func _on_Show_toggled(button_pressed):
+	show_dna = !show_dna
 	
+
+func _on_CopyDNA_pressed():
+	if boppie != null:
+		Globals.dna_clipboard = boppie.dna.duplicate(true)
+
+
+func _on_PasteDNA_pressed():
+	if boppie != null and Globals.dna_clipboard != null:
+		boppie.set_dna(Globals.dna_clipboard)

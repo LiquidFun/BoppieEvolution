@@ -6,6 +6,7 @@ class BoppieConfiguration:
 	var boppie_class
 	var min_count
 	var scene
+	var fittest = []
 	func _init(group: String, boppie_class, min_count: int, scene: PackedScene):
 		self.group = group
 		self.boppie_class = boppie_class
@@ -16,7 +17,7 @@ var boppie_configurations = [
 	BoppieConfiguration.new("Owlie", Owlie, 10, preload("res://Entities/Boppie/Types/Owlie.tscn")),
 	BoppieConfiguration.new("Kloppie", Kloppie, 3, preload("res://Entities/Boppie/Types/Kloppie.tscn")),
 ]
-var lookup_boppie_class_to_scene = {}
+var lookup_boppie_type_to_config = {}
 
 # Simulation settings
 export var max_food_count = 150
@@ -71,7 +72,7 @@ func _ready():
 	if food_per_500ms > 0:
 		$FoodTimer.connect("timeout", self, "_reset_food_timer")
 	for config in boppie_configurations:
-		lookup_boppie_class_to_scene[config.boppie_class] = config.scene
+		lookup_boppie_type_to_config[config.boppie_class] = config
 		
 func _reset_food_timer():
 	spawn_food(food_per_500ms * 2)
@@ -160,6 +161,10 @@ func _unhandled_input(event):
 		change_time_scale(2)
 	if event.is_action_pressed("ui_decrease_time"):
 		change_time_scale(0.5)
+	if event.is_action_pressed("save"):
+		$SaveDialog.show(true)
+	if event.is_action_pressed("load"):
+		$SaveDialog.show(false)
 	if event.is_action_pressed("follow_fittest_boppie"):
 		follow_fittest_boppie = !follow_fittest_boppie
 		emit_signal("FollowFittestBoppie", follow_fittest_boppie)

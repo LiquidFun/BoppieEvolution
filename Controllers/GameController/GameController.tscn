@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://Controllers/GameController/GameController.gd" type="Script" id=1]
-[ext_resource path="res://UI/UI.tscn" type="PackedScene" id=2]
+[ext_resource path="res://UI/GameUI/UI.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Controllers/GameController/Camera.gd" type="Script" id=3]
+[ext_resource path="res://UI/SaveUI/SaveUI.tscn" type="PackedScene" id=4]
 
 [node name="GameController" type="Node2D" groups=[
 "GameController",
@@ -23,3 +24,5 @@ script = ExtResource( 3 )
 [node name="FoodTimer" type="Timer" parent="."]
 pause_mode = 1
 autostart = true
+
+[node name="SaveDialog" parent="." instance=ExtResource( 4 )]

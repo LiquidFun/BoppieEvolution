@@ -7,7 +7,7 @@ var neuron_radius := 15
 var margins = neuron_radius * 2
 var neuron_dist = neuron_radius * 3
 var font = get_font("font") 
-var neuron_weight_gradient: Gradient = load("res://UI/NeuronWeight.tres")
+var neuron_weight_gradient: Gradient = load("res://UI/GameUI/NeuronWeight.tres")
 
 func _ready():
 	self.rect_min_size = Vector2(width, height)
