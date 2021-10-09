@@ -22,8 +22,8 @@ func _on_BoppieControlChanged(controlled_boppie):
 		var start = other if opened else Vector2.ZERO
 		var end = Vector2.ZERO if opened else other
 		$Tween.interpolate_property(
-			left_side_panel, "rect_position", start, end, .05, 
-			Tween.TRANS_SINE, Tween.EASE_IN_OUT
+			left_side_panel, "rect_position", start, end, .6, 
+			Tween.TRANS_ELASTIC, Tween.EASE_OUT
 		)
 		$Tween.start()
 	if should_open:

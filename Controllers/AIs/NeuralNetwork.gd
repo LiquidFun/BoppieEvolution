@@ -62,7 +62,7 @@ func calculate_inputs(ai_input):
 	var dists = ai_input[Boppie.Data.RAY_DIST]
 	var types = ai_input[Boppie.Data.RAY_TYPE]
 	for i in range(dists.size()):
-		values[0][i] = dists[i] if types[i] == ai_input[Boppie.Data.EATS] else 2.0
+		values[0][i] = 1 - dists[i] if types[i] == ai_input[Boppie.Data.EATS] else 0.0
 	#values[0][5] = fmod(Globals.elapsed_time / 5.0, 1.0)
 		
 func relu(num):

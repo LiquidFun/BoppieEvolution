@@ -1,8 +1,8 @@
 extends TextureRect
 
-var height = 40
+var height = 80
 var width = 300
-var scale_height = 4
+var scale_height = 2
 var curr_index = 0
 var plot = Image.new()
 var owlie_pixel_indeces = []
@@ -28,8 +28,8 @@ func _on_HalfSecondTimer():
 	draw_next_pixel()
 
 func draw_next_pixel():
-	var owlies = get_tree().get_nodes_in_group("Owlie").size() / 2
-	var kloppies = get_tree().get_nodes_in_group("Kloppie").size() / 2
+	var owlies = get_tree().get_nodes_in_group("Owlie").size()
+	var kloppies = get_tree().get_nodes_in_group("Kloppie").size()
 	var some_pixels_ahead = (curr_index + 30) % width
 	var next_index = (curr_index + 1) % width
 	plot.lock()

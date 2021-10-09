@@ -13,6 +13,7 @@ var nutrition := 20.0
 var max_boost_factor := 2.0
 var max_backwards_factor := -1.0
 var movement = 0
+var type = "Boppie"
 
 var energy_consumption_existing = 1 * Globals.difficulty
 var energy_consumption_walking = 1 * Globals.difficulty
@@ -264,6 +265,7 @@ func level_up(new_scale):
 	$Tween.start()
 			
 func produce_offspring():
+	offspring_count += 1
 	emit_signal("BoppieOffspring", self)
 	
 func eat(food):

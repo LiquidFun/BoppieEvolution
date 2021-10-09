@@ -32,12 +32,14 @@ var world_zone_start = Vector2(empty_zone_size, empty_zone_size)
 var world_zone_end = total_size - world_zone_start 
 var unused_food_stack = []
 var unused_food_stack_index = 0
+var follow_fittest_boppie = false
 
 # Boppies
 var food_scene = preload("res://Entities/Food/Food.tscn")
 var controlled_boppie: Boppie = null
 var player_ai = Player.new()
 
+signal FollowFittestBoppie(new_value)
 signal EngineTimeScaleChange(factor)
 signal BoppieControlChanged(boppie)
 
@@ -138,7 +140,7 @@ func take_control_of_boppie(boppie):
 
 func _process(delta):
 	check_boppies()
-	if controlled_boppie:
+	if controlled_boppie != null:
 		$Camera.global_position = controlled_boppie.global_position
 	else:
 		$Camera.global_position -= Utils.input_vectors() * 7
@@ -158,6 +160,13 @@ func _unhandled_input(event):
 		change_time_scale(2)
 	if event.is_action_pressed("ui_decrease_time"):
 		change_time_scale(0.5)
+	if event.is_action_pressed("follow_fittest_boppie"):
+		follow_fittest_boppie = !follow_fittest_boppie
+		emit_signal("FollowFittestBoppie", follow_fittest_boppie)
+	if event.is_action_pressed("fittest_owlie"):
+		take_control_of_fittest_boppie_in_group("Owlie")
+	if event.is_action_pressed("fittest_kloppie"):
+		take_control_of_fittest_boppie_in_group("Kloppie")
 	if event.is_action_pressed("ui_pause"):
 		get_tree().paused = !get_tree().paused
 		emit_signal("EngineTimeScaleChange", int(!get_tree().paused))
@@ -167,6 +176,17 @@ func _unhandled_input(event):
 				controlled_boppie.add_temp_ai(player_ai)
 			else:
 				controlled_boppie.pop_temp_ai()
+				
+func find_fittest_in_group(group):
+	var fittest = null
+	for boppie in get_tree().get_nodes_in_group(group):
+		if not boppie.dead and (fittest == null or boppie.spawn_time < fittest.spawn_time):
+			fittest = boppie
+	return fittest
+	
+func take_control_of_fittest_boppie_in_group(group):
+	# Use this function so it can be deferred
+	take_control_of_boppie(find_fittest_in_group(group))
 
 func change_time_scale(factor):
 	var new_time_scale = Engine.time_scale * factor
@@ -193,7 +213,10 @@ func _on_BoppieClicked(boppie):
 func _on_BoppieDied(boppie):
 	Globals.boppies_died += 1
 	if boppie == controlled_boppie:
-		take_control_of_boppie(null)
+		if follow_fittest_boppie:
+			take_control_of_fittest_boppie_in_group(boppie.type)
+		else:
+			take_control_of_boppie(null)
 	if spawn_food_on_death:
 		var food = food_scene.instance()
 		food.global_position = boppie.global_position

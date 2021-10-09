@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=2]
+[gd_scene load_steps=18 format=2]
 
 [ext_resource path="res://UI/BoppieCount.gd" type="Script" id=1]
 [ext_resource path="res://UI/TimeScale.gd" type="Script" id=2]
@@ -8,6 +8,7 @@
 [ext_resource path="res://UI/BoppieCountHistoryPlot.gd" type="Script" id=6]
 [ext_resource path="res://UI/BoppieInformation.gd" type="Script" id=7]
 [ext_resource path="res://UI/Neurons.gd" type="Script" id=8]
+[ext_resource path="res://UI/CheckFollowFittest.gd" type="Script" id=9]
 
 [sub_resource type="DynamicFontData" id=1]
 font_path = "res://Resources/Fonts/FontAwesome/otfs/Font Awesome 5 Free-Solid-900.otf"
@@ -17,7 +18,7 @@ size = 80
 font_data = SubResource( 1 )
 
 [sub_resource type="DynamicFontData" id=3]
-font_path = "res://Resources/Fonts/FontAwesome/otfs/Font Awesome 5 Free-Regular-400.otf"
+font_path = "res://Resources/Fonts/FontAwesome/otfs/Font Awesome 5 Free-Solid-900.otf"
 
 [sub_resource type="DynamicFont" id=4]
 font_data = SubResource( 3 )
@@ -178,6 +179,27 @@ margin_bottom = 25.0
 rect_min_size = Vector2( 30, 0 )
 mouse_filter = 2
 custom_styles/separator = SubResource( 7 )
+
+[node name="FollowFittest" type="Label" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer"]
+margin_left = 306.0
+margin_right = 445.0
+margin_bottom = 25.0
+custom_fonts/font = SubResource( 6 )
+text = "Follow fittest:"
+valign = 2
+
+[node name="CheckFollowFittest" type="Label" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer"]
+margin_left = 449.0
+margin_top = 4.0
+margin_right = 465.0
+margin_bottom = 20.0
+custom_fonts/font = SubResource( 4 )
+text = ""
+valign = 2
+script = ExtResource( 9 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="StatusBar/VBoxContainer/MarginContainer"]
 margin_left = 10.0
