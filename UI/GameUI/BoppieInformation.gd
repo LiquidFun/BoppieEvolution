@@ -1,7 +1,7 @@
 extends VBoxContainer
 
 var boppie = null
-onready var show_dna = $HBoxContainer/ShowDNA.pressed
+onready var show_dna = false
 var opened = false
 onready var left_side_panel = get_parent().get_parent().get_parent()
 
@@ -13,6 +13,8 @@ func _ready():
 		game_controller.connect("BoppieControlChanged", self, "_on_BoppieControlChanged")
 		
 func _on_BoppieControlChanged(controlled_boppie):
+	
+	var different_boppie = (boppie != controlled_boppie)
 	self.boppie = controlled_boppie
 	left_side_panel.visible = true
 	# left_side_panel.visible = (boppie != null)
@@ -29,6 +31,8 @@ func _on_BoppieControlChanged(controlled_boppie):
 		$Tween.start()
 	if should_open:
 		$Neurons.neural_network = boppie.ai
+		if different_boppie:
+			_on_Show_toggled($HBoxContainer/ShowDNA.pressed)
 		
 	
 func _process(_delta):
@@ -42,13 +46,16 @@ func _process(_delta):
 	]
 	$OffspringCount.text = "Offspring count: %d" % boppie.offspring_count
 	$Level.text = "Level: %d (size: %.1f)" % [boppie.level, boppie.scale.x]
-	$Survived.text = "Survived: %.1f" % (Globals.elapsed_time - boppie.spawn_time)
+	$Survived.text = "Spawned: %s (%.1f s)" % [
+		Globals.formatted_time(int(boppie.spawn_time)), 
+		Globals.elapsed_time - boppie.spawn_time
+	]
 	$Eaten.text = "Eaten: %d" % boppie.times_eaten
-	$DNA.text = ("%s" % boppie.get_dna_str()) if show_dna else "{ ... }"
-
+	
 
 func _on_Show_toggled(button_pressed):
-	show_dna = !show_dna
+	show_dna = button_pressed
+	$DNA.text = ("%s" % boppie.get_dna_str()) if show_dna else "{ ... }"
 	
 
 func _on_CopyDNA_pressed():
@@ -59,3 +66,9 @@ func _on_CopyDNA_pressed():
 func _on_PasteDNA_pressed():
 	if boppie != null and Globals.dna_clipboard != null:
 		boppie.set_dna(Globals.dna_clipboard)
+
+
+func _on_DNA_gui_input(event):
+	if event.action_just_pressed("ui_cancel"):
+		print("aa")
+		$DNA.release_focus()

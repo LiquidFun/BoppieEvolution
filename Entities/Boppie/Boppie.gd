@@ -8,32 +8,44 @@ var radius := 20.0  # (too much hardcoded)
 var can_die := true
 var nutrition := 20.0
 
+class Generation:
+	var i = 1
+	func mutate(_property, _mutability):
+		i += 1
+
 # DNA
 var move_speed := 85.0
 var turn_speed := 2.0
 var ray_count_additional := 2
 var ray_angle := deg2rad(20)
-var ray_length := 250.0
+var ray_length := 300.0
 var max_boost_factor := 2.0
-var max_backwards_factor := -1.0
-var offspring_mutability := 0.03
+var max_backwards_factor := -0.75
+var offspring_mutability := 0.05
+var max_energy = 15
+var required_offspring_energy = 10
+var generation = Generation.new()
 
 var dna_allowed_values = {
-	"move_speed": Vector2(10, 100), 
+	"move_speed": Vector2(50, 100), 
+	"max_energy": Vector2(10, 30), 
+	"required_offspring_energy": Vector2(8, 15), 
 	"turn_speed": Vector2(.5, 3),
 #	"ray_count_additional": Vector2(0, 3),
 	"ray_angle": Vector2(deg2rad(5), deg2rad(50)),
-	"ray_length": Vector2(50, 500),
+	"ray_length": Vector2(100, 600),
 	"max_boost_factor": Vector2(1.5, 2.5),
-	"max_backwards_factor": Vector2(-0.5, -1.5),
-	"offspring_mutability": Vector2(0.001, .5),
+	"max_backwards_factor": Vector2(-1.0, -0.5),
+	"offspring_mutability": Vector2(0.01, .5),
 	"ai.weights": null,
+	"generation.i": null,
 }
 
 var dna := {} setget set_dna
 
-var energy_consumption_existing = 1 * Globals.difficulty
-var energy_consumption_walking = .7 * Globals.difficulty
+var difficulty = Globals.difficulty
+var energy_consumption_existing = 1 * difficulty
+var energy_consumption_walking = .5 * difficulty
 
 var vision_rays = []
 
@@ -58,8 +70,6 @@ var draw_teeth = false
 var draw_hair = false
 
 # Energy and offspring
-var max_energy = 15
-var required_offspring_energy = 10
 var size_increases = [0.8, 1, 1.2]
 var level = 1
 var energy = max_energy * .8 + Globals.rng.randf() * max_energy * .2
@@ -331,7 +341,7 @@ func take_damage(damage):
 	if dead:
 		return false
 	else:
-		$BloodParticles.amount = damage * damage
+		$BloodParticles.amount = max(1.0, damage * damage)
 		$BloodParticles.emitting = true
 		update_energy(-damage)
 		return energy < 0
@@ -352,4 +362,4 @@ func eat(food):
 	update_energy(food.nutrition)
 	
 func fitness():
-	return Globals.elapsed_time - spawn_time
+	return (Globals.elapsed_time - spawn_time) * difficulty

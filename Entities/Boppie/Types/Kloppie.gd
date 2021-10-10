@@ -14,14 +14,22 @@ func _init():
 	draw_nose = true
 	draw_eyes = true
 	draw_eyebrows = true
-	eats = Raytype.OWLIE
+	eats = Raytype.KLOPPIE if Globals.kloppies_cannibals else Raytype.OWLIE
 	max_boost_factor = 3.0
-	max_energy = 30
+	max_energy = 40
+	ray_length = 500
 	required_offspring_energy = 20
-	size_increases = [1, 1.2, 1.4]
+	size_increases = [.9, 1.2, 1.5]
 	type = "Kloppie"
+	
+	
+func _ready():
+	if Globals.kloppies_cannibals:
+		$EatingArea.collision_mask |= (1 << 3)
+		for vision_ray in vision_rays:
+			vision_ray.collision_mask |= (1 << 3)
 
 func _on_EatingArea_body_entered(body):
-	if can_attack and body is Owlie:
-		if body.take_damage(damage * self.scale.x * max(.5, movement)):
+	if can_attack and (body is Owlie or (body.type == "Kloppie" and eats == Raytype.KLOPPIE and body != self)):
+		if body.take_damage(damage * self.scale.x * self.scale.x * max(.25, movement)):
 			eat(body)

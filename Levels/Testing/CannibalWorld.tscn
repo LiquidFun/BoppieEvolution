@@ -5,3 +5,12 @@
 [node name="Node2D" type="Node2D"]
 
 [node name="GameController" parent="." instance=ExtResource( 2 )]
+min_count_config = {
+"Kloppie": 20,
+"Owlie": 0
+}
+max_food_count = 0
+food_per_500ms = 0
+kloppies_cannibals = true
+total_width = 1500
+total_height = 1500

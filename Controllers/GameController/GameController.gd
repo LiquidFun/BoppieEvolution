@@ -3,20 +3,23 @@ extends Node2D
 
 class BoppieConfiguration:
 	var group
-	var boppie_class
 	var min_count
 	var scene
 	var fittest: Array = []
 	var new_dna_chance = 0.2
-	func _init(group: String, boppie_class, min_count: int, scene: PackedScene):
+	func _init(group: String, min_count: int, scene: PackedScene):
 		self.group = group
-		self.boppie_class = boppie_class
 		self.min_count = min_count
 		self.scene = scene
 		
-var boppie_configurations = [
-	BoppieConfiguration.new("Owlie", Owlie, 10, preload("res://Entities/Boppie/Types/Owlie.tscn")),
-	BoppieConfiguration.new("Kloppie", Kloppie, 0, preload("res://Entities/Boppie/Types/Kloppie.tscn")),
+export var min_count_config = {
+	"Owlie": 10,
+	"Kloppie": 0,
+}
+		
+onready var boppie_configurations = [
+	BoppieConfiguration.new("Owlie", min_count_config["Owlie"], preload("res://Entities/Boppie/Types/Owlie.tscn")),
+	BoppieConfiguration.new("Kloppie", min_count_config["Kloppie"], preload("res://Entities/Boppie/Types/Kloppie.tscn")),
 ]
 var lookup_boppie_type_to_config = {}
 
@@ -25,14 +28,15 @@ export var max_food_count = 150
 export var food_per_500ms = 7
 export var spawn_food_on_death = false
 export var keep_n_fittest_boppies = 10
+export var kloppies_cannibals = false
 
 # Game size
-export var total_width = 2000
-export var total_height = 1500
-export var empty_zone_size = 100
-var total_size = Vector2(total_width, total_height)
-var world_zone_start = Vector2(empty_zone_size, empty_zone_size)
-var world_zone_end = total_size - world_zone_start 
+export var total_width = 4000
+export var total_height = 3000
+export var empty_zone_size = 20
+onready var total_size = Vector2(total_width, total_height)
+onready var world_zone_start = Vector2(empty_zone_size, empty_zone_size)
+onready var world_zone_end = total_size - world_zone_start 
 var unused_food_stack = []
 var unused_food_stack_index = 0
 var follow_fittest_boppie = false
@@ -68,8 +72,8 @@ func _draw():
 	var offset = Vector2(14, 14)
 	draw_rect(Rect2(-offset, total_size+offset), Color("#4d4d4d"))
 
-
 func _ready():
+	Globals.kloppies_cannibals = kloppies_cannibals
 	for boppie in get_tree().get_nodes_in_group("Boppie"):
 		handle_boppie(boppie)
 	$Camera.position = total_size / 2
@@ -99,12 +103,7 @@ func add_boppie(at: Vector2, scene: PackedScene, dna=null):
 	instance.ai = NeuralNetwork.new()
 	if dna != null:
 		instance.set_dna(dna, true)
-		# weights = parent.ai.get_mutated_weights(instance.offspring_mutability)
-		# instance.rotation = parent.rotation
-	else:
-		instance.rotation = Globals.rng.randf() * 2 * PI
-	# instance.add_temp_ai(NeuralNetwork.new(weights))
-	#	instance.add_temp_ai(SmartAI.new())
+	instance.rotation = Globals.rng.randf() * 2 * PI
 	add_child(instance)
 	instance.global_position = at
 	handle_boppie(instance)
@@ -214,8 +213,8 @@ func check_boppies():
 	for config in boppie_configurations:
 		var boppies = get_tree().get_nodes_in_group(config.group)
 		if Globals.elapsed_time - last_difficulty_level_change_time > 300:
-			if boppies.size() > 40:
-				# lookup_boppie_type_to_config["Kloppie"].min_count += 2
+			if difficulty_level < 3 and boppies.size() > 40:
+				lookup_boppie_type_to_config["Kloppie"].min_count = 3
 				difficulty_level += 1
 				last_difficulty_level_change_time = Globals.elapsed_time
 				Globals.difficulty += .1
@@ -238,7 +237,7 @@ func possibly_replace_weakest_boppie(boppie):
 		return
 	var weakest_index = 0
 	for index in range(fittest_boppies.size()):
-		if fittest_boppies[weakest_index][0] < fittest_boppies[index][0]:
+		if fittest_boppies[weakest_index][0] > fittest_boppies[index][0]:
 			weakest_index = index
 	if fittest_boppies[weakest_index][0] < tuple[0]:
 		fittest_boppies[weakest_index] = tuple
@@ -265,7 +264,7 @@ func _on_BoppieOffspring(boppie):
 	var offspring_position = boppie.global_position - boppie.rotation_vector() * boppie.radius * 2.7
 	var scene
 	for config in boppie_configurations:
-		if boppie is config.boppie_class:
+		if boppie.type == config.group:
 			scene = config.scene
 			break
 	call_deferred("add_boppie", offspring_position, scene, boppie.dna)

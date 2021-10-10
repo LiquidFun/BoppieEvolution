@@ -9,6 +9,7 @@ var boppies_spawned := 0
 var nn_thread: Thread = Thread.new()
 var elapsed_time := 0.0
 var dna_clipboard = null
+var kloppies_cannibals = false
 
 var rng = RandomNumberGenerator.new()
 
@@ -32,9 +33,13 @@ func _process(delta):
 		last_emit_time = OS.get_ticks_msec()
 		emit_signal("HalfSecondTimer")
 
+func formatted_time(seconds = null):
+	if seconds == null:
+		seconds = int(elapsed_time)
+	return "%02d:%02d:%02d" % [seconds / 3600, (seconds / 60) % 60, seconds % 60]
 
 signal DifficultyChanged(new_value)
-var difficulty = .5 setget set_difficulty
+var difficulty = .3 setget set_difficulty
 
 func set_difficulty(new_value):
 	difficulty = new_value

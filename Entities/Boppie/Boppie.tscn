@@ -118,13 +118,13 @@ scale_curve = SubResource( 15 )
 hue_variation = 0.16
 hue_variation_random = 1.0
 
-[sub_resource type="Curve" id=18]
+[sub_resource type="Curve" id=17]
 _data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 1, 0 ), 0.0, 0.0, 0, 0 ]
 
-[sub_resource type="CurveTexture" id=19]
-curve = SubResource( 18 )
+[sub_resource type="CurveTexture" id=18]
+curve = SubResource( 17 )
 
-[sub_resource type="ParticlesMaterial" id=20]
+[sub_resource type="ParticlesMaterial" id=19]
 lifetime_randomness = 1.0
 emission_shape = 1
 emission_sphere_radius = 15.0
@@ -138,12 +138,12 @@ initial_velocity_random = 0.69
 orbit_velocity = 0.0
 orbit_velocity_random = 0.0
 scale = 3.0
-scale_curve = SubResource( 19 )
+scale_curve = SubResource( 18 )
 color = Color( 1, 0, 0, 1 )
 hue_variation = 0.05
 hue_variation_random = 1.0
 
-[sub_resource type="CircleShape2D" id=17]
+[sub_resource type="CircleShape2D" id=20]
 radius = 30.0938
 
 [node name="Boppie" type="KinematicBody2D" groups=[
@@ -230,7 +230,7 @@ emitting = false
 amount = 100
 one_shot = true
 explosiveness = 0.88
-process_material = SubResource( 20 )
+process_material = SubResource( 19 )
 script = ExtResource( 7 )
 
 [node name="ClickableArea" type="Area2D" parent="."]
@@ -241,7 +241,7 @@ script = ExtResource( 5 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="ClickableArea"]
 pause_mode = 2
-shape = SubResource( 17 )
+shape = SubResource( 20 )
 
 [connection signal="input_event" from="." to="." method="_on_Boppie_input_event"]
 [connection signal="mouse_entered" from="." to="." method="_on_Boppie_mouse_entered"]

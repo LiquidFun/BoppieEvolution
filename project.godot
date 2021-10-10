@@ -75,7 +75,7 @@ _global_script_class_icons={
 [application]
 
 config/name="Boppies"
-run/main_scene="res://Levels/Testing/Testing.tscn"
+run/main_scene="res://Levels/Testing/CannibalWorld.tscn"
 boot_splash/bg_color=Color( 0.0470588, 0.054902, 0.0745098, 1 )
 config/icon="res://icon.png"
 

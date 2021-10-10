@@ -28,8 +28,8 @@ func _on_HalfSecondTimer():
 	draw_next_pixel()
 
 func draw_next_pixel():
-	var owlies = get_tree().get_nodes_in_group("Owlie").size()
-	var kloppies = get_tree().get_nodes_in_group("Kloppie").size()
+	var owlies = clamp(get_tree().get_nodes_in_group("Owlie").size(), 1, height)
+	var kloppies = clamp(get_tree().get_nodes_in_group("Kloppie").size(), 1, height)
 	var some_pixels_ahead = (curr_index + 30) % width
 	var next_index = (curr_index + 1) % width
 	plot.lock()

@@ -5,6 +5,10 @@
 [node name="SingleBoppie" type="Node2D"]
 
 [node name="GameController" parent="." instance=ExtResource( 1 )]
+min_count_config = {
+"Kloppie": 0,
+"Owlie": 1
+}
 max_food_count = 5
 food_per_500ms = 1
 total_width = 200
