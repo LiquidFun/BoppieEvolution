@@ -2,7 +2,7 @@ extends PanelContainer
 
 var neural_network = null setget set_neural_network
 var height := 250.0
-var width := 300.0
+var width := 400.0
 var neuron_radius := 15
 var margins = neuron_radius * 2
 var neuron_dist = neuron_radius * 3

@@ -5,3 +5,7 @@
 [node name="Node2D" type="Node2D"]
 
 [node name="GameController" parent="." instance=ExtResource( 2 )]
+min_count_config = {
+"Kloppie": 0,
+"Owlie": 10
+}

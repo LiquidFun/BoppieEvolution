@@ -16,9 +16,10 @@ func _on_BoppieControlChanged(controlled_boppie):
 	
 	var different_boppie = (boppie != controlled_boppie)
 	self.boppie = controlled_boppie
-	left_side_panel.visible = true
 	# left_side_panel.visible = (boppie != null)
 	var should_open = boppie != null
+	#left_side_panel.visible = should_open
+	left_side_panel.visible = true
 	if opened != should_open:
 		opened = should_open
 		var other = Vector2(-left_side_panel.rect_size.x, 0)
@@ -32,7 +33,7 @@ func _on_BoppieControlChanged(controlled_boppie):
 	if should_open:
 		$Neurons.neural_network = boppie.ai
 		if different_boppie:
-			_on_Show_toggled($HBoxContainer/ShowDNA.pressed)
+			_on_Show_toggled(true)
 		
 	
 func _process(_delta):
@@ -53,8 +54,8 @@ func _process(_delta):
 	$Eaten.text = "Eaten: %d" % boppie.times_eaten
 	
 
-func _on_Show_toggled(button_pressed):
-	show_dna = button_pressed
+func _on_Show_toggled(button_pressed=true):
+	show_dna = $HBoxContainer/ShowDNA.pressed
 	$DNA.text = ("%s" % boppie.get_dna_str()) if show_dna else "{ ... }"
 	
 
@@ -66,9 +67,13 @@ func _on_CopyDNA_pressed():
 func _on_PasteDNA_pressed():
 	if boppie != null and Globals.dna_clipboard != null:
 		boppie.set_dna(Globals.dna_clipboard)
+		_on_Show_toggled()
 
 
 func _on_DNA_gui_input(event):
-	if event.action_just_pressed("ui_cancel"):
-		print("aa")
+	if event.is_action_pressed("ui_cancel"):
 		$DNA.release_focus()
+
+
+func _on_ApplyDNA_pressed():
+	boppie.set_dna_str($DNA.text)

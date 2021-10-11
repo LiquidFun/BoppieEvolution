@@ -30,6 +30,11 @@ func _ready():
 			vision_ray.collision_mask |= (1 << 3)
 
 func _on_EatingArea_body_entered(body):
-	if can_attack and (body is Owlie or (body.type == "Kloppie" and eats == Raytype.KLOPPIE and body != self)):
-		if body.take_damage(damage * self.scale.x * self.scale.x * max(.25, movement)):
-			eat(body)
+	if can_attack and not dead:
+		if body is Owlie or (body.type == "Kloppie" and eats == Raytype.KLOPPIE and body != self):
+			if body.take_damage(damage * self.scale.x * self.scale.x * max(.1, movement)):
+				eat(body)
+			else:
+				yield(get_tree().create_timer(.5), "timeout")
+				if is_instance_valid(body) and $EatingArea.overlaps_body(body):
+					_on_EatingArea_body_entered(body)

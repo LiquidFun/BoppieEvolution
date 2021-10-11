@@ -288,13 +288,13 @@ __meta__ = {
 [node name="PanelContainer" type="PanelContainer" parent="LeftSidePanel"]
 margin_left = 10.0
 margin_top = 10.0
-margin_right = 530.0
+margin_right = 430.0
 margin_bottom = 825.0
 mouse_filter = 2
 custom_styles/panel = SubResource( 7 )
 
 [node name="InsideMargin" type="MarginContainer" parent="LeftSidePanel/PanelContainer"]
-margin_right = 520.0
+margin_right = 420.0
 margin_bottom = 815.0
 mouse_filter = 2
 custom_constants/margin_right = 10
@@ -305,7 +305,7 @@ custom_constants/margin_bottom = 10
 [node name="BoppieInformation" type="VBoxContainer" parent="LeftSidePanel/PanelContainer/InsideMargin"]
 margin_left = 10.0
 margin_top = 10.0
-margin_right = 510.0
+margin_right = 410.0
 margin_bottom = 805.0
 mouse_filter = 2
 custom_constants/separation = 0
@@ -315,7 +315,7 @@ __meta__ = {
 }
 
 [node name="BoppieName" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
-margin_right = 500.0
+margin_right = 400.0
 margin_bottom = 25.0
 custom_fonts/font = SubResource( 6 )
 text = "Name #123"
@@ -324,13 +324,13 @@ valign = 2
 
 [node name="HSeparator" type="HSeparator" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
 margin_top = 25.0
-margin_right = 500.0
+margin_right = 400.0
 margin_bottom = 35.0
 custom_constants/separation = 10
 
 [node name="Energy" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
 margin_top = 35.0
-margin_right = 500.0
+margin_right = 400.0
 margin_bottom = 60.0
 custom_fonts/font = SubResource( 6 )
 text = "Energy/Max"
@@ -338,7 +338,7 @@ valign = 2
 
 [node name="OffspringEnergy" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
 margin_top = 60.0
-margin_right = 500.0
+margin_right = 400.0
 margin_bottom = 85.0
 custom_fonts/font = SubResource( 6 )
 text = "Offspring energy/max"
@@ -346,7 +346,7 @@ valign = 2
 
 [node name="OffspringCount" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
 margin_top = 85.0
-margin_right = 500.0
+margin_right = 400.0
 margin_bottom = 110.0
 custom_fonts/font = SubResource( 6 )
 text = "Offspring Count: X"
@@ -354,7 +354,7 @@ valign = 2
 
 [node name="Level" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
 margin_top = 110.0
-margin_right = 500.0
+margin_right = 400.0
 margin_bottom = 135.0
 custom_fonts/font = SubResource( 6 )
 text = "Level: x/max (size)"
@@ -362,7 +362,7 @@ valign = 2
 
 [node name="Survived" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
 margin_top = 135.0
-margin_right = 500.0
+margin_right = 400.0
 margin_bottom = 160.0
 custom_fonts/font = SubResource( 6 )
 text = "Survived: mm:hh"
@@ -370,7 +370,7 @@ valign = 2
 
 [node name="Eaten" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
 margin_top = 160.0
-margin_right = 500.0
+margin_right = 400.0
 margin_bottom = 185.0
 custom_fonts/font = SubResource( 6 )
 text = "Eaten: x"
@@ -378,13 +378,13 @@ valign = 2
 
 [node name="HSeparator5" type="HSeparator" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
 margin_top = 185.0
-margin_right = 500.0
+margin_right = 400.0
 margin_bottom = 195.0
 custom_constants/separation = 10
 
 [node name="NeuralNetworkName" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
 margin_top = 195.0
-margin_right = 500.0
+margin_right = 400.0
 margin_bottom = 220.0
 custom_fonts/font = SubResource( 6 )
 text = "Neural Network"
@@ -393,27 +393,27 @@ valign = 2
 
 [node name="HSeparator3" type="HSeparator" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
 margin_top = 220.0
-margin_right = 500.0
+margin_right = 400.0
 margin_bottom = 230.0
 custom_constants/separation = 10
 
 [node name="Neurons" type="PanelContainer" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
 margin_top = 230.0
-margin_right = 500.0
+margin_right = 400.0
 margin_bottom = 380.0
-rect_min_size = Vector2( 300, 150 )
+rect_min_size = Vector2( 400, 150 )
 mouse_filter = 2
 script = ExtResource( 7 )
 
 [node name="HSeparator4" type="HSeparator" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
 margin_top = 380.0
-margin_right = 500.0
+margin_right = 400.0
 margin_bottom = 390.0
 custom_constants/separation = 10
 
 [node name="DNAName" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
 margin_top = 390.0
-margin_right = 500.0
+margin_right = 400.0
 margin_bottom = 415.0
 custom_fonts/font = SubResource( 6 )
 text = "DNA"
@@ -422,45 +422,52 @@ valign = 2
 
 [node name="HSeparator2" type="HSeparator" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
 margin_top = 415.0
-margin_right = 500.0
+margin_right = 400.0
 margin_bottom = 425.0
 custom_constants/separation = 10
 
 [node name="HBoxContainer" type="HBoxContainer" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
 margin_top = 425.0
-margin_right = 500.0
+margin_right = 400.0
 margin_bottom = 445.0
 mouse_filter = 2
-custom_constants/separation = 20
+custom_constants/separation = 10
 alignment = 1
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="ShowDNA" type="Button" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/HBoxContainer"]
-margin_left = 113.0
-margin_right = 191.0
+margin_left = 27.0
+margin_right = 105.0
 margin_bottom = 20.0
 toggle_mode = true
 pressed = true
 action_mode = 0
 text = "Show DNA"
 
+[node name="ApplyDNA" type="Button" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/HBoxContainer"]
+margin_left = 115.0
+margin_right = 196.0
+margin_bottom = 20.0
+action_mode = 0
+text = "Apply DNA"
+
 [node name="CopyDNA" type="Button" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/HBoxContainer"]
-margin_left = 211.0
-margin_right = 287.0
+margin_left = 206.0
+margin_right = 282.0
 margin_bottom = 20.0
 text = "Copy DNA"
 
 [node name="PasteDNA" type="Button" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/HBoxContainer"]
-margin_left = 307.0
-margin_right = 387.0
+margin_left = 292.0
+margin_right = 372.0
 margin_bottom = 20.0
 text = "Paste DNA"
 
 [node name="DNA" type="TextEdit" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
 margin_top = 445.0
-margin_right = 500.0
+margin_right = 400.0
 margin_bottom = 795.0
 rect_min_size = Vector2( 300, 350 )
 focus_mode = 1
@@ -480,5 +487,7 @@ caret_blink = true
 [node name="Tween" type="Tween" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
 
 [connection signal="toggled" from="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/HBoxContainer/ShowDNA" to="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation" method="_on_Show_toggled"]
+[connection signal="pressed" from="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/HBoxContainer/ApplyDNA" to="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation" method="_on_ApplyDNA_pressed"]
 [connection signal="pressed" from="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/HBoxContainer/CopyDNA" to="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation" method="_on_CopyDNA_pressed"]
 [connection signal="pressed" from="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/HBoxContainer/PasteDNA" to="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation" method="_on_PasteDNA_pressed"]
+[connection signal="gui_input" from="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/DNA" to="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation" method="_on_DNA_gui_input"]
