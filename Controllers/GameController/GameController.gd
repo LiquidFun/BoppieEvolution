@@ -102,7 +102,7 @@ func add_boppie(at: Vector2, scene: PackedScene, dna=null):
 	var instance = scene.instance()
 	instance.ai = NeuralNetwork.new()
 	if dna != null:
-		instance.set_dna(dna, true)
+		instance.set_dna(dna, 1)
 	instance.rotation = Globals.rng.randf() * 2 * PI
 	add_child(instance)
 	instance.global_position = at
@@ -121,7 +121,7 @@ func add_food(at: Vector2):
 	var food = food_scene.instance()
 	add_child(food)
 	food.global_position = at
-	food.connect("FoodEaten", self, "_on_FoodEaten")
+	# food.connect("FoodEaten", self, "_on_FoodEaten")
 	return food
 	
 func _on_FoodEaten(food):

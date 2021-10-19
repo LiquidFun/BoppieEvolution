@@ -25,9 +25,11 @@ var offspring_mutability := 0.05
 var max_energy = 15
 var required_offspring_energy = 10
 var generation = Generation.new()
+var scale_factor = 1
 
 var dna_allowed_values = {
 	"move_speed": Vector2(50, 100), 
+	"scale_factor": Vector2(.5, 1.5), 
 	"max_energy": Vector2(10, 30), 
 	"required_offspring_energy": Vector2(8, 15), 
 	"turn_speed": Vector2(.5, 3),
@@ -52,7 +54,7 @@ var vision_rays = []
 var ai = null
 var temp_ai = null
 
-enum Data {ENERGY, RAY_DIST, RAY_TYPE, EATS}
+enum Data {ENERGY, RAY_DIST, RAY_TYPE, EATS, DANGER_SENSE}
 enum Raytype {NONE, OWLIE, KLOPPIE, FOOD}
 var ai_input = {}
 
@@ -101,14 +103,12 @@ func _ready():
 	spawn_time = Globals.elapsed_time
 	energy_gradient = load(energy_gradient)
 	$Tween.interpolate_property(
-		self, "scale", Vector2(.2, .2), Vector2(size_increases[0], size_increases[0]), 
+		self, "scale", Vector2(.2, .2), Vector2(size_increases[0], size_increases[0]) * scale_factor, 
 		1, Tween.TRANS_BOUNCE, Tween.EASE_IN_OUT
 	)
 	$Tween.start()
 	$SpawnParticles.emitting = true
-	ai_input[Data.EATS] = eats
-	ai_input[Data.RAY_DIST] = []
-	ai_input[Data.RAY_TYPE] = []
+	initialize_ai_input()
 	initialize_rays()
 	initialize_dna()
 
@@ -123,7 +123,7 @@ func initialize_dna():
 		for subproperty in property.split("."):
 			dna[property] = dna[property].get(subproperty)
 
-func set_dna(new_dna: Dictionary, mutate=false):
+func set_dna(new_dna: Dictionary, mutation_factor=0):
 	new_dna = new_dna.duplicate(true)
 	for property in new_dna:
 		var resolved_subproperty = self
@@ -133,8 +133,8 @@ func set_dna(new_dna: Dictionary, mutate=false):
 		for subproperty in subproperties:
 			resolved_subproperty = resolved_subproperty.get(subproperty)
 		resolved_subproperty.set(last, new_dna[property])
-		if mutate:
-			resolved_subproperty.mutate(last, new_dna["offspring_mutability"])
+		if mutation_factor > 0:
+			resolved_subproperty.mutate(last, new_dna["offspring_mutability"] * mutation_factor)
 	initialize_dna()
 		
 func mutate(property: String, mutability: float):
@@ -184,6 +184,14 @@ func add_ray(angle_radians, push_back=true, ray=null):
 # AI
 # ==========================================================================
 	
+func initialize_ai_input():
+	ai_input[Data.EATS] = eats
+	ai_input[Data.RAY_DIST] = []
+	ai_input[Data.RAY_TYPE] = []
+	ai_input[Data.DANGER_SENSE] = []
+	for i in range(4):
+		ai_input[Data.DANGER_SENSE].append(1.0)
+
 func add_temp_ai(ai):
 	temp_ai = ai
 	
@@ -195,6 +203,17 @@ func calc_ai_input():
 	for i in range(vision_rays.size()):
 		ai_input[Data.RAY_DIST][i] = vision_rays[i].collision_distance()
 		ai_input[Data.RAY_TYPE][i] = vision_rays[i].collision_type()
+	for i in range(4):
+		ai_input[Data.DANGER_SENSE][i] = 1.0
+	for body in $DangerSense.get_overlapping_bodies():
+		var vec_to = body.position - position
+		var angle = rotation_vector().angle_to(vec_to)
+		var index = int((angle + PI + PI / 4) * 4 / (PI * 2)) % 4
+		# print(rad2deg(angle), " ", index)
+		# print(int((angle + PI) * 4 / (PI * 2)))
+		var radius = $DangerSense/CollisionShape2D.shape.radius
+		var value = vec_to.length() / (radius * scale.x)
+		ai_input[Data.DANGER_SENSE][index] = min(value, ai_input[Data.DANGER_SENSE][index])
 		
 # ==========================================================================
 # Drawing methods
@@ -290,10 +309,12 @@ func _physics_process(delta):
 				movement = clamp(curr_ai.get_movement_factor(ai_input), max_backwards_factor, max_boost_factor)
 				var turn = curr_ai.get_turn_factor(ai_input)
 				# Flip turning when movement is backwards
-				turn = clamp(turn, -1, 1) * (1 if movement >= 0 else -1)
+				turn = clamp(turn * turn_speed, -1, 1) * (1 if movement >= 0 else -1)
 				update_energy(-delta * movement * movement * energy_consumption_walking)
 				self.move(movement, delta)
 				self.turn(turn, delta)
+			if curr_ai == temp_ai:
+				ai.get_movement_factor(ai_input)
 		else:
 			die()
 		self.self_modulate = energy_gradient.interpolate(self.energy / (max_energy * .7))
@@ -333,7 +354,7 @@ func update_energy(add_energy):
 		energy = max_energy
 		if old_level != curr_level():
 			if curr_level() < size_increases.size():
-				level_up(size_increases[curr_level()])
+				level_up(size_increases[curr_level()] * scale_factor)
 			else:
 				produce_offspring()
 				

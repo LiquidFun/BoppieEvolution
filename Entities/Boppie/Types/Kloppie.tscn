@@ -26,4 +26,10 @@ collision_mask = 12
 position = Vector2( 24.277, 0 )
 shape = SubResource( 1 )
 
+[node name="DangerSense" parent="." index="11"]
+collision_mask = 0
+
+[node name="CollisionShape2D" parent="DangerSense" index="0"]
+disabled = true
+
 [connection signal="body_entered" from="EatingArea" to="." method="_on_EatingArea_body_entered"]

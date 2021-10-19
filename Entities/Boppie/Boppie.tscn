@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=2]
+[gd_scene load_steps=31 format=2]
 
 [ext_resource path="res://Entities/Boppie/Boppie.gd" type="Script" id=1]
 [ext_resource path="res://Entities/Boppie/Face.gd" type="Script" id=2]
@@ -146,6 +146,9 @@ hue_variation_random = 1.0
 [sub_resource type="CircleShape2D" id=20]
 radius = 30.0938
 
+[sub_resource type="CircleShape2D" id=21]
+radius = 300.0
+
 [node name="Boppie" type="KinematicBody2D" groups=[
 "Boppie",
 ]]
@@ -242,6 +245,13 @@ script = ExtResource( 5 )
 [node name="CollisionShape2D" type="CollisionShape2D" parent="ClickableArea"]
 pause_mode = 2
 shape = SubResource( 20 )
+
+[node name="DangerSense" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 8
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DangerSense"]
+shape = SubResource( 21 )
 
 [connection signal="input_event" from="." to="." method="_on_Boppie_input_event"]
 [connection signal="mouse_entered" from="." to="." method="_on_Boppie_mouse_entered"]

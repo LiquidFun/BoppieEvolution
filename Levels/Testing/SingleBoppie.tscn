@@ -6,7 +6,7 @@
 
 [node name="GameController" parent="." instance=ExtResource( 1 )]
 min_count_config = {
-"Kloppie": 0,
+"Kloppie": 1,
 "Owlie": 1
 }
 max_food_count = 5

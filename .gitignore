@@ -20,3 +20,4 @@ data_*/
 # Custom ones (CI):
 deploy.sh
 Builds/
+DNA/

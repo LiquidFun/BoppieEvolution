@@ -6,6 +6,6 @@
 
 [node name="GameController" parent="." instance=ExtResource( 2 )]
 min_count_config = {
-"Kloppie": 0,
+"Kloppie": 5,
 "Owlie": 10
 }
