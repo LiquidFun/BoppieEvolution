@@ -13,12 +13,12 @@ var input_layer = (
 
 #   5 # ray boppie
 #   2 # previous inputs
-	+ 1 # memory? from last n steps?
-	+ 4 # danger sense
+#	+ 1 # memory? from last n steps?
+#	+ 4 # danger sense
 )
 
 var output_layer = \
-	3  # outputs
+	2  # outputs
 
 var weights = []
 var layers = [input_layer, output_layer]
@@ -42,11 +42,8 @@ func _init(parent_weights=null):
 		for left in range(layers[layer]+1):
 			values[-1].append(1)
 	values[-1].pop_back()
-			
-	# print(layers)
-	# print(weights)
-	# print(values)
-	
+
+
 func mutate(property, mutability):
 	if property == "weights":
 		mutate_weights(mutability)
@@ -64,11 +61,11 @@ func calculate_inputs(ai_input):
 	var types = ai_input[Boppie.Data.RAY_TYPE]
 	for i in range(dists.size()):
 		values[0][i] = 1 - dists[i] / 2 if types[i] == ai_input[Boppie.Data.EATS] else 0.0
-	values[0][5] = values[1][2]
+	#values[0][5] = values[1][2]
 	# print(ai_input[Boppie.Data.DANGER_SENSE])
-	for i in range(4):
-		var danger = ai_input[Boppie.Data.DANGER_SENSE][i]
-		values[0][6 + i] = 0.0 if danger == 1.0 else 1.0 - danger / 2.0
+	#for i in range(4):
+	#	var danger = ai_input[Boppie.Data.DANGER_SENSE][i]
+	#	values[0][6 + i] = 0.0 if danger == 1.0 else 1.0 - danger / 2.0
 	#values[0][5] = fmod(Globals.elapsed_time / 5.0, 1.0)
 		
 func relu(num):

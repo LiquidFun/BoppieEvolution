@@ -21,3 +21,5 @@ data_*/
 deploy.sh
 Builds/
 DNA/
+Media/*.mp4
+Media/*.import

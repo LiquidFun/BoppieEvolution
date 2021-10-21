@@ -70,7 +70,7 @@ func make_within_game(pos: Vector2):
 	
 func _draw():
 	var offset = Vector2(14, 14)
-	draw_rect(Rect2(-offset, total_size+offset), Color("#4d4d4d"))
+	draw_rect(Rect2(-offset, total_size+offset), Color("#6d6d6d"))
 
 func _ready():
 	Globals.kloppies_cannibals = kloppies_cannibals
@@ -137,11 +137,13 @@ func spawn_food(count=max_food_count):
 func take_control_of_boppie(boppie):
 	if controlled_boppie != null:
 		controlled_boppie.set_selected(false)
+		controlled_boppie.draw_vision_rays = false
 		if controlled_boppie.temp_ai == player_ai:
 			controlled_boppie.pop_temp_ai()
 	controlled_boppie = boppie
 	emit_signal("BoppieControlChanged", controlled_boppie)
 	if controlled_boppie != null:
+		controlled_boppie.draw_vision_rays = Globals.draw_current_vision_rays
 		controlled_boppie.set_selected(true)
 
 
@@ -161,6 +163,10 @@ func _unhandled_input(event):
 			controlled_boppie.update_energy(5)
 	if event.is_action_pressed("ui_toggle_rays"):
 		Globals.draw_vision_rays = !Globals.draw_vision_rays
+	if event.is_action_pressed("ui_toggle_current_rays"):
+		Globals.draw_current_vision_rays = !Globals.draw_current_vision_rays
+		if controlled_boppie != null:
+			controlled_boppie.draw_vision_rays = Globals.draw_current_vision_rays
 	if event.is_action_pressed("toggle_performance_mode"):
 		Globals.performance_mode = !Globals.performance_mode
 	if event.is_action_pressed("ui_increase_time"):

@@ -29,7 +29,7 @@ var scale_factor = 1
 
 var dna_allowed_values = {
 	"move_speed": Vector2(50, 100), 
-	"scale_factor": Vector2(.5, 1.5), 
+	"scale_factor": Vector2(.9, 1.1), 
 	"max_energy": Vector2(10, 30), 
 	"required_offspring_energy": Vector2(8, 15), 
 	"turn_speed": Vector2(.5, 3),
@@ -50,6 +50,7 @@ var energy_consumption_existing = 1 * difficulty
 var energy_consumption_walking = .5 * difficulty
 
 var vision_rays = []
+var draw_vision_rays = false
 
 var ai = null
 var temp_ai = null

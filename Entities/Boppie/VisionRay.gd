@@ -21,7 +21,7 @@ func collision_type():
 	return Boppie.Raytype.NONE
 
 func _physics_process(_delta):
-	if Globals.draw_vision_rays:
+	if Globals.draw_vision_rays or get_parent().draw_vision_rays:
 		if is_colliding():
 			var collider = get_collider()
 			if collider is Owlie:
