@@ -42,6 +42,7 @@ var unused_food_stack_index = 0
 var follow_fittest_boppie = false
 var difficulty_level = 1
 var last_difficulty_level_change_time = 0
+var mouse_is_pressed = false
 
 # Boppies
 var food_scene = preload("res://Entities/Food/Food.tscn")
@@ -196,6 +197,11 @@ func _unhandled_input(event):
 				controlled_boppie.add_temp_ai(player_ai)
 			else:
 				controlled_boppie.pop_temp_ai()
+	if event is InputEventMouseButton:
+		mouse_is_pressed = event.pressed
+	elif event is InputEventMouseMotion and mouse_is_pressed:
+		$Camera.position -= event.relative * $Camera._zoom_level
+
 				
 func find_fittest_in_group(group):
 	var fittest = null
