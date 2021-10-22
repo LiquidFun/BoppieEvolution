@@ -1,8 +1,13 @@
-# Boppies - A Simulation of Natural Selection based on Owl-like Creatures with Neural Networks
+<h1 align="center">Boppie Evolution</h1>
+
+---
+
+# Try it [online](https://boppie-evolution.brutenis.net)! 
+
+## A Simulation of Natural Selection based on Owl-like Creatures with Neural Networks
 
 ![](./Media/Simulation1.gif)
 
-## Try it [online](https://boppie-evolution.brutenis.net)! (see the hotkey section below on how to use)
 
 ![](./Media/Simulation2.gif)
 
@@ -27,25 +32,27 @@ Based on this basic neural network and evolution some interesting behaviour emer
 
 ## Running it
 
-You can load it [online](https://boppie-evolution.brutenis.net) with a web browser.
+You can play with it [online](https://boppie-evolution.brutenis.net) with a web browser.
 For better performance you can download the binaries [here](https://github.com/LiquidFun/BoppieEvolution/releases/tag/0.1.0) (Linux, Windows and Mac are all provided, the latter two have not been tested though).
 
 ## Hotkeys
 
-Quickstart: generally after starting a simulation: press **P** and **9** to simulate quickly. After a couple minutes you can press **1** to go to normal speed!
+Quickstart: after starting a simulation: press `9` to simulate quickly. After a couple minutes you can press `1` to go to normal speed and inspect what the creatures are now capable of!
 
-* `P` - **important!** turn performance mode on/off (off by default). This improves FPS by a lot by turning off all particles and unecessary visual effects
+* `H` - See help page for up-to-date hotkey list (or click on the question mark in the bottom right corner)
 * `W`/`A`/`S`/`D` - move camera around (hold **shift** to move 10x as fast)
+* `Mouse click and drag` - move camera around
 * `Mouse click` on boppie - follow it until it dies
+* `Mouse wheel` - zoom in/out
 * `Escape` - stop following boppie
 * `O`/`K` - follow fittest **o**wlie/**k**loppie until it dies
+* `P` - turn performance mode on/off (off by default). This improves FPS by a lot by turning off all particles and unnecessary visual effects. This is done automatically when changing to a time factor above 32x.
 * `F` - **f**ollow new fittest boppie even after death
 * `C` - toggle **c**ontrol of boppie if already following it (i.e. clicked on it before) (use `W`/`A`/`S`/`D` to move with it)
 * `E` - add 5 **e**nergy to currently following boppie (press multiple times, then the boppie will grow and have children)
 * `-`/`+` - decrease/increase time factor by 2x (min: 0.5x, max: 256x)
 * Numbers `1` through `9` - set time factor to 2^(number - 1)  (e.g.: pressing 9 sets time factor to 256x)
 * `Space` - pause/unpause
-* `Mouse wheel` - zoom in/out
 * `R` - show vision **r**ays for all boppies
 * `T` - show vision rays for curren**t** boppie
 
@@ -86,3 +93,10 @@ To quickly get a smart boppie: click on a boppie (both owlies and kloppies accep
 "turn_speed": 2.86812
 }
 ```
+
+## Inspired by
+
+* [Evolution simulator](https://www.youtube.com/watch?v=GOFws_hhZs8) by [carykh](https://www.youtube.com/channel/UC9z7EZAbkphEMg0SP7rw44A)
+* [Evolv.io](https://www.youtube.com/watch?v=C9tWr1WUTuI) by [carykh](https://www.youtube.com/channel/UC9z7EZAbkphEMg0SP7rw44A)
+* [MarI/O](https://www.youtube.com/watch?v=qv6UVOQ0F44) by [SethBling](https://www.youtube.com/channel/UC8aG3LDTDwNR1UQhSn9uVrw)
+* [Simulating Natural Selection](https://www.youtube.com/watch?v=0ZGbIKd0XrM) by [Primer](https://www.youtube.com/channel/UCKzJFdi57J53Vr_BkTfN3uQ)

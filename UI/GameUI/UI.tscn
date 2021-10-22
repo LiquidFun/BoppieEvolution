@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=2]
+[gd_scene load_steps=26 format=2]
 
 [ext_resource path="res://UI/GameUI/BoppieInformation.gd" type="Script" id=1]
 [ext_resource path="res://UI/GameUI/BoppieCountHistoryPlot.gd" type="Script" id=2]
@@ -11,6 +11,7 @@
 [ext_resource path="res://UI/GameUI/CheckFollowFittest.gd" type="Script" id=9]
 [ext_resource path="res://UI/GameUI/Difficulty.gd" type="Script" id=10]
 [ext_resource path="res://UI/GameUI/FittestBoppieList.gd" type="Script" id=11]
+[ext_resource path="res://UI/GameUI/HelpButton.gd" type="Script" id=12]
 
 [sub_resource type="DynamicFontData" id=1]
 font_path = "res://Resources/Fonts/FontAwesome/otfs/Font Awesome 5 Free-Solid-900.otf"
@@ -32,13 +33,25 @@ font_path = "res://Resources/Fonts/FredokaOne-Regular.ttf"
 size = 20
 font_data = SubResource( 5 )
 
-[sub_resource type="DynamicFontData" id=8]
+[sub_resource type="DynamicFontData" id=10]
+font_path = "res://Resources/Fonts/FontAwesome/otfs/Font Awesome 5 Free-Solid-900.otf"
+
+[sub_resource type="DynamicFont" id=11]
+font_data = SubResource( 10 )
+
+[sub_resource type="DynamicFontData" id=12]
 font_path = "res://Resources/Fonts/FredokaOne-Regular.ttf"
 
-[sub_resource type="DynamicFont" id=9]
-font_data = SubResource( 8 )
+[sub_resource type="DynamicFont" id=13]
+font_data = SubResource( 12 )
 
-[sub_resource type="StyleBoxFlat" id=7]
+[sub_resource type="DynamicFontData" id=7]
+font_path = "res://Resources/Fonts/FredokaOne-Regular.ttf"
+
+[sub_resource type="DynamicFont" id=8]
+font_data = SubResource( 7 )
+
+[sub_resource type="StyleBoxFlat" id=9]
 bg_color = Color( 1, 1, 1, 0.0980392 )
 
 [node name="UI" type="CanvasLayer"]
@@ -201,17 +214,74 @@ margin_left = 10.0
 margin_right = 1900.0
 margin_bottom = 25.0
 mouse_filter = 2
+custom_constants/separation = 20
 alignment = 2
 
 [node name="BoppieCount" type="Label" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer2"]
-margin_left = 1820.0
-margin_right = 1890.0
+margin_left = 1787.0
+margin_right = 1857.0
 margin_bottom = 25.0
 custom_fonts/font = SubResource( 6 )
 text = "#count"
 align = 2
 valign = 2
 script = ExtResource( 3 )
+
+[node name="HelpButton" type="Button" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer2"]
+margin_left = 1877.0
+margin_right = 1890.0
+margin_bottom = 25.0
+custom_fonts/font = SubResource( 11 )
+toggle_mode = true
+text = ""
+script = ExtResource( 12 )
+
+[node name="HelpPopup" type="PopupPanel" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer2/HelpButton"]
+visible = true
+margin_right = 40.0
+margin_bottom = 40.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MarginContainer" type="MarginContainer" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer2/HelpButton/HelpPopup"]
+margin_left = 4.0
+margin_top = 4.0
+margin_right = 524.0
+margin_bottom = 324.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_constants/margin_right = 10
+custom_constants/margin_top = 10
+custom_constants/margin_left = 10
+custom_constants/margin_bottom = 10
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Keybindings" type="RichTextLabel" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer2/HelpButton/HelpPopup/MarginContainer"]
+margin_left = 10.0
+margin_top = 10.0
+margin_right = 610.0
+margin_bottom = 610.0
+rect_min_size = Vector2( 600, 600 )
+focus_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_fonts/normal_font = SubResource( 13 )
+bbcode_enabled = true
+bbcode_text = "[center]Keybindings[/center]
+
+Key a"
+text = "Keybindings
+
+Key a"
+selection_enabled = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="RightSidePanel" type="MarginContainer" parent="."]
 anchor_left = 1.0
@@ -268,7 +338,7 @@ autostart = true
 margin_top = 183.0
 margin_right = 300.0
 margin_bottom = 192.0
-custom_fonts/font = SubResource( 9 )
+custom_fonts/font = SubResource( 8 )
 allow_reselect = true
 auto_height = true
 script = ExtResource( 11 )
@@ -291,7 +361,7 @@ margin_top = 10.0
 margin_right = 430.0
 margin_bottom = 825.0
 mouse_filter = 2
-custom_styles/panel = SubResource( 7 )
+custom_styles/panel = SubResource( 9 )
 
 [node name="InsideMargin" type="MarginContainer" parent="LeftSidePanel/PanelContainer"]
 margin_right = 420.0
@@ -486,6 +556,7 @@ caret_blink = true
 
 [node name="Tween" type="Tween" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
 
+[connection signal="toggled" from="StatusBar/VBoxContainer/MarginContainer/HBoxContainer2/HelpButton" to="StatusBar/VBoxContainer/MarginContainer/HBoxContainer2/HelpButton" method="_on_HelpButton_toggled"]
 [connection signal="toggled" from="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/HBoxContainer/ShowDNA" to="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation" method="_on_Show_toggled"]
 [connection signal="pressed" from="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/HBoxContainer/ApplyDNA" to="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation" method="_on_ApplyDNA_pressed"]
 [connection signal="pressed" from="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/HBoxContainer/CopyDNA" to="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation" method="_on_CopyDNA_pressed"]

@@ -157,41 +157,41 @@ func _process(delta):
 
 	
 func _unhandled_input(event):
-	if event.is_action_pressed("ui_cancel"):
+	if event.is_action_pressed("cancel"):
 		take_control_of_boppie(null)
-	if event.is_action_pressed("ui_eat"):
+	if event.is_action_pressed("add_energy_to_focused_boppie"):
 		if controlled_boppie:
 			controlled_boppie.update_energy(5)
-	if event.is_action_pressed("ui_toggle_rays"):
+	if event.is_action_pressed("toggle_vision_rays"):
 		Globals.draw_vision_rays = !Globals.draw_vision_rays
-	if event.is_action_pressed("ui_toggle_current_rays"):
+	if event.is_action_pressed("toggle_vision_rays_of_focused_boppie"):
 		Globals.draw_current_vision_rays = !Globals.draw_current_vision_rays
 		if controlled_boppie != null:
 			controlled_boppie.draw_vision_rays = Globals.draw_current_vision_rays
 	if event.is_action_pressed("toggle_performance_mode"):
 		Globals.performance_mode = !Globals.performance_mode
-	if event.is_action_pressed("ui_increase_time"):
+	if event.is_action_pressed("increase_time_factor"):
 		change_time_scale(2)
-	if event.is_action_pressed("ui_decrease_time"):
+	if event.is_action_pressed("decrease_time_factor"):
 		change_time_scale(0.5)
-	if event.is_action_pressed("number"):
+	if event.is_action_pressed("set_time_factor_to_2^(number-1)"):
 		var new_time_scale = 1 << (event.scancode - KEY_1)
 		change_time_scale(new_time_scale / Engine.time_scale)
-	if event.is_action_pressed("save"):
+	if event.is_action_pressed("save_simulation"):
 		$SaveDialog.show(true)
-	if event.is_action_pressed("load"):
+	if event.is_action_pressed("load_simulation"):
 		$SaveDialog.show(false)
-	if event.is_action_pressed("follow_fittest_boppie"):
+	if event.is_action_pressed("follow_fittest_boppie_after_death"):
 		follow_fittest_boppie = !follow_fittest_boppie
 		emit_signal("FollowFittestBoppie", follow_fittest_boppie)
-	if event.is_action_pressed("fittest_owlie"):
+	if event.is_action_pressed("follow_fittest_owlie"):
 		take_control_of_fittest_boppie_in_group("Owlie")
-	if event.is_action_pressed("fittest_kloppie"):
+	if event.is_action_pressed("follow_fittest_kloppie"):
 		take_control_of_fittest_boppie_in_group("Kloppie")
-	if event.is_action_pressed("ui_pause"):
+	if event.is_action_pressed("pause_simulation"):
 		get_tree().paused = !get_tree().paused
 		emit_signal("EngineTimeScaleChange", int(!get_tree().paused))
-	if event.is_action_pressed("take_control_of_boppie"):
+	if event.is_action_pressed("take_control_of_focused_boppie"):
 		if controlled_boppie != null:
 			if controlled_boppie.temp_ai != player_ai:
 				controlled_boppie.add_temp_ai(player_ai)
@@ -219,6 +219,8 @@ func change_time_scale(factor):
 	if .5 <= new_time_scale and new_time_scale <= 256 and new_time_scale != Engine.time_scale:
 		Engine.time_scale = new_time_scale
 		Engine.iterations_per_second = 60 * max(1, pow(2, log(Engine.time_scale)))
+		if new_time_scale >= 64:
+			Globals.performance_mode = true
 		emit_signal("EngineTimeScaleChange", factor)
 			
 func check_boppies():
