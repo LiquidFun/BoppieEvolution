@@ -74,7 +74,9 @@ _global_script_class_icons={
 
 [application]
 
-config/name="Boppies"
+config/name="Boppie Evolution"
+config/description="A Simulation of Natural Selection based on Owl-like Creatures with Neural Networks
+"
 run/main_scene="res://Levels/Testing/Testing.tscn"
 boot_splash/bg_color=Color( 0.0470588, 0.054902, 0.0745098, 1 )
 config/icon="res://Resources/Icon/Boppie.png"
@@ -275,6 +277,7 @@ cancel={
 2d_physics/layer_2="Boppies"
 2d_physics/layer_3="Owlies"
 2d_physics/layer_4="Kloppies"
+2d_physics/layer_5="Traps"
 
 [physics]
 

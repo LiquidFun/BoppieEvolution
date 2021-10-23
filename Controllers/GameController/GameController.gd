@@ -15,11 +15,16 @@ class BoppieConfiguration:
 export var min_count_config = {
 	"Owlie": 10,
 	"Kloppie": 0,
+	"Trap": 5,
 }
+
+func get_min_count(type):
+	return min_count_config[type] if type in min_count_config else 0
 		
 onready var boppie_configurations = [
-	BoppieConfiguration.new("Owlie", min_count_config["Owlie"], preload("res://Entities/Boppie/Types/Owlie.tscn")),
-	BoppieConfiguration.new("Kloppie", min_count_config["Kloppie"], preload("res://Entities/Boppie/Types/Kloppie.tscn")),
+	BoppieConfiguration.new("Owlie", get_min_count("Owlie"), preload("res://Entities/Boppie/Types/Owlie.tscn")),
+	BoppieConfiguration.new("Kloppie", get_min_count("Kloppie"), preload("res://Entities/Boppie/Types/Kloppie.tscn")),
+	BoppieConfiguration.new("Trap", get_min_count("Trap"), preload("res://Entities/Trap/Trap.tscn")),
 ]
 var lookup_boppie_type_to_config = {}
 
@@ -101,13 +106,14 @@ func handle_boppie(boppie):
 
 func add_boppie(at: Vector2, scene: PackedScene, dna=null):
 	var instance = scene.instance()
-	instance.ai = NeuralNetwork.new()
-	if dna != null:
-		instance.set_dna(dna, 1)
+	if instance is Boppie:
+		instance.ai = NeuralNetwork.new()
+		if dna != null:
+			instance.set_dna(dna, 1)
+		handle_boppie(instance)
 	instance.rotation = Globals.rng.randf() * 2 * PI
 	add_child(instance)
 	instance.global_position = at
-	handle_boppie(instance)
 	
 
 func add_random_boppies(count: int, config: BoppieConfiguration):

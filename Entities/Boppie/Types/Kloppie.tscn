@@ -27,7 +27,7 @@ position = Vector2( 24.277, 0 )
 shape = SubResource( 1 )
 
 [node name="DangerSense" parent="." index="11"]
-collision_mask = 0
+collision_mask = 16
 
 [node name="CollisionShape2D" parent="DangerSense" index="0"]
 disabled = true

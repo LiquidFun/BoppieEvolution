@@ -206,7 +206,7 @@ func calc_ai_input():
 		ai_input[Data.RAY_TYPE][i] = vision_rays[i].collision_type()
 	for i in range(4):
 		ai_input[Data.DANGER_SENSE][i] = 1.0
-	for body in $DangerSense.get_overlapping_bodies():
+	for body in $DangerSense.get_overlapping_bodies() + $DangerSense.get_overlapping_areas():
 		var vec_to = body.position - position
 		var angle = rotation_vector().angle_to(vec_to)
 		var index = int((angle + PI + PI / 4) * 4 / (PI * 2)) % 4
