@@ -14,7 +14,7 @@ func _init():
 	draw_nose = true
 	draw_eyes = true
 	draw_eyebrows = true
-	eats = Raytype.KLOPPIE if Globals.kloppies_cannibals else Raytype.OWLIE
+	eats = Data.Raytype.KLOPPIE if Globals.kloppies_cannibals else Data.Raytype.OWLIE
 	max_boost_factor = 3.0
 	max_energy = 40
 	ray_length = 500
@@ -31,7 +31,7 @@ func _ready():
 
 func _on_EatingArea_body_entered(body):
 	if can_attack and not dead:
-		if body is Owlie or (body.type == "Kloppie" and eats == Raytype.KLOPPIE and body != self):
+		if body is Owlie or (body.type == "Kloppie" and eats == Data.Raytype.KLOPPIE and body != self):
 			if body.take_damage(damage * self.scale.x * self.scale.x * max(.1, movement)):
 				eat(body)
 			else:

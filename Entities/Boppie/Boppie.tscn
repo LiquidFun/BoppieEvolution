@@ -147,7 +147,7 @@ hue_variation_random = 1.0
 radius = 30.0938
 
 [sub_resource type="CircleShape2D" id=21]
-radius = 300.0
+radius = 150.0
 
 [node name="Boppie" type="KinematicBody2D" groups=[
 "Boppie",

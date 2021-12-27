@@ -4,7 +4,7 @@ class_name Boppie
 
 # Properties
 var type = "Boppie"
-var radius := 20.0  # (too much hardcoded)
+var radius := 20.0  # (too much hardcoded, don't change)
 var can_die := true
 var nutrition := 20.0
 
@@ -12,6 +12,15 @@ class Generation:
 	var i = 1
 	func mutate(_property, _mutability):
 		i += 1
+		
+class Senses:
+	var bitmask = 0
+	
+	func _init(bitmask=0):
+		self.bitmask |= bitmask
+		
+	func mutate(_property, _mutability):
+		pass
 
 # DNA
 var move_speed := 85.0
@@ -26,6 +35,12 @@ var max_energy = 15
 var required_offspring_energy = 10
 var generation = Generation.new()
 var scale_factor = 1
+var danger_sense_parts = 4
+var senses = Senses.new(0
+	| Data.Senses.VISION_RAY_EATS
+	| Data.Senses.DANGER_SENSE
+	| Data.Senses.BIAS
+)
 
 var dna_allowed_values = {
 	"move_speed": Vector2(50, 100), 
@@ -39,8 +54,9 @@ var dna_allowed_values = {
 	"max_boost_factor": Vector2(1.5, 2.5),
 	"max_backwards_factor": Vector2(-1.0, -0.5),
 	"offspring_mutability": Vector2(0.01, .5),
-	"ai.weights": null,
+	"ai.connections": null,
 	"generation.i": null,
+	"senses.bitmask": null,
 }
 
 var dna := {} setget set_dna
@@ -55,9 +71,8 @@ var draw_vision_rays = false
 var ai = null
 var temp_ai = null
 
-enum Data {ENERGY, RAY_DIST, RAY_TYPE, EATS, DANGER_SENSE}
-enum Raytype {NONE, OWLIE, KLOPPIE, FOOD}
 var ai_input = {}
+var nn_input_array
 
 var energy_gradient = "res://Entities/Boppie/DefaultEnergyGradient.tres"
 var selected = false setget set_selected
@@ -77,7 +92,7 @@ var size_increases = [0.8, 1, 1.2]
 var level = 1
 var energy = max_energy * .8 + Globals.rng.randf() * max_energy * .2
 var offspring_energy = 0
-var eats = Raytype.FOOD
+var eats = Data.Raytype.FOOD
 
 var movement := 0.0
 var dead = false
@@ -95,9 +110,22 @@ signal BoppieDied(Boppie)
 # Init and draw
 # ==========================================================================
 
+func get_nn_input_neurons():
+	var input_neurons = []
+	if senses.bitmask & Data.Senses.VISION_RAY_EATS:
+		for i in range(1 + 2 * ray_count_additional):
+			input_neurons.append("VisionRayEats" + str(i))
+	if senses.bitmask & Data.Senses.DANGER_SENSE:
+		for i in range(danger_sense_parts):
+			input_neurons.append("DangerSense" + str(i))
+	if senses.bitmask & Data.Senses.BIAS:
+		input_neurons.append("Bias")
+	return input_neurons
+
 func _init(ai=null):
 	if ai == null:
-		ai = AI.new()
+		ai = NeuralNetwork.new(get_nn_input_neurons())
+		nn_input_array = ai.values
 	self.ai = ai
 	
 func _ready():
@@ -178,20 +206,20 @@ func add_ray(angle_radians, push_back=true, ray=null):
 		self.vision_rays.push_back(ray)
 	else:
 		self.vision_rays.push_front(ray)
-	ai_input[Data.RAY_DIST].append(1)
-	ai_input[Data.RAY_TYPE].append(Raytype.NONE)
+	ai_input[Data.NNInput.RAY_DIST].append(1)
+	ai_input[Data.NNInput.RAY_TYPE].append(Data.Raytype.NONE)
 
 # ==========================================================================
 # AI
 # ==========================================================================
 	
 func initialize_ai_input():
-	ai_input[Data.EATS] = eats
-	ai_input[Data.RAY_DIST] = []
-	ai_input[Data.RAY_TYPE] = []
-	ai_input[Data.DANGER_SENSE] = []
+	ai_input[Data.NNInput.EATS] = eats
+	ai_input[Data.NNInput.RAY_DIST] = []
+	ai_input[Data.NNInput.RAY_TYPE] = []
+	ai_input[Data.NNInput.DANGER_SENSE] = []
 	for i in range(4):
-		ai_input[Data.DANGER_SENSE].append(1.0)
+		ai_input[Data.NNInput.DANGER_SENSE].append(1.0)
 
 func add_temp_ai(ai):
 	temp_ai = ai
@@ -199,22 +227,30 @@ func add_temp_ai(ai):
 func pop_temp_ai():
 	temp_ai = null
 		
-func calc_ai_input():
-	ai_input[Data.ENERGY] = energy / max_energy
-	for i in range(vision_rays.size()):
-		ai_input[Data.RAY_DIST][i] = vision_rays[i].collision_distance()
-		ai_input[Data.RAY_TYPE][i] = vision_rays[i].collision_type()
-	for i in range(4):
-		ai_input[Data.DANGER_SENSE][i] = 1.0
-	for body in $DangerSense.get_overlapping_bodies() + $DangerSense.get_overlapping_areas():
-		var vec_to = body.position - position
-		var angle = rotation_vector().angle_to(vec_to)
-		var index = int((angle + PI + PI / 4) * 4 / (PI * 2)) % 4
-		# print(rad2deg(angle), " ", index)
-		# print(int((angle + PI) * 4 / (PI * 2)))
-		var radius = $DangerSense/CollisionShape2D.shape.radius
-		var value = vec_to.length() / (radius * scale.x)
-		ai_input[Data.DANGER_SENSE][index] = min(value, ai_input[Data.DANGER_SENSE][index])
+func calc_ai_input(delta):
+	var index = 0
+	var loss = 1.0 - delta * 10
+	if senses.bitmask & Data.Senses.VISION_RAY_EATS:
+		for i in range(vision_rays.size()):
+			nn_input_array[index] *= loss
+			if vision_rays[i].collision_type() == eats:
+				nn_input_array[index] = 1.0 - vision_rays[i].collision_distance() / 2.0
+			index += 1
+	if senses.bitmask & Data.Senses.DANGER_SENSE:
+		for i in range(danger_sense_parts):
+			nn_input_array[index + i] *= loss
+		for body in $DangerSense.get_overlapping_bodies() + $DangerSense.get_overlapping_areas():
+			var vec_to = body.position - position
+			var angle = rotation_vector().angle_to(vec_to)
+			var ds_index = int((angle + PI + PI / 4) * 4 / (PI * 2)) % 4
+			var radius = $DangerSense/CollisionShape2D.shape.radius
+			var value = 1.0 - (vec_to.length() / (radius * scale.x)) / 2.0
+			nn_input_array[index + ds_index] = max(value, nn_input_array[index + ds_index])
+		index += danger_sense_parts
+	#if senses.bitmask & Data.Senses.BIAS:
+	#	nn_input_array[index] = 1
+	#	index += 1
+
 		
 # ==========================================================================
 # Drawing methods
@@ -306,7 +342,7 @@ func _physics_process(delta):
 		if energy >= 0 or not can_die:
 			var curr_ai = ai if temp_ai == null else temp_ai
 			if curr_ai:
-				calc_ai_input()
+				calc_ai_input(delta)
 				movement = clamp(curr_ai.get_movement_factor(ai_input), max_backwards_factor, max_boost_factor)
 				var turn = curr_ai.get_turn_factor(ai_input)
 				# Flip turning when movement is backwards

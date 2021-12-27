@@ -107,7 +107,6 @@ func handle_boppie(boppie):
 func add_boppie(at: Vector2, scene: PackedScene, dna=null):
 	var instance = scene.instance()
 	if instance is Boppie:
-		instance.ai = NeuralNetwork.new()
 		if dna != null:
 			instance.set_dna(dna, 1)
 		handle_boppie(instance)

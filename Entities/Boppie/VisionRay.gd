@@ -13,12 +13,12 @@ func collision_type():
 	if is_colliding():
 		var collider = get_collider()
 		if collider is Owlie:
-			return Boppie.Raytype.OWLIE
+			return Data.Raytype.OWLIE
 		elif collider is Kloppie:
-			return Boppie.Raytype.KLOPPIE
+			return Data.Raytype.KLOPPIE
 		elif collider is Food:
-			return Boppie.Raytype.FOOD
-	return Boppie.Raytype.NONE
+			return Data.Raytype.FOOD
+	return Data.Raytype.NONE
 
 func _physics_process(_delta):
 	if Globals.draw_vision_rays or get_parent().draw_vision_rays:
