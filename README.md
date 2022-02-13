@@ -91,16 +91,15 @@ Quickstart: after starting a simulation: press `9` to simulate quickly. After a 
 
 ### UI/UX
 * Add menu so that simulation could be configured
-* Show additional senses (dangersense)
+* Show additional senses (dangersense) near boppie
 * DNA/Neural network as tabs, as they do not fit in a single column
-* Traps to have spikes
 
 ## Changelog
 
 ### v0.2.0 (not yet released)
 
 * Neural networks can have any structure (not necessarily fully connected)
-* Added traps
+* Added rotating traps with spikes and blood marks after death
 * Added these senses for boppies:
     * Danger sense (for detecting traps and kloppies)
 * Camera can now be moved with dragging the mouse
