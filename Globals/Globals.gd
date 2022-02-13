@@ -11,11 +11,18 @@ var nn_thread: Thread = Thread.new()
 var elapsed_time := 0.0
 var dna_clipboard = null
 var kloppies_cannibals = false
+var use_random_seed = false
+
 
 var rng = RandomNumberGenerator.new()
 
 func _ready():
-	rng.randomize()
+	if use_random_seed:
+		rng.randomize()
+	else:
+		var random_seed = 0xface
+		rng.seed = random_seed
+	
 	
 signal PerformanceModeChanged(value)
 var performance_mode = false setget set_performance_mode

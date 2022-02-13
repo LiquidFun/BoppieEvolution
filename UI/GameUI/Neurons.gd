@@ -4,7 +4,7 @@ var neural_network = null setget set_neural_network
 var height := 250.0
 var width := 400.0
 var neuron_radius := 15
-var margins = neuron_radius * 2
+var margins = neuron_radius * 3
 var neuron_dist = neuron_radius * 3
 var font = get_font("font") 
 var neuron_weight_gradient: Gradient = load("res://UI/GameUI/NeuronWeight.tres")
@@ -76,3 +76,36 @@ func _draw():
 		var value = clamp((values[index] + 1) / 3.0, 0, 1)
 		draw_circle(pos, neuron_radius, Color.darkolivegreen.lightened(value))
 		draw_string(font, text_pos, "%.1f" % values[index], Color.black)
+		
+	var input_neurons = InnovationManager.nn_input_neurons + InnovationManager.nn_output_neurons
+	var neuron_group_ranges = Dictionary()
+	for layer_index in [0, -1]:
+		var first_index = 0
+		var layer = layers[layer_index]
+		for index in range(0, len(layer)):
+			var similarity = input_neurons[layer[index]].similarity(input_neurons[layer[first_index]])
+			if similarity < .4:
+				first_index = index
+			var upper_pos = lookup_index_to_pos[layer[index]]
+			var lower_pos = lookup_index_to_pos[layer[first_index]]
+			var start_or_end_factor = -1 if layer_index == 0 else 1
+			var add_x = (neuron_radius + 5) * start_or_end_factor
+			upper_pos += Vector2(add_x, neuron_radius)
+			lower_pos += Vector2(add_x, -neuron_radius)
+			var text = input_neurons[layer[index]].rstrip("0123456789")
+			neuron_group_ranges[text] = [upper_pos, lower_pos, start_or_end_factor]
+
+	for text in neuron_group_ranges:
+		var upper_lower_pos = neuron_group_ranges[text]
+		draw_line(upper_lower_pos[0], upper_lower_pos[1], Color(1, 1, 1), 1, true)
+		var divets =  Vector2(-5, 0) * upper_lower_pos[2]
+		draw_line(upper_lower_pos[0], upper_lower_pos[0] + divets, Color(1, 1, 1), 1, true)
+		draw_line(upper_lower_pos[1], upper_lower_pos[1] + divets, Color(1, 1, 1), 1, true)
+		
+	for text in neuron_group_ranges:
+		var upper_lower_pos = neuron_group_ranges[text]
+		var text_pos = (upper_lower_pos[0] + upper_lower_pos[1]) / 2
+		text_pos -= Vector2(-3, 7 * len(text) / 2) * upper_lower_pos[2]
+		draw_set_transform(text_pos, upper_lower_pos[2] * PI/2, Vector2.ONE)
+		draw_string(font, Vector2.ZERO, text)
+	print()

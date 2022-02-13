@@ -124,7 +124,7 @@ func get_nn_input_neurons():
 
 func _init(ai=null):
 	if ai == null:
-		ai = NeuralNetwork.new(get_nn_input_neurons())
+		ai = NeuralNetwork.new(InnovationManager.common_innovation_ids)
 		nn_input_array = ai.values
 	self.ai = ai
 	

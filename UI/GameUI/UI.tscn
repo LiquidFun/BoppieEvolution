@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=2]
+[gd_scene load_steps=27 format=2]
 
 [ext_resource path="res://UI/GameUI/BoppieInformation.gd" type="Script" id=1]
 [ext_resource path="res://UI/GameUI/BoppieCountHistoryPlot.gd" type="Script" id=2]
@@ -12,6 +12,7 @@
 [ext_resource path="res://UI/GameUI/Difficulty.gd" type="Script" id=10]
 [ext_resource path="res://UI/GameUI/FittestBoppieList.gd" type="Script" id=11]
 [ext_resource path="res://UI/GameUI/HelpButton.gd" type="Script" id=12]
+[ext_resource path="res://UI/GameUI/Seed.gd" type="Script" id=13]
 
 [sub_resource type="DynamicFontData" id=1]
 font_path = "res://Resources/Fonts/FontAwesome/otfs/Font Awesome 5 Free-Solid-900.otf"
@@ -209,6 +210,15 @@ text = "Difficulty: x"
 valign = 2
 script = ExtResource( 10 )
 
+[node name="Seed" type="Label" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer"]
+margin_left = 714.0
+margin_right = 781.0
+margin_bottom = 25.0
+custom_fonts/font = SubResource( 6 )
+text = "Seed: x"
+valign = 2
+script = ExtResource( 13 )
+
 [node name="HBoxContainer2" type="HBoxContainer" parent="StatusBar/VBoxContainer/MarginContainer"]
 margin_left = 10.0
 margin_right = 1900.0
@@ -218,8 +228,8 @@ custom_constants/separation = 20
 alignment = 2
 
 [node name="BoppieCount" type="Label" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer2"]
-margin_left = 1787.0
-margin_right = 1857.0
+margin_left = 1772.0
+margin_right = 1842.0
 margin_bottom = 25.0
 custom_fonts/font = SubResource( 6 )
 text = "#count"
@@ -228,7 +238,7 @@ valign = 2
 script = ExtResource( 3 )
 
 [node name="HelpButton" type="Button" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer2"]
-margin_left = 1877.0
+margin_left = 1862.0
 margin_right = 1890.0
 margin_bottom = 25.0
 custom_fonts/font = SubResource( 11 )

@@ -59,20 +59,61 @@ Quickstart: after starting a simulation: press `9` to simulate quickly. After a 
 ## If you want to tinker yourself
 
 * Download the free and open source game-engine: [Godot](https://godotengine.org/)
-* Clone this repository: `git clone https://github.com/LiquidFun/boppieEvolution`
+* Clone this repository: `git clone https://github.com/LiquidFun/BoppieEvolution` (or download via github)
 * Open Godot and import the `project.godot` file
 * Now press on the play button to run it 
 
-## Planned features
+## Ideas for features
+
+### Simulation
 
 * Implement NEAT (Neuroevolution of Augmenting Topologies), such that the neural networks of the boppies change with each generation
-* Add immovable traps and obstacles
+    * Innovation number (tracking of changes between species)
+    * Different parallel simulations where the best are merged into 1
+    * Merging of neural networks
+* Add obstacles
 * Add more senses for the boppies, such as:
-    * Danger sense (for detecting traps and kloppies)
     * Instead of rays try neural network inputs with information for angle+distance
+    * Cone for detection of food
     * Your own kin (so that ant-like behaviour could emerge)
+    * Timer
 * Add sexual reproduction, as in the real world merging DNA from two individuals has greatly benefited survival of the fittest
 * Add loading/saving of simulations
+* Add areas of high ground productivity (where more food spawns)
+* Make boppies leave flesh after death
+* Change meat-eating from boolean to a float, where it essentially becomes meat-tolerance or meat effectiveness (a factor of how much energy can be gained from meat). However high meat-tolerance means low 
+* Add boppie color as part of DNA 
+    * Ideas: 
+        * HSL (where H is part of DNA, S shows energy, L = .5 or meat-tolerance )
+        * RGB (where R, G is part of DNA, B shows meat-tolerance)
+* Add reinforcement learning
+    * Save which neurons most contributed to a reward in the last seconds (eating)/penalty (taking damage), increase the weights of those connections
+
+### UI/UX
+* Add menu so that simulation could be configured
+* Show additional senses (dangersense)
+* DNA/Neural network as tabs, as they do not fit in a single column
+* Traps to have spikes
+
+## Changelog
+
+### v0.2.0 (not yet released)
+
+* Neural networks can have any structure (not necessarily fully connected)
+* Added traps
+* Added these senses for boppies:
+    * Danger sense (for detecting traps and kloppies)
+* Camera can now be moved with dragging the mouse
+* Random seed is shown 
+* Neural networks now show what each input/output neuron means
+
+### v0.1.0 (2021-10-19)
+
+* Two types of creatures (Owlies and Kloppies)
+* A basic neural network for each creature
+* Creatures have DNA which they pass on to children
+* Vision based on 5 rays extending from each boppie
+
 
 ## Example DNA
 
