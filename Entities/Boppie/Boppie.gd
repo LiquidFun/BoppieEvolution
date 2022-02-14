@@ -55,6 +55,7 @@ var dna_allowed_values = {
 	"max_backwards_factor": Vector2(-1.0, -0.5),
 	"offspring_mutability": Vector2(0.01, .5),
 	"ai.connections": null,
+	"ai.innovations": null,
 	"generation.i": null,
 	"senses.bitmask": null,
 }
@@ -109,18 +110,6 @@ signal BoppieDied(Boppie)
 # ==========================================================================
 # Init and draw
 # ==========================================================================
-
-func get_nn_input_neurons():
-	var input_neurons = []
-	if senses.bitmask & Data.Senses.VISION_RAY_EATS:
-		for i in range(1 + 2 * ray_count_additional):
-			input_neurons.append("VisionRayEats" + str(i))
-	if senses.bitmask & Data.Senses.DANGER_SENSE:
-		for i in range(danger_sense_parts):
-			input_neurons.append("DangerSense" + str(i))
-	if senses.bitmask & Data.Senses.BIAS:
-		input_neurons.append("Bias")
-	return input_neurons
 
 func _init(ai=null):
 	if ai == null:

@@ -12,7 +12,6 @@ var nn_output_neurons = ["Move", "Turn"]
 
 func add_innovation(input: String, output: String) -> int:
 	innovation_id += 1
-	common_innovation_ids.append(innovation_id)
 	innovations.append([input, output])
 	return innovation_id
 	
@@ -26,7 +25,10 @@ func get_nn_input_neurons():
 	return input_neurons
 
 func _ready() -> void:
-	make_initial_innovations(nn_input_neurons)
+	# Bias neuron should be connected to every neuron without the need for innovations
+	var no_bias_input_neurons = nn_input_neurons.duplicate()
+	no_bias_input_neurons.erase("Bias")
+	make_initial_innovations(no_bias_input_neurons)
 	
 func make_initial_innovations(inputs):
 	if fully_connected_neurons > 0:
@@ -36,7 +38,7 @@ func make_initial_innovations(inputs):
 		for hidden_neuron in hidden_neurons:
 			for input in inputs:
 				add_innovation(input, hidden_neuron)
-		inputs = hidden_neurons + ["Bias"]
 	for output_neuron in nn_output_neurons:
 		for input in inputs:
-			add_innovation(input, output_neuron)
+			var innovation_id = add_innovation(input, output_neuron)
+			common_innovation_ids.append(innovation_id)

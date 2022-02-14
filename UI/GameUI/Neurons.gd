@@ -14,12 +14,13 @@ var layers = []
 func calculate_depth_map():
 	depth_map = {}
 	var max_depth = 0
+	for connection in neural_network.connections_internal:
+		depth_map[connection[0]] = 2
 	for connection in InnovationManager.nn_input_neurons:
 		depth_map[neural_network.neuron_name_to_index[connection]] = 1
 	for connection in neural_network.connections_internal:
 		if neural_network.neuron_index_to_name[connection[0]] in InnovationManager.nn_output_neurons:
 			continue
-		print(connection)
 		depth_map[connection[0]] = 1
 		for i in range(0, len(connection[1]), 2):
 			depth_map[connection[0]] = max(depth_map[connection[1][i]]+1, depth_map[connection[0]])

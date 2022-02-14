@@ -92,19 +92,20 @@ Quickstart: after starting a simulation: press `9` to simulate quickly. After a 
 ### UI/UX
 * Add menu so that simulation could be configured
 * Show additional senses (dangersense) near boppie
-* DNA/Neural network as tabs, as they do not fit in a single column
 
 ## Changelog
 
 ### v0.2.0 (not yet released)
 
 * Neural networks can have any structure (not necessarily fully connected)
+* Added an innovation number for each change in the neural network, as described in NEAT
 * Added rotating traps with spikes and blood marks after death
 * Added these senses for boppies:
     * Danger sense (for detecting traps and kloppies)
-* Camera can now be moved with dragging the mouse
+* Camera can now be moved by dragging the mouse
 * Random seed is shown 
 * Neural networks now show what each input/output neuron means
+* DNA/Neural network as tabs, as they did not fit in a single column
 
 ### v0.1.0 (2021-10-19)
 

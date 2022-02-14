@@ -5,6 +5,9 @@ onready var show_dna = false
 var opened = false
 onready var left_side_panel = get_parent().get_parent().get_parent()
 
+onready var neurons = get_node("TabContainer/Neural network/Neurons")
+onready var dna = $TabContainer/DNA/DNA
+
 func _ready():
 	left_side_panel.visible = false
 	#left_side_panel.rect_position = Vector2(-170, 0)
@@ -31,11 +34,11 @@ func _on_BoppieControlChanged(controlled_boppie):
 		)
 		$Tween.start()
 	if should_open:
-		$Neurons.neural_network = boppie.ai
+		neurons.neural_network = boppie.ai
 		if different_boppie:
 			_on_Show_toggled(true)
 	else:
-		$Neurons.neural_network = null
+		neurons.neural_network = null
 		
 	
 func _process(_delta):
@@ -57,8 +60,8 @@ func _process(_delta):
 	
 
 func _on_Show_toggled(button_pressed=true):
-	show_dna = $HBoxContainer/ShowDNA.pressed
-	$DNA.text = ("%s" % boppie.get_dna_str()) if show_dna else "{ ... }"
+	show_dna = $TabContainer/DNA/HBoxContainer/ShowDNA.pressed
+	dna.text = ("%s" % boppie.get_dna_str()) if show_dna else "{ ... }"
 	
 
 func _on_CopyDNA_pressed():
@@ -74,8 +77,8 @@ func _on_PasteDNA_pressed():
 
 func _on_DNA_gui_input(event):
 	if event.is_action_pressed("ui_cancel"):
-		$DNA.release_focus()
+		dna.release_focus()
 
 
 func _on_ApplyDNA_pressed():
-	boppie.set_dna_str($DNA.text)
+	boppie.set_dna_str(dna.text)

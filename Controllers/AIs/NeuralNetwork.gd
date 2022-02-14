@@ -35,22 +35,20 @@ func set_connections(new_connections):
 	recalculate_internal_connections()
 	
 func recalculate_internal_connections():
+	# print(connections)
 	self.connections_internal = []
 	self.neuron_name_to_index = {}
 	self.neuron_index_to_name = {}
 	self.values.clear()
 	input_neuron_count = len(InnovationManager.nn_input_neurons)
-	var index = 0 # no enumerate unfortunately
 	for output in InnovationManager.nn_input_neurons + connections.keys():
 		if not (output in neuron_name_to_index):
-			neuron_name_to_index[output] = index
+			neuron_name_to_index[output] = len(neuron_name_to_index)
 			values.append(int(output == "Bias"))
-			index += 1
 			for input in connections[output]:
 				if not (input in neuron_name_to_index):
-					neuron_name_to_index[input] = index
+					neuron_name_to_index[input] = len(neuron_name_to_index)
 					values.append(int(input == "Bias"))
-					index += 1
 	for key in neuron_name_to_index:
 		neuron_index_to_name[neuron_name_to_index[key]] = key
 			
@@ -71,19 +69,18 @@ func get_weight_for_innovation(innovation_id):
 	return connections[innovation[1]][innovation[0]]
 	
 
-func add_innovation_to_dictionary(innovation_id, source_nn):
+func add_innovation_to_dictionary(innovation_id):
 	self.innovations.append(innovation_id)
 	if innovation_id < 0: # Don't add negative innovation ids
 		return
 	var innovation = InnovationManager.innovations[innovation_id]
 	var input = innovation[0]
 	var output = innovation[1]
-	if not (output in connections):
-		connections[output] = {}
-	var weight = source_nn.get_weight_for_innovation(innovation_id) if source_nn != null else random_weight()
-	connections[output][input] = weight
+	if not (output in connections) and not (output in InnovationManager.nn_input_neurons):
+		connections[output] = {"Bias": random_weight()}
+	connections[output][input] = random_weight()
 	
-func make_and_merge_nns(fitter_innovations, other_innovations=[], fitter_nn=null, other_nn=null):
+func make_and_merge_nns(fitter_innovations, other_innovations=[]):
 	connections = {}
 	for input in InnovationManager.nn_input_neurons:
 		connections[input] = {}
@@ -91,54 +88,48 @@ func make_and_merge_nns(fitter_innovations, other_innovations=[], fitter_nn=null
 	var i2 = 0
 	while i1 < len(fitter_innovations) or i2 < len(other_innovations):
 		if i2 >= len(other_innovations):
-			add_innovation_to_dictionary(fitter_innovations[i1], fitter_nn)
+			add_innovation_to_dictionary(fitter_innovations[i1])
 			i1 += 1
 			continue
 		if i1 >= len(fitter_innovations):
-			add_innovation_to_dictionary(other_innovations[i2], other_nn)
+			add_innovation_to_dictionary(other_innovations[i2])
 			i2 += 1
 			continue
 		var id1 = fitter_innovations[i1]
 		var id2 = other_innovations[i2]
 		if abs(id1) == abs(id2):
 			# Add id1 without abs, since it overwrites id2
-			add_innovation_to_dictionary(id1, fitter_nn)
+			add_innovation_to_dictionary(id1)
 			i1 += 1
 			i2 += 1
 		elif abs(id1) != abs(id2):
 			if abs(id1) > abs(id2):
-				add_innovation_to_dictionary(id1, fitter_nn)
+				add_innovation_to_dictionary(id1)
 				i1 += 1
 			else:
-				add_innovation_to_dictionary(id2, other_nn)
+				add_innovation_to_dictionary(id2)
 				i2 += 1
 	recalculate_internal_connections()
 			
 
 
-func _init(fitter_innovations_or_nn, other_innovations_or_nn=[]):
-	var fitter_nn = null
-	var other_nn = null
-	if not (fitter_innovations_or_nn is Array):
-		fitter_nn = fitter_innovations_or_nn
-		fitter_innovations_or_nn = fitter_innovations_or_nn.innovations
-	if not (other_innovations_or_nn is Array):
-		other_nn = other_innovations_or_nn
-		other_innovations_or_nn = other_innovations_or_nn.innovations
-	self.make_and_merge_nns(fitter_innovations_or_nn, other_innovations_or_nn, fitter_nn, other_nn)
+func _init(fitter_innovations, other_innovations=[]):
+	self.make_and_merge_nns(fitter_innovations, other_innovations)
 	# init_connections(inputs, fully_connected_neurons)
 
 
 func mutate(property, mutability):
 	if property == "connections":
-		mutate_structure(1)
 		mutate_weights(mutability)
+	elif property == "innovations":
+		mutate_structure(1)
+		print("After mutating innovations ", innovations)
 	elif property == "weights":
 		mutate_weights(mutability)
 		
 func add_random_connection():
-	var inputs = InnovationManager.nn_input_neurons
-	var outputs = InnovationManager.nn_output_neurons
+	var inputs = InnovationManager.nn_input_neurons.duplicate()
+	var outputs = InnovationManager.nn_output_neurons.duplicate()
 	for key in connections:
 		if not (key in inputs) and not (key in outputs):
 			inputs.push_back(key)
@@ -149,19 +140,34 @@ func add_random_connection():
 		input = inputs[Globals.rng.randi() % len(inputs)]
 		output = outputs[Globals.rng.randi() % len(outputs)]
 		if not connections.has(output) or not (input in connections[output]):
-			break
-	print("io: ", input, output)	
-	var innovation_id = InnovationManager.add_innovation(input, output)
-	make_and_merge_nns(self.innovations + [innovation_id])
+			add_new_connection(input, output)
+			recalculate_internal_connections()
+	
+func add_new_connection(input, output, weight=null):
+	innovations.append(InnovationManager.add_innovation(input, output))
+	if weight == null:
+		weight = random_weight()
+	if not (output in connections):
+		connections[output] = {"Bias": random_weight()}
+	connections[output][input] = weight
 	
 func add_hidden_neuron():
-	for i in range(1, 11):
+	# Replace some connection with a hidden neuron and 2 connections to it, disabling the old one
+	for i in range(10):
 		var name = "HiddenNeuron" + str(i)
 		if name in connections:
 			continue
-		var innovation_id = InnovationManager.add_innovation("Bias", name)
-		make_and_merge_nns(self.innovations + [innovation_id])
-		return
+		
+		for j in range(10): # Try randomly some innovations
+			var local_innovation_index = Globals.rng.randi() % len(innovations)
+			var innovation = innovations[local_innovation_index]
+			if innovation > 0: # Check whether innovation is enabled
+				innovations[local_innovation_index] *= -1 # Disable innovation
+				var input_output = InnovationManager.innovations[innovation]
+				add_new_connection(input_output[0], name)
+				add_new_connection(name, input_output[1])
+				recalculate_internal_connections()
+				return
 		
 
 func remove_random_connection():
@@ -171,19 +177,17 @@ func remove_random_connection():
 		if innovations[i] > 0:
 			break
 	innovations[i] *= -1
-	make_and_merge_nns(self.innovations)
 		
 func mutate_structure(mutability):
 	# Mutate structure by: deleting and adding connections/neurons
 	if Globals.rng.randf() < mutability:
-		var chances = [[.7, "add"], [.8, "remove"], [1, "new"]]
+		var chances = [[.7, "add"], [0, "remove"], [1, "new"]]
 		var chance = Globals.rng.randf()
-		print("chance: ", chance)
 		for list in chances:
 			if chance <= list[0]:
 				match list[1]:
 					"add": add_random_connection()
-					"delete": remove_random_connection()
+					# "remove": remove_random_connection()
 					"new": add_hidden_neuron()
 				break
 	
