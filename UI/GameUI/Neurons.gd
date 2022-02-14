@@ -13,13 +13,22 @@ var layers = []
 
 func calculate_depth_map():
 	depth_map = {}
+	var max_depth = 0
+	for connection in InnovationManager.nn_input_neurons:
+		depth_map[neural_network.neuron_name_to_index[connection]] = 1
 	for connection in neural_network.connections_internal:
+		if neural_network.neuron_index_to_name[connection[0]] in InnovationManager.nn_output_neurons:
+			continue
+		print(connection)
 		depth_map[connection[0]] = 1
 		for i in range(0, len(connection[1]), 2):
 			depth_map[connection[0]] = max(depth_map[connection[1][i]]+1, depth_map[connection[0]])
+		max_depth = max(max_depth, depth_map[connection[0]])
+	for connection in InnovationManager.nn_output_neurons:
+		depth_map[neural_network.neuron_name_to_index[connection]] = max_depth + 1
 	layers = []
 	for key in depth_map:
-		if layers.size() < depth_map[key]:
+		while layers.size() < depth_map[key]:
 			layers.append([])
 		layers[depth_map[key]-1].append(key)
 
@@ -28,11 +37,12 @@ func _ready():
 
 func set_neural_network(nn):
 	neural_network = nn
-	calculate_depth_map()
-	for layer in layers:
-		self.height = max(height, (layer.size() - 1) * neuron_dist + margins * 2)
-		rect_min_size = Vector2(width, height)
-	self.update()
+	if neural_network != null:
+		calculate_depth_map()
+		for layer in layers:
+			self.height = max(height, (layer.size() - 1) * neuron_dist + margins * 2)
+			rect_min_size = Vector2(width, height)
+		self.update()
 	
 func _process(delta):
 	update()
@@ -77,7 +87,8 @@ func _draw():
 		draw_circle(pos, neuron_radius, Color.darkolivegreen.lightened(value))
 		draw_string(font, text_pos, "%.1f" % values[index], Color.black)
 		
-	var input_neurons = InnovationManager.nn_input_neurons + InnovationManager.nn_output_neurons
+	# Calculate positions of help-banners explaining neuron meaning
+	var input_neurons = neural_network.neuron_index_to_name
 	var neuron_group_ranges = Dictionary()
 	for layer_index in [0, -1]:
 		var first_index = 0
@@ -95,6 +106,7 @@ func _draw():
 			var text = input_neurons[layer[index]].rstrip("0123456789")
 			neuron_group_ranges[text] = [upper_pos, lower_pos, start_or_end_factor]
 
+	# Draw lines for the help banners
 	for text in neuron_group_ranges:
 		var upper_lower_pos = neuron_group_ranges[text]
 		draw_line(upper_lower_pos[0], upper_lower_pos[1], Color(1, 1, 1), 1, true)
@@ -102,10 +114,10 @@ func _draw():
 		draw_line(upper_lower_pos[0], upper_lower_pos[0] + divets, Color(1, 1, 1), 1, true)
 		draw_line(upper_lower_pos[1], upper_lower_pos[1] + divets, Color(1, 1, 1), 1, true)
 		
+	# Draw text for the help banners
 	for text in neuron_group_ranges:
 		var upper_lower_pos = neuron_group_ranges[text]
 		var text_pos = (upper_lower_pos[0] + upper_lower_pos[1]) / 2
 		text_pos -= Vector2(-3, 7 * len(text) / 2) * upper_lower_pos[2]
 		draw_set_transform(text_pos, upper_lower_pos[2] * PI/2, Vector2.ONE)
 		draw_string(font, Vector2.ZERO, text)
-	print()

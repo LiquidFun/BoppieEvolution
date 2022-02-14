@@ -34,6 +34,8 @@ func _on_BoppieControlChanged(controlled_boppie):
 		$Neurons.neural_network = boppie.ai
 		if different_boppie:
 			_on_Show_toggled(true)
+	else:
+		$Neurons.neural_network = null
 		
 	
 func _process(_delta):

@@ -10,10 +10,11 @@ var danger_sense_parts = 4
 var nn_input_neurons = get_nn_input_neurons()
 var nn_output_neurons = ["Move", "Turn"]
 
-func add_innovation(input: String, output: String) -> void:
+func add_innovation(input: String, output: String) -> int:
 	innovation_id += 1
 	common_innovation_ids.append(innovation_id)
 	innovations.append([input, output])
+	return innovation_id
 	
 func get_nn_input_neurons():
 	var input_neurons = []
