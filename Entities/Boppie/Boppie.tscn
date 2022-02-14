@@ -149,9 +149,7 @@ radius = 30.0938
 [sub_resource type="CircleShape2D" id=21]
 radius = 150.0
 
-[node name="Boppie" type="KinematicBody2D" groups=[
-"Boppie",
-]]
+[node name="Boppie" type="KinematicBody2D" groups=["Boppie"]]
 pause_mode = 1
 z_index = 30
 collision_layer = 2

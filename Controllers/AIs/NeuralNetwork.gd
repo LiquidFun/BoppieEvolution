@@ -35,7 +35,6 @@ func set_connections(new_connections):
 	recalculate_internal_connections()
 	
 func recalculate_internal_connections():
-	# print(connections)
 	self.connections_internal = []
 	self.neuron_name_to_index = {}
 	self.neuron_index_to_name = {}
@@ -123,7 +122,6 @@ func mutate(property, mutability):
 		mutate_weights(mutability)
 	elif property == "innovations":
 		mutate_structure(1)
-		print("After mutating innovations ", innovations)
 	elif property == "weights":
 		mutate_weights(mutability)
 		

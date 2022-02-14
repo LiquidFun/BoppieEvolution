@@ -8,6 +8,7 @@ var radius := 20.0  # (too much hardcoded, don't change)
 var can_die := true
 var nutrition := 20.0
 
+
 class Generation:
 	var i = 1
 	func mutate(_property, _mutability):
@@ -21,6 +22,24 @@ class Senses:
 		
 	func mutate(_property, _mutability):
 		pass
+		
+class Coloration:
+	var energy_gradient = Gradient.new()
+	var hue setget set_hue
+	
+	func _init():
+		self.hue = Globals.rng.randf()
+		energy_gradient.add_point(.5, Color.white)
+	
+	func mutate(_property, mutability):
+		hue += (Globals.rng.randf() * 2 - 1) * mutability / 4.0
+		self.hue = fmod(hue + 1.0, 1.0)
+		
+	func set_hue(new_hue):
+		hue = new_hue
+		energy_gradient.set_color(0, Color.from_hsv(hue, 0, .5))
+		energy_gradient.set_color(1, Color.from_hsv(hue, 1, 1).darkened(.2))
+		energy_gradient.set_color(2, Color.from_hsv(hue, 1, 1))
 
 # DNA
 var move_speed := 85.0
@@ -36,6 +55,7 @@ var required_offspring_energy = 10
 var generation = Generation.new()
 var scale_factor = 1
 var danger_sense_parts = 4
+var color = Coloration.new()
 var senses = Senses.new(0
 	| Data.Senses.VISION_RAY_EATS
 	| Data.Senses.DANGER_SENSE
@@ -53,15 +73,17 @@ var dna_allowed_values = {
 	"ray_length": Vector2(100, 600),
 	"max_boost_factor": Vector2(1.5, 2.5),
 	"max_backwards_factor": Vector2(-1.0, -0.5),
-	"offspring_mutability": Vector2(0.01, .5),
+	"offspring_mutability": Vector2(0.03, .5),
 	"ai.connections": null,
 	"ai.innovations": null,
 	"generation.i": null,
 	"senses.bitmask": null,
+	"color.hue": null,
 }
 
 var dna := {} setget set_dna
 
+# var energy_gradient = "res://Entities/Boppie/DefaultEnergyGradient.tres"
 var difficulty = Globals.difficulty
 var energy_consumption_existing = 1 * difficulty
 var energy_consumption_walking = .5 * difficulty
@@ -75,7 +97,6 @@ var temp_ai = null
 var ai_input = {}
 var nn_input_array
 
-var energy_gradient = "res://Entities/Boppie/DefaultEnergyGradient.tres"
 var selected = false setget set_selected
 var hovered = false setget set_hovered
 
@@ -112,6 +133,7 @@ signal BoppieDied(Boppie)
 # ==========================================================================
 
 func _init(ai=null):
+	# color.connect("ColorUpdated", self, "_on_colorUpdated")
 	if ai == null:
 		ai = NeuralNetwork.new(InnovationManager.common_innovation_ids)
 	nn_input_array = ai.values
@@ -119,7 +141,9 @@ func _init(ai=null):
 	
 func _ready():
 	spawn_time = Globals.elapsed_time
-	energy_gradient = load(energy_gradient)
+	# energy_gradient = load(energy_gradient)
+	# energy_gradient.set_color(1, Color.from_hsv(color.hue, .5, .5))
+	# print(energy_gradient.colors)
 	$Tween.interpolate_property(
 		self, "scale", Vector2(.2, .2), Vector2(size_increases[0], size_increases[0]) * scale_factor, 
 		1, Tween.TRANS_BOUNCE, Tween.EASE_IN_OUT
@@ -306,6 +330,7 @@ func set_hovered(new_value):
 		hovered = new_value
 		self.modulate = self.modulate.darkened(.3) if hovered else Color.white
 		
+		
 # ==========================================================================
 # Movement
 # ==========================================================================
@@ -343,7 +368,7 @@ func _physics_process(delta):
 				ai.get_movement_factor(ai_input)
 		else:
 			die()
-		self.self_modulate = energy_gradient.interpolate(self.energy / (max_energy * .7))
+		self.self_modulate = color.energy_gradient.interpolate(self.energy / (max_energy * .7))
 		$WalkingParticles.modulate = self_modulate
 		$Face.get_node("AboveFace").self_modulate = self_modulate
 		$Face.get_node("BelowFace").self_modulate = self_modulate
@@ -410,3 +435,5 @@ func eat(food):
 	
 func fitness():
 	return (Globals.elapsed_time - spawn_time) * difficulty
+
+

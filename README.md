@@ -82,7 +82,7 @@ Quickstart: after starting a simulation: press `9` to simulate quickly. After a 
 * Add areas of high ground productivity (where more food spawns)
 * Make boppies leave flesh after death
 * Change meat-eating from boolean to a float, where it essentially becomes meat-tolerance or meat effectiveness (a factor of how much energy can be gained from meat). However high meat-tolerance means low 
-* Add boppie color as part of DNA 
+* Add/extend boppie color as part of DNA 
     * Ideas: 
         * HSL (where H is part of DNA, S shows energy, L = .5 or meat-tolerance )
         * RGB (where R, G is part of DNA, B shows meat-tolerance)
@@ -106,6 +106,7 @@ Quickstart: after starting a simulation: press `9` to simulate quickly. After a 
 * Random seed is shown 
 * Neural networks now show what each input/output neuron means
 * DNA/Neural network as tabs, as they did not fit in a single column
+* Added boppie color as part of DNA 
 
 ### v0.1.0 (2021-10-19)
 

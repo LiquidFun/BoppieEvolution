@@ -7,7 +7,7 @@ var attack_delay = .8
 var can_attack = true
 
 func _init():
-	energy_gradient = "res://Entities/Boppie/Types/KloppieEnergyGradient.tres"
+	# energy_gradient = "res://Entities/Boppie/Types/KloppieEnergyGradient.tres"
 	draw_teeth = true
 	draw_body_type = Boppie.BodyType.HEXAGONAL
 	draw_hair = false
