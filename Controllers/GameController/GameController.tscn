@@ -5,9 +5,7 @@
 [ext_resource path="res://Controllers/GameController/Camera.gd" type="Script" id=3]
 [ext_resource path="res://UI/SaveUI/SaveUI.tscn" type="PackedScene" id=4]
 
-[node name="GameController" type="Node2D" groups=[
-"GameController",
-]]
+[node name="GameController" type="Node2D" groups=["GameController"]]
 pause_mode = 2
 z_index = -100
 script = ExtResource( 1 )
@@ -26,3 +24,10 @@ pause_mode = 1
 autostart = true
 
 [node name="SaveDialog" parent="." instance=ExtResource( 4 )]
+
+[node name="TrackFittestTimer" type="Timer" parent="."]
+process_mode = 0
+wait_time = 60.0
+autostart = true
+
+[connection signal="timeout" from="TrackFittestTimer" to="." method="_on_TrackFittestTimer_timeout"]

@@ -29,7 +29,7 @@ class Coloration:
 	
 	func _init():
 		self.hue = Globals.rng.randf()
-		energy_gradient.add_point(.5, Color.white)
+		#energy_gradient.add_point(.5, Color.white)
 	
 	func mutate(_property, mutability):
 		hue += (Globals.rng.randf() * 2 - 1) * mutability / 4.0
@@ -38,8 +38,8 @@ class Coloration:
 	func set_hue(new_hue):
 		hue = new_hue
 		energy_gradient.set_color(0, Color.from_hsv(hue, 0, .5))
-		energy_gradient.set_color(1, Color.from_hsv(hue, 1, 1).darkened(.2))
-		energy_gradient.set_color(2, Color.from_hsv(hue, 1, 1))
+		#energy_gradient.set_color(1, Color.from_hsv(hue, 1, 1).darkened(.2))
+		energy_gradient.set_color(1, Color.from_hsv(hue, 1, 1))
 
 # DNA
 var move_speed := 85.0
@@ -435,5 +435,3 @@ func eat(food):
 	
 func fitness():
 	return (Globals.elapsed_time - spawn_time) * difficulty
-
-

@@ -32,7 +32,7 @@ var lookup_boppie_type_to_config = {}
 export var max_food_count = 150
 export var food_per_500ms = 7
 export var spawn_food_on_death = false
-export var keep_n_fittest_boppies = 10
+export var keep_n_fittest_boppies = 30
 export var kloppies_cannibals = false
 
 # Game size
@@ -53,6 +53,8 @@ var mouse_is_pressed = false
 var food_scene = preload("res://Entities/Food/Food.tscn")
 var controlled_boppie: Boppie = null
 var player_ai = Player.new()
+
+
 
 signal FollowFittestBoppie(new_value)
 signal EngineTimeScaleChange(factor)
@@ -270,7 +272,7 @@ func _on_BoppieClicked(boppie):
 	
 func _on_BoppieDied(boppie):
 	Globals.boppies_died += 1
-	possibly_replace_weakest_boppie(boppie)
+	# possibly_replace_weakest_boppie(boppie)
 	if boppie == controlled_boppie:
 		if follow_fittest_boppie:
 			take_control_of_fittest_boppie_in_group(boppie.type)
@@ -291,3 +293,15 @@ func _on_BoppieOffspring(boppie):
 			scene = config.scene
 			break
 	call_deferred("add_boppie", offspring_position, scene, boppie.dna)
+
+
+func _on_TrackFittestTimer_timeout() -> void:
+	if not get_tree().paused:
+		for config in boppie_configurations:
+			if config.group == "Trap":
+				continue
+			var boppie = find_fittest_in_group(config.group)
+			if boppie != null and boppie.offspring_count > 0:
+				config.fittest.push_front([boppie.fitness(), boppie.dna.duplicate(true)])
+				if len(config.fittest) > keep_n_fittest_boppies:
+					config.fittest.pop_back()
