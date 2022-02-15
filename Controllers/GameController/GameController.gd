@@ -59,6 +59,7 @@ var player_ai = Player.new()
 signal FollowFittestBoppie(new_value)
 signal EngineTimeScaleChange(factor)
 signal BoppieControlChanged(boppie)
+signal SpawnNewBoppie(at, dna)
 
 func random_coordinate():
 	return Vector2(Globals.rng.randf(), Globals.rng.randf())
@@ -76,6 +77,11 @@ func is_within_game(pos: Vector2):
 func make_within_game(pos: Vector2):
 	return Vector2(fposmod(pos.x, total_width), fposmod(pos.y, total_height))
 	
+func get_mouse_world_coords():
+	var pos = get_global_mouse_position()
+	print(pos)
+	return pos
+	
 func _draw():
 	var offset = Vector2(14, 14)
 	draw_rect(Rect2(-offset, total_size+offset), Color("#6d6d6d"))
@@ -89,6 +95,7 @@ func _ready():
 		$FoodTimer.connect("timeout", self, "_reset_food_timer")
 	for config in boppie_configurations:
 		lookup_boppie_type_to_config[config.group] = config
+	connect("SpawnNewBoppie", self, "_on_SpawnNewBoppie")
 		
 func _reset_food_timer():
 	spawn_food(food_per_500ms * 2)
@@ -105,6 +112,8 @@ func handle_boppie(boppie):
 		boppie.connect("Boppie" + signal_name, self, "_on_Boppie" + signal_name)
 	boppie.update()
 		
+func _on_SpawnNewBoppie(at, dna):
+	add_boppie(at, boppie_configurations[0].scene, dna)
 
 func add_boppie(at: Vector2, scene: PackedScene, dna=null):
 	var instance = scene.instance()
@@ -115,6 +124,7 @@ func add_boppie(at: Vector2, scene: PackedScene, dna=null):
 	instance.rotation = Globals.rng.randf() * 2 * PI
 	add_child(instance)
 	instance.global_position = at
+	return instance
 	
 
 func add_random_boppies(count: int, config: BoppieConfiguration):

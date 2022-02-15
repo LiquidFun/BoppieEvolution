@@ -593,3 +593,4 @@ script = ExtResource( 11 )
 [connection signal="pressed" from="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/TabContainer/DNA/HBoxContainer/CopyDNA" to="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation" method="_on_CopyDNA_pressed"]
 [connection signal="pressed" from="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/TabContainer/DNA/HBoxContainer/PasteDNA" to="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation" method="_on_PasteDNA_pressed"]
 [connection signal="gui_input" from="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/TabContainer/DNA/DNA" to="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation" method="_on_DNA_gui_input"]
+[connection signal="item_selected" from="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/TabContainer/Fittest" to="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/TabContainer/Fittest" method="_on_Fittest_item_selected"]

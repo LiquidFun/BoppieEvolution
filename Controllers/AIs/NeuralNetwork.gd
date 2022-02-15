@@ -10,6 +10,8 @@ var connections = {} setget set_connections
 var connections_internal
 var values = []
 var innovations = []
+var move_value_index
+var turn_value_index
 
 # old:
 # connections: List[Tuple[str (name), Dict[str (name), float (weight)]]
@@ -50,6 +52,8 @@ func recalculate_internal_connections():
 					values.append(int(input == "Bias"))
 	for key in neuron_name_to_index:
 		neuron_index_to_name[neuron_name_to_index[key]] = key
+	move_value_index = neuron_name_to_index["Move"]
+	turn_value_index = neuron_name_to_index["Turn"]
 			
 	for output in connections:
 		var connect_into = connections[output]
@@ -212,11 +216,11 @@ func get_movement_factor(ai_input=null):
 	#thread.start(self, "feed_forward", ai_input)
 	# feed_forward(ai_input)
 	feed_forward()
-	return values[-2]
+	return values[move_value_index]
 	
 
 func get_turn_factor(ai_input=null):
-	return values[-1]
+	return values[turn_value_index]
 
 #func _exit_tree():
 #	thread.wait_to_finish()

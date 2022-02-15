@@ -88,6 +88,8 @@ Quickstart: after starting a simulation: press `9` to simulate quickly. After a 
         * RGB (where R, G is part of DNA, B shows meat-tolerance)
 * Add reinforcement learning
     * Save which neurons most contributed to a reward in the last seconds (eating)/penalty (taking damage), increase the weights of those connections
+* Drop in boppies from fitness list
+* Show genetic tree for entire simulation
 
 ### UI/UX
 * Add menu so that simulation could be configured
@@ -107,6 +109,7 @@ Quickstart: after starting a simulation: press `9` to simulate quickly. After a 
 * Neural networks now show what each input/output neuron means
 * DNA/Neural network as tabs, as they did not fit in a single column
 * Added boppie color as part of DNA 
+* Can now drag boppies from fittest list into world
 
 ### v0.1.0 (2021-10-19)
 
