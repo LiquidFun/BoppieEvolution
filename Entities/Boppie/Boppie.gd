@@ -13,6 +13,8 @@ class Generation:
 	var i = 1
 	func mutate(_property, _mutability):
 		i += 1
+	func crossover(_property, other_i):
+		i = max(i, other_i)
 		
 class Senses:
 	var bitmask = 0
@@ -22,6 +24,9 @@ class Senses:
 		
 	func mutate(_property, _mutability):
 		pass
+		
+	func crossover(_property, other_bitmask):
+		bitmask |= other_bitmask
 		
 class Coloration:
 	var energy_gradient = Gradient.new()
@@ -34,6 +39,14 @@ class Coloration:
 	func mutate(_property, mutability):
 		hue += (Globals.rng.randf() * 2 - 1) * mutability / 4.0
 		self.hue = fmod(hue + 1.0, 1.0)
+		
+	func crossover(_property, other_hue):
+		var new_hue = 0
+		var best_diff = 100
+		if abs(hue - other_hue) < 0.5:
+			self.hue = (hue + other_hue) / 2.0
+		else:
+			self.hue = fmod((hue + other_hue + 1) / 2.0, 1.0)
 		
 	func set_hue(new_hue):
 		hue = new_hue
@@ -74,8 +87,7 @@ var dna_allowed_values = {
 	"max_boost_factor": Vector2(1.5, 2.5),
 	"max_backwards_factor": Vector2(-1.0, -0.5),
 	"offspring_mutability": Vector2(0.03, .5),
-	"ai.connections": null,
-	"ai.innovations": null,
+	"ai.dna": null,
 	"generation.i": null,
 	"senses.bitmask": null,
 	"color.hue": null,
@@ -165,9 +177,10 @@ func initialize_dna():
 		for subproperty in property.split("."):
 			dna[property] = dna[property].get(subproperty)
 
-func set_dna(new_dna: Dictionary, mutation_factor=0):
+func set_dna(new_dna: Dictionary, mutation_factor=0, crossover_dna=null):
 	new_dna = new_dna.duplicate(true)
 	for property in new_dna:
+		print(property)
 		var resolved_subproperty = self
 		var subproperties = property.split(".")
 		var last = subproperties[-1]
@@ -175,8 +188,11 @@ func set_dna(new_dna: Dictionary, mutation_factor=0):
 		for subproperty in subproperties:
 			resolved_subproperty = resolved_subproperty.get(subproperty)
 		resolved_subproperty.set(last, new_dna[property])
+		if crossover_dna != null and property in crossover_dna:
+			resolved_subproperty.crossover(property, crossover_dna[property])
 		if mutation_factor > 0:
 			resolved_subproperty.mutate(last, new_dna["offspring_mutability"] * mutation_factor)
+	print()
 	initialize_dna()
 		
 func mutate(property: String, mutability: float):
@@ -184,6 +200,13 @@ func mutate(property: String, mutability: float):
 	var mutation = value_range.y * mutability * Globals.rng.randfn()
 	if dna_allowed_values != null:
 		set(property, clamp(get(property) + mutation, value_range.x, value_range.y))
+		
+func crossover(property: String, other_value):
+	var remain_current = Globals.rng.randf()
+	var take_other = 1 - remain_current
+	var value = get(property) * remain_current + other_value * take_other
+	set(property, value)
+		
 	
 func set_dna_str(new_dna: String):
 	set_dna(str2var(new_dna))

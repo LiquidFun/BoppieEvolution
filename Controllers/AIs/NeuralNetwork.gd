@@ -2,14 +2,18 @@ extends AI
 
 class_name NeuralNetwork
 
+class NN_DNA:
+	var connections = {}
+	var innovations = []
+	
+
 var input_neuron_count
 var output_neurons_from
 var neuron_name_to_index: Dictionary
 var neuron_index_to_name: Dictionary
-var connections = {} setget set_connections
 var connections_internal
+var dna = NN_DNA.new() setget set_dna
 var values = []
-var innovations = []
 var move_value_index
 var turn_value_index
 
@@ -31,22 +35,24 @@ var turn_value_index
 
 # neuron_name_to_index is provided to lookup the integer from the string name
 
-
-func set_connections(new_connections):
-	connections = new_connections
+func set_dna(new_dna):
+	# dna = new_dna.copy()
+	dna.connections = new_dna.connections.duplicate(true)
+	dna.innovations = new_dna.innovations.duplicate(true)
 	recalculate_internal_connections()
-	
+
+
 func recalculate_internal_connections():
 	self.connections_internal = []
 	self.neuron_name_to_index = {}
 	self.neuron_index_to_name = {}
 	self.values.clear()
 	input_neuron_count = len(InnovationManager.nn_input_neurons)
-	for output in InnovationManager.nn_input_neurons + connections.keys():
+	for output in InnovationManager.nn_input_neurons + dna.connections.keys():
 		if not (output in neuron_name_to_index):
 			neuron_name_to_index[output] = len(neuron_name_to_index)
 			values.append(int(output == "Bias"))
-			for input in connections[output]:
+			for input in dna.connections[output]:
 				if not (input in neuron_name_to_index):
 					neuron_name_to_index[input] = len(neuron_name_to_index)
 					values.append(int(input == "Bias"))
@@ -55,8 +61,8 @@ func recalculate_internal_connections():
 	move_value_index = neuron_name_to_index["Move"]
 	turn_value_index = neuron_name_to_index["Turn"]
 			
-	for output in connections:
-		var connect_into = connections[output]
+	for output in dna.connections:
+		var connect_into = dna.connections[output]
 		connections_internal.append([neuron_name_to_index[output], []])
 		for key in connect_into:
 			connections_internal[-1][1].append(neuron_name_to_index[key])
@@ -69,24 +75,27 @@ func random_weight():
 func get_weight_for_innovation(innovation_id):
 	# TODO: change to connections_internal? connections weights might not be right
 	var innovation = InnovationManager.innovations[innovation_id]
-	return connections[innovation[1]][innovation[0]]
+	return dna.connections[innovation[1]][innovation[0]]
 	
 
 func add_innovation_to_dictionary(innovation_id):
-	self.innovations.append(innovation_id)
+	dna.innovations.append(innovation_id)
 	if innovation_id < 0: # Don't add negative innovation ids
 		return
 	var innovation = InnovationManager.innovations[innovation_id]
 	var input = innovation[0]
 	var output = innovation[1]
-	if not (output in connections) and not (output in InnovationManager.nn_input_neurons):
-		connections[output] = {"Bias": random_weight()}
-	connections[output][input] = random_weight()
+	if not (output in dna.connections) and not (output in InnovationManager.nn_input_neurons):
+		dna.connections[output] = {"Bias": random_weight()}
+	dna.connections[output][input] = random_weight()
 	
 func make_and_merge_nns(fitter_innovations, other_innovations=[]):
-	connections = {}
+	if other_innovations == null:
+		other_innovations = []
+	dna.innovations = []
+	dna.connections = {}
 	for input in InnovationManager.nn_input_neurons:
-		connections[input] = {}
+		dna.connections[input] = {}
 	var i1 = 0
 	var i2 = 0
 	while i1 < len(fitter_innovations) or i2 < len(other_innovations):
@@ -119,20 +128,50 @@ func make_and_merge_nns(fitter_innovations, other_innovations=[]):
 func _init(fitter_innovations, other_innovations=[]):
 	self.make_and_merge_nns(fitter_innovations, other_innovations)
 	# init_connections(inputs, fully_connected_neurons)
+	
+func crossover(property, other_dna):
+	if property == "dna":
+		make_and_merge_nns(dna.innovations, other_dna.innovations)
+		crossover_connections(other_dna.connections)
+	
+func crossover_connections(other_connections):
+	var old_connections = dna.connections
+	self.make_and_merge_nns(dna.innovations)
+	print(old_connections)
+	print("---")
+	print(other_connections)
+	print("---")
+	print(dna.connections)
+	print()
+	print()
+	print()
+	if other_connections == null:
+		other_connections = {}
+	for output in dna.connections:
+		for input in dna.connections[output]:
+			var old = old_connections.get(output, {}).get(input, null)
+			var other = other_connections.get(output, {}).get(input, null)
+			if old != null and other != null:
+				dna.connections[output][input] = old if Globals.rng.randf() < 0.5 else other
+			elif old != null:
+				dna.connections[output][input] = old
+			elif other != null:
+				dna.connections[output][input] = other
+			else:
+				dna.connections[output][input] = random_weight()
+	recalculate_internal_connections()
 
 
 func mutate(property, mutability):
-	if property == "connections":
-		mutate_weights(mutability)
-	elif property == "innovations":
+	if property == "dna":
 		mutate_structure(1)
-	elif property == "weights":
 		mutate_weights(mutability)
+	
 		
 func add_random_connection():
 	var inputs = InnovationManager.nn_input_neurons.duplicate()
 	var outputs = InnovationManager.nn_output_neurons.duplicate()
-	for key in connections:
+	for key in dna.connections:
 		if not (key in inputs) and not (key in outputs):
 			inputs.push_back(key)
 			outputs.push_back(key)
@@ -141,33 +180,38 @@ func add_random_connection():
 	for tries in range(10): # 10 tries max
 		input = inputs[Globals.rng.randi() % len(inputs)]
 		output = outputs[Globals.rng.randi() % len(outputs)]
-		if not connections.has(output) or not (input in connections[output]):
-			add_new_connection(input, output)
-			recalculate_internal_connections()
+		# Assert that the connection does not exist in either direciton
+		if dna.connections.get(input, {}).get(output, null) == null:
+			if dna.connections.get(output, {}).get(input, null) == null:
+				add_new_connection(input, output)
+				recalculate_internal_connections()
+				return
 	
 func add_new_connection(input, output, weight=null):
-	innovations.append(InnovationManager.add_innovation(input, output))
+	dna.innovations.append(InnovationManager.add_innovation(input, output))
 	if weight == null:
 		weight = random_weight()
-	if not (output in connections):
-		connections[output] = {"Bias": random_weight()}
-	connections[output][input] = weight
+	if not (output in dna.connections):
+		dna.connections[output] = {"Bias": random_weight()}
+	dna.connections[output][input] = weight
 	
 func add_hidden_neuron():
 	# Replace some connection with a hidden neuron and 2 connections to it, disabling the old one
 	for i in range(10):
 		var name = "HiddenNeuron" + str(i)
-		if name in connections:
+		if name in dna.connections:
 			continue
 		
 		for j in range(10): # Try randomly some innovations
-			var local_innovation_index = Globals.rng.randi() % len(innovations)
-			var innovation = innovations[local_innovation_index]
+			var local_innovation_index = Globals.rng.randi() % len(dna.innovations)
+			var innovation = dna.innovations[local_innovation_index]
 			if innovation > 0: # Check whether innovation is enabled
-				innovations[local_innovation_index] *= -1 # Disable innovation
+				dna.innovations[local_innovation_index] *= -1 # Disable innovation
 				var input_output = InnovationManager.innovations[innovation]
-				add_new_connection(input_output[0], name)
-				add_new_connection(name, input_output[1])
+				var weight = dna.connections[input_output[1]][input_output[0]]
+				dna.connections[name] = {"Bias": random_weight() * .1}
+				add_new_connection(input_output[0], name, weight)
+				add_new_connection(name, input_output[1], weight)
 				recalculate_internal_connections()
 				return
 		
@@ -175,15 +219,15 @@ func add_hidden_neuron():
 func remove_random_connection():
 	var i
 	for tries in range(10): # 10 tries max, as while true may never end
-		i = Globals.rng.randi() % len(innovations)
-		if innovations[i] > 0:
+		i = Globals.rng.randi() % len(dna.innovations)
+		if dna.innovations[i] > 0:
 			break
-	innovations[i] *= -1
+	dna.innovations[i] *= -1
 		
 func mutate_structure(mutability):
 	# Mutate structure by: deleting and adding connections/neurons
 	if Globals.rng.randf() < mutability:
-		var chances = [[.7, "add"], [0, "remove"], [1, "new"]]
+		var chances = [[0.7, "add"], [0, "remove"], [1, "new"]]
 		var chance = Globals.rng.randf()
 		for list in chances:
 			if chance <= list[0]:
@@ -195,9 +239,12 @@ func mutate_structure(mutability):
 	
 func mutate_weights(mutability):
 	for connection in connections_internal:
+		var output = neuron_index_to_name[connection[0]]
 		for i in range(0, len(connection[1]), 2):
 			var mutation = mutability * Globals.rng.randfn()
 			connection[1][i+1] += mutation
+			var input = neuron_index_to_name[connection[1][i]]
+			dna.connections[output][input] += mutation
 
 func relu(num):
 	return max(0, num)

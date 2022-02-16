@@ -48,6 +48,7 @@ var follow_fittest_boppie = false setget set_follow_fittest_boppie
 var difficulty_level = 1
 var last_difficulty_level_change_time = 0
 var mouse_is_pressed = false
+var control_newest_boppie = false
 
 # Boppies
 var food_scene = preload("res://Entities/Food/Food.tscn")
@@ -79,7 +80,6 @@ func make_within_game(pos: Vector2):
 	
 func get_mouse_world_coords():
 	var pos = get_global_mouse_position()
-	print(pos)
 	return pos
 	
 func _draw():
@@ -124,6 +124,9 @@ func add_boppie(at: Vector2, scene: PackedScene, dna=null):
 	instance.rotation = Globals.rng.randf() * 2 * PI
 	add_child(instance)
 	instance.global_position = at
+	if control_newest_boppie:
+		control_newest_boppie = false
+		take_control_of_boppie(instance)
 	return instance
 	
 
@@ -179,6 +182,10 @@ func _unhandled_input(event):
 	if event.is_action_pressed("add_energy_to_focused_boppie"):
 		if controlled_boppie:
 			controlled_boppie.update_energy(5)
+	if event.is_action_pressed("produce_and_focus_offspring"):
+		if controlled_boppie:
+			controlled_boppie.produce_offspring()
+			control_newest_boppie = true
 	if event.is_action_pressed("toggle_vision_rays"):
 		Globals.draw_vision_rays = !Globals.draw_vision_rays
 	if event.is_action_pressed("toggle_vision_rays_of_focused_boppie"):
