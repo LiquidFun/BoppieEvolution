@@ -164,7 +164,7 @@ func crossover_connections(other_connections):
 
 func mutate(property, mutability):
 	if property == "dna":
-		mutate_structure(1)
+		mutate_structure(mutability)
 		mutate_weights(mutability)
 	
 		
@@ -188,13 +188,14 @@ func add_random_connection():
 				return
 	
 func add_new_connection(input, output, weight=null):
+	# Recalculate internal connections after this!
 	dna.innovations.append(InnovationManager.add_innovation(input, output))
 	if weight == null:
 		weight = random_weight()
 	if not (output in dna.connections):
 		dna.connections[output] = {"Bias": random_weight()}
 	dna.connections[output][input] = weight
-	
+
 func add_hidden_neuron():
 	# Replace some connection with a hidden neuron and 2 connections to it, disabling the old one
 	for i in range(10):
@@ -217,23 +218,23 @@ func add_hidden_neuron():
 		
 
 func remove_random_connection():
-	var i
 	for tries in range(10): # 10 tries max, as while true may never end
-		i = Globals.rng.randi() % len(dna.innovations)
-		if dna.innovations[i] > 0:
-			break
-	dna.innovations[i] *= -1
+		var innovation_index = Globals.rng.randi() % len(dna.innovations)
+		if dna.innovations[innovation_index] > 0:
+			dna.innovations[innovation_index] *= -1 # Disable innovation
+			recalculate_internal_connections()
+			return
 		
 func mutate_structure(mutability):
 	# Mutate structure by: deleting and adding connections/neurons
 	if Globals.rng.randf() < mutability:
-		var chances = [[0.7, "add"], [0, "remove"], [1, "new"]]
+		var chances = [[0.7, "add"], [0.8, "remove"], [1, "new"]]
 		var chance = Globals.rng.randf()
 		for list in chances:
 			if chance <= list[0]:
 				match list[1]:
 					"add": add_random_connection()
-					# "remove": remove_random_connection()
+					"remove": remove_random_connection()
 					"new": add_hidden_neuron()
 				break
 	

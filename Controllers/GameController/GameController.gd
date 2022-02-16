@@ -50,6 +50,8 @@ var last_difficulty_level_change_time = 0
 var mouse_is_pressed = false
 var control_newest_boppie = false
 
+export var background_color = Color("#6d6d6d")
+
 # Boppies
 var food_scene = preload("res://Entities/Food/Food.tscn")
 var controlled_boppie: Boppie = null
@@ -84,7 +86,7 @@ func get_mouse_world_coords():
 	
 func _draw():
 	var offset = Vector2(14, 14)
-	draw_rect(Rect2(-offset, total_size+offset), Color("#6d6d6d"))
+	draw_rect(Rect2(-offset, total_size+offset), background_color)
 
 func _ready():
 	Globals.kloppies_cannibals = kloppies_cannibals
