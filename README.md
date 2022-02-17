@@ -33,7 +33,7 @@ Based on this basic neural network and evolution some interesting behaviour emer
 ## Running it
 
 You can play with it [online](https://boppie-evolution.brutenis.net) with a web browser.
-For better performance you can download the binaries [here](https://github.com/LiquidFun/BoppieEvolution/releases/tag/0.1.0) (Linux, Windows and Mac are all provided, the latter two have not been tested though).
+For better performance you can download the binaries [here](https://github.com/LiquidFun/BoppieEvolution/releases/latest) (Linux, Windows and Mac are all provided, the latter two have not been tested though).
 
 ## Hotkeys
 
@@ -104,6 +104,8 @@ Quickstart: after starting a simulation: press `9` to simulate quickly. After a 
 * Use textures on the ground (fertile vs infertile land)
 * Disable spike rotation and blood in performance mode
 * Show version/commit id in application
+* Make the fittest tab somehow always selectable
+* Add world configuration tab with seed and other such stuff
 
 ### Experiments
 
@@ -139,27 +141,6 @@ Quickstart: after starting a simulation: press `9` to simulate quickly. After a 
 * Creatures have DNA which they pass on to children
 * Vision based on 5 rays extending from each boppie
 
-
-## Example DNA
-
-To quickly get a smart boppie: click on a boppie (both owlies and kloppies accept the same DNA currently), then highlight the DNA (the JSON-like dictionary on the right) and paste the dictionary below. After that click on the button above the DNA saying `Apply DNA`. You should see the boppie behaviour change.
-
-```json
-{
-"ai.weights": [ [ [ 0.8752, -1.08406, 0.555625, 0.461732, -0.0153107, 1.60833 ], [ -0.772722, 0.891377, -1.54916, -0.189993, -0.303271, 0.0107722 ] ] ],
-"generation.i": 160,
-"max_backwards_factor": -0.74617,
-"max_boost_factor": 1.96055,
-"max_energy": 28.0945,
-"move_speed": 99.4101,
-"offspring_mutability": 0.01,
-"ray_angle": 0.693964,
-"ray_length": 457.06,
-"required_offspring_energy": 8.46333,
-"turn_speed": 2.86812
-}
-```
-
 ## Inspired by
 
 ### Videos
@@ -173,4 +154,4 @@ To quickly get a smart boppie: click on a boppie (both owlies and kloppies accep
 
 ### Papers
 
-* [Neuroevolution of Augmenting Topologies](http://nn.cs.utexas.edu/downloads/papers/stanley.ec02.pdf) by K. Stanley and R. Miikulainen, 2002
+* [Neuroevolution of Augmenting Topologies](http://nn.cs.utexas.edu/downloads/papers/stanley.ec02.pdf) by K. Stanley and R. Miikkulainen, 2002
