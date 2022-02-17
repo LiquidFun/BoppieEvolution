@@ -73,6 +73,7 @@ Quickstart: after starting a simulation: press `9` to simulate quickly. After a 
     * Cone for detection of food
     * Your own kin (so that ant-like behaviour could emerge)
     * Timer
+    * History neuron both input/output, but cap with sigmoid as it easily escalates
 * Add sexual reproduction, as in the real world merging DNA from two individuals has greatly benefited survival of the fittest
 * Add loading/saving of simulations
 * Add areas of high ground productivity (where more food spawns)
@@ -102,11 +103,18 @@ Quickstart: after starting a simulation: press `9` to simulate quickly. After a 
 * Check DNA importing, such that no object references are mentioned in the DNA
 * Use textures on the ground (fertile vs infertile land)
 * Disable spike rotation and blood in performance mode
+* Show version/commit id in application
+
+### Experiments
+
+* Can the boppies learn recurrent connections if their inputs are delayed
 
 
 ## Changelog
 
-### v0.2.0 (2022-02-17)
+### v0.3.0 (not yet released)
+
+### [v0.2.0](https://github.com/LiquidFun/BoppieEvolution/releases/tag/0.2.0) (2022-02-17)
 
 * UI/UX Improvements
     * Random seed is shown 
@@ -124,7 +132,7 @@ Quickstart: after starting a simulation: press `9` to simulate quickly. After a 
     * Crossover of creature DNA and neural networks
 
 
-### v0.1.0 (2021-10-19)
+### [v0.1.0](https://github.com/LiquidFun/BoppieEvolution/releases/tag/0.1.0) (2021-10-19)
 
 * Two types of creatures (Owlies and Kloppies)
 * A basic neural network for each creature
@@ -154,7 +162,15 @@ To quickly get a smart boppie: click on a boppie (both owlies and kloppies accep
 
 ## Inspired by
 
+### Videos
+
 * [Evolution simulator](https://www.youtube.com/watch?v=GOFws_hhZs8) by [carykh](https://www.youtube.com/channel/UC9z7EZAbkphEMg0SP7rw44A)
 * [Evolv.io](https://www.youtube.com/watch?v=C9tWr1WUTuI) by [carykh](https://www.youtube.com/channel/UC9z7EZAbkphEMg0SP7rw44A)
 * [MarI/O](https://www.youtube.com/watch?v=qv6UVOQ0F44) by [SethBling](https://www.youtube.com/channel/UC8aG3LDTDwNR1UQhSn9uVrw)
 * [Simulating Natural Selection](https://www.youtube.com/watch?v=0ZGbIKd0XrM) by [Primer](https://www.youtube.com/channel/UCKzJFdi57J53Vr_BkTfN3uQ)
+* [I programmed some creatures. They Evolved.](https://www.youtube.com/watch?v=N3tRFayqVtk) by [David Randall Miller](https://www.youtube.com/user/davidrandallmiller)
+* [The Evolution of Predation in a Simulated Ecosystem](https://www.youtube.com/watch?v=rPkMoFJNcLA) by [The Bibites: Digital Life](https://www.youtube.com/c/TheBibitesDigitalLife)
+
+### Papers
+
+* [Neuroevolution of Augmenting Topologies](http://nn.cs.utexas.edu/downloads/papers/stanley.ec02.pdf) by K. Stanley and R. Miikulainen, 2002
