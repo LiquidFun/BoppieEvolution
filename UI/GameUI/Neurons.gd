@@ -77,9 +77,8 @@ func _draw():
 			var left_pos = lookup_index_to_pos[connection[1][i]]
 			var weight = connection[1][i+1]
 			var dendron = weight * values[connection[1][i]]
-			var color = neuron_weight_gradient.interpolate((weight + 1) / 2.0)
-			# var color = Color.white
-			draw_line(left_pos, right_pos, color, abs(weight * 3))
+			var color = neuron_weight_gradient.interpolate((dendron + 1) / 2.0)
+			draw_line(left_pos, right_pos, color, abs(dendron * 3))
 
 	# Draw neurons
 	for index in lookup_index_to_pos:

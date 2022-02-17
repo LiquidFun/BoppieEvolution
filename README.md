@@ -63,14 +63,10 @@ Quickstart: after starting a simulation: press `9` to simulate quickly. After a 
 * Open Godot and import the `project.godot` file
 * Now press on the play button to run it 
 
-## Ideas for features
+## Ideas for future features
 
 ### Simulation
 
-* Implement NEAT (Neuroevolution of Augmenting Topologies), such that the neural networks of the boppies change with each generation
-    * Innovation number (tracking of changes between species)
-    * Different parallel simulations where the best are merged into 1
-    * Merging of neural networks
 * Add obstacles
 * Add more senses for the boppies, such as:
     * Instead of rays try neural network inputs with information for angle+distance
@@ -80,36 +76,53 @@ Quickstart: after starting a simulation: press `9` to simulate quickly. After a 
 * Add sexual reproduction, as in the real world merging DNA from two individuals has greatly benefited survival of the fittest
 * Add loading/saving of simulations
 * Add areas of high ground productivity (where more food spawns)
+* Add (for example), a river in the middle of the map, which separates the species on the left/right of it. 
+* Encode how many creatures are reproduced in the DNA of the creature
 * Make boppies leave flesh after death
 * Change meat-eating from boolean to a float, where it essentially becomes meat-tolerance or meat effectiveness (a factor of how much energy can be gained from meat). However high meat-tolerance means low 
-* Add/extend boppie color as part of DNA 
+* Extend boppie color as part of DNA 
     * Ideas: 
         * HSL (where H is part of DNA, S shows energy, L = .5 or meat-tolerance )
         * RGB (where R, G is part of DNA, B shows meat-tolerance)
 * Add reinforcement learning
     * Save which neurons most contributed to a reward in the last seconds (eating)/penalty (taking damage), increase the weights of those connections
-* Drop in boppies from fitness list
-* Show genetic tree for entire simulation
+* Different parallel simulations where the best are merged into one
 
 ### UI/UX
 * Add menu so that simulation could be configured
 * Show additional senses (dangersense) near boppie
+* Show genetic tree for entire simulation
+* Improve graph by drawing lines instead of pixels
+* Add more graphs 
+    * Fittest creature each second
+    * Species stacked bar-plot
+* Select different profiles for displaying neural network (weights or activations)
+* Full screen on neural network, which shows actual weights
+* Improve display of recurrent connections
+* Check DNA importing, such that no object references are mentioned in the DNA
+* Use textures on the ground (fertile vs infertile land)
+* Disable spike rotation and blood in performance mode
+
 
 ## Changelog
 
-### v0.2.0 (not yet released)
+### v0.2.0 (2022-02-17)
 
+* UI/UX Improvements
+    * Random seed is shown 
+    * Can now drag boppies from fittest list into world
+    * Camera can now be moved by dragging the mouse
+    * DNA/Neural network as tabs, as they did not fit in a single column
+    * Neural networks now show what each input/output neuron means
 * Neural networks can have any structure (not necessarily fully connected)
-* Added an innovation number for each change in the neural network, as described in NEAT
 * Added rotating traps with spikes and blood marks after death
 * Added these senses for boppies:
     * Danger sense (for detecting traps and kloppies)
-* Camera can now be moved by dragging the mouse
-* Random seed is shown 
-* Neural networks now show what each input/output neuron means
-* DNA/Neural network as tabs, as they did not fit in a single column
 * Added boppie color as part of DNA 
-* Can now drag boppies from fittest list into world
+* Implemented NEAT (Neuroevolution of Augmenting Topologies), such that the neural networks of the boppies change with each generation
+    * Added an innovation number for each connection in the neural network, as described in NEAT
+    * Crossover of creature DNA and neural networks
+
 
 ### v0.1.0 (2021-10-19)
 

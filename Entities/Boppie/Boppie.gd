@@ -180,7 +180,6 @@ func initialize_dna():
 func set_dna(new_dna: Dictionary, mutation_factor=0, crossover_dna=null):
 	new_dna = new_dna.duplicate(true)
 	for property in new_dna:
-		print(property)
 		var resolved_subproperty = self
 		var subproperties = property.split(".")
 		var last = subproperties[-1]
@@ -192,7 +191,6 @@ func set_dna(new_dna: Dictionary, mutation_factor=0, crossover_dna=null):
 			resolved_subproperty.crossover(property, crossover_dna[property])
 		if mutation_factor > 0:
 			resolved_subproperty.mutate(last, new_dna["offspring_mutability"] * mutation_factor)
-	print()
 	initialize_dna()
 		
 func mutate(property: String, mutability: float):

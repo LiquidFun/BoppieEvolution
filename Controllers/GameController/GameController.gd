@@ -117,11 +117,11 @@ func handle_boppie(boppie):
 func _on_SpawnNewBoppie(at, dna):
 	add_boppie(at, boppie_configurations[0].scene, dna)
 
-func add_boppie(at: Vector2, scene: PackedScene, dna=null):
+func add_boppie(at: Vector2, scene: PackedScene, dna=null, dna2=null):
 	var instance = scene.instance()
 	if instance is Boppie:
 		if dna != null:
-			instance.set_dna(dna, 1)
+			instance.set_dna(dna, 1, dna2)
 		handle_boppie(instance)
 	instance.rotation = Globals.rng.randf() * 2 * PI
 	add_child(instance)
@@ -134,10 +134,15 @@ func add_boppie(at: Vector2, scene: PackedScene, dna=null):
 
 func add_random_boppies(count: int, config: BoppieConfiguration):
 	for _i in range(count):
-		var old_dna = null
-		if config.fittest.size() == keep_n_fittest_boppies and Globals.rng.randf() > config.new_dna_chance:
-			old_dna = config.fittest[Globals.rng.randi() % keep_n_fittest_boppies][1]
-		add_boppie(random_world_coordinate(), config.scene, old_dna)
+		var dna1 = null
+		var dna2 = null
+		if config.fittest.size() >= 10 and Globals.rng.randf() > config.new_dna_chance:
+			var fittest_len = len(config.fittest)
+			var dna1_index = Globals.rng.randi() % fittest_len
+			var dna2_index = (dna1_index + (fittest_len - 1)) % fittest_len
+			dna1 = config.fittest[dna1_index][1]
+			dna2 = config.fittest[dna2_index][1]
+		add_boppie(random_world_coordinate(), config.scene, dna1, dna2)
 		
 		
 func add_food(at: Vector2):
