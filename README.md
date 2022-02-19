@@ -92,7 +92,6 @@ Quickstart: after starting a simulation: press `9` to simulate quickly. After a 
 ### UI/UX
 * Add menu so that simulation could be configured
 * Show genetic tree for entire simulation
-* Improve graph by drawing lines instead of pixels
 * Add more graphs 
     * Fittest creature each second
     * Species stacked bar-plot
@@ -117,6 +116,7 @@ Quickstart: after starting a simulation: press `9` to simulate quickly. After a 
 * UI/UX Improvements
     * Show additional danger-sense near boppie
     * Disabled spike rotation and blood in performance mode
+    * Improved graphs by drawing lines instead of pixels in texture, graphs can be hidden
 
 ### [v0.2.0](https://github.com/LiquidFun/BoppieEvolution/releases/tag/0.2.0) (2022-02-17)
 

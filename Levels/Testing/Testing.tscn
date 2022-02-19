@@ -2,11 +2,11 @@
 
 [ext_resource path="res://Controllers/GameController/GameController.tscn" type="PackedScene" id=2]
 
-[node name="Node2D" type="Node2D"]
+[node name="Testing" type="Node2D"]
 
 [node name="GameController" parent="." instance=ExtResource( 2 )]
 min_count_config = {
-"Kloppie": 1,
+"Kloppie": 0,
 "Owlie": 10,
 "Trap": 10
 }

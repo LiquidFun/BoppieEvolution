@@ -1,7 +1,7 @@
-[gd_scene load_steps=27 format=2]
+[gd_scene load_steps=29 format=2]
 
 [ext_resource path="res://UI/GameUI/BoppieInformation.gd" type="Script" id=1]
-[ext_resource path="res://UI/GameUI/BoppieCountHistoryPlot.gd" type="Script" id=2]
+[ext_resource path="res://UI/GameUI/BoppieFittnessPlot.gd" type="Script" id=2]
 [ext_resource path="res://UI/GameUI/BoppieCount.gd" type="Script" id=3]
 [ext_resource path="res://UI/GameUI/FPS.gd" type="Script" id=4]
 [ext_resource path="res://UI/GameUI/GameTime.gd" type="Script" id=5]
@@ -13,6 +13,8 @@
 [ext_resource path="res://UI/GameUI/FittestBoppieList.gd" type="Script" id=11]
 [ext_resource path="res://UI/GameUI/HelpButton.gd" type="Script" id=12]
 [ext_resource path="res://UI/GameUI/Seed.gd" type="Script" id=13]
+[ext_resource path="res://UI/GameUI/BoppieCountPlot.gd" type="Script" id=14]
+[ext_resource path="res://UI/GameUI/DisablePlotBelow.gd" type="Script" id=15]
 
 [sub_resource type="DynamicFontData" id=1]
 font_path = "res://Resources/Fonts/FontAwesome/otfs/Font Awesome 5 Free-Solid-900.otf"
@@ -322,26 +324,71 @@ mouse_filter = 2
 alignment = 1
 
 [node name="PlotTitle" type="Label" parent="RightSidePanel/VBoxContainer/HBoxContainer"]
-margin_left = 45.0
-margin_right = 255.0
+margin_left = 66.0
+margin_right = 205.0
 margin_bottom = 25.0
 custom_fonts/font = SubResource( 6 )
-text = "Owlie vs. Kloppie plot"
+text = "Boppie Counts"
 align = 1
 valign = 2
 
-[node name="BoppieCountHistoryPlot" type="TextureRect" parent="RightSidePanel/VBoxContainer"]
+[node name="DisablePlotBelow2" type="CheckBox" parent="RightSidePanel/VBoxContainer/HBoxContainer"]
+margin_left = 209.0
+margin_right = 233.0
+margin_bottom = 25.0
+pressed = true
+script = ExtResource( 15 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+plot = NodePath("../../BoppieCountPlot")
+
+[node name="BoppieCountPlot" type="Control" parent="RightSidePanel/VBoxContainer"]
 pause_mode = 1
 margin_top = 29.0
 margin_right = 300.0
 margin_bottom = 179.0
 rect_min_size = Vector2( 300, 150 )
+script = ExtResource( 14 )
+
+[node name="Timer" type="Timer" parent="RightSidePanel/VBoxContainer/BoppieCountPlot"]
+wait_time = 10.0
+autostart = true
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="RightSidePanel/VBoxContainer"]
+margin_top = 183.0
+margin_right = 300.0
+margin_bottom = 208.0
 mouse_filter = 2
-expand = true
+alignment = 1
+
+[node name="PlotTitle" type="Label" parent="RightSidePanel/VBoxContainer/HBoxContainer2"]
+margin_left = 57.0
+margin_right = 215.0
+margin_bottom = 25.0
+custom_fonts/font = SubResource( 6 )
+text = "Average Fitness"
+align = 1
+valign = 2
+
+[node name="DisablePlotBelow" type="CheckBox" parent="RightSidePanel/VBoxContainer/HBoxContainer2"]
+margin_left = 219.0
+margin_right = 243.0
+margin_bottom = 25.0
+pressed = true
+script = ExtResource( 15 )
+plot = NodePath("../../BoppieFittnessPlot")
+
+[node name="BoppieFittnessPlot" type="Control" parent="RightSidePanel/VBoxContainer"]
+pause_mode = 1
+margin_top = 212.0
+margin_right = 300.0
+margin_bottom = 362.0
+rect_min_size = Vector2( 300, 150 )
 script = ExtResource( 2 )
 
-[node name="Timer" type="Timer" parent="RightSidePanel/VBoxContainer/BoppieCountHistoryPlot"]
-wait_time = 5.0
+[node name="Timer" type="Timer" parent="RightSidePanel/VBoxContainer/BoppieFittnessPlot"]
+wait_time = 10.0
 autostart = true
 
 [node name="LeftSidePanel" type="MarginContainer" parent="."]
@@ -599,6 +646,10 @@ script = ExtResource( 11 )
 [node name="Tween" type="Tween" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
 
 [connection signal="toggled" from="StatusBar/VBoxContainer/MarginContainer/HBoxContainer2/HelpButton" to="StatusBar/VBoxContainer/MarginContainer/HBoxContainer2/HelpButton" method="_on_HelpButton_toggled"]
+[connection signal="toggled" from="RightSidePanel/VBoxContainer/HBoxContainer/DisablePlotBelow2" to="RightSidePanel/VBoxContainer/HBoxContainer/DisablePlotBelow2" method="_on_DisablePlotBelow_toggled"]
+[connection signal="timeout" from="RightSidePanel/VBoxContainer/BoppieCountPlot/Timer" to="RightSidePanel/VBoxContainer/BoppieCountPlot" method="replot"]
+[connection signal="toggled" from="RightSidePanel/VBoxContainer/HBoxContainer2/DisablePlotBelow" to="RightSidePanel/VBoxContainer/HBoxContainer2/DisablePlotBelow" method="_on_DisablePlotBelow_toggled"]
+[connection signal="timeout" from="RightSidePanel/VBoxContainer/BoppieFittnessPlot/Timer" to="RightSidePanel/VBoxContainer/BoppieFittnessPlot" method="replot"]
 [connection signal="toggled" from="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/TabContainer/DNA/HBoxContainer/ShowDNA" to="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation" method="_on_Show_toggled"]
 [connection signal="pressed" from="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/TabContainer/DNA/HBoxContainer/ApplyDNA" to="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation" method="_on_ApplyDNA_pressed"]
 [connection signal="pressed" from="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/TabContainer/DNA/HBoxContainer/CopyDNA" to="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation" method="_on_CopyDNA_pressed"]
