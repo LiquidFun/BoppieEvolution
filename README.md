@@ -91,7 +91,6 @@ Quickstart: after starting a simulation: press `9` to simulate quickly. After a 
 
 ### UI/UX
 * Add menu so that simulation could be configured
-* Show additional senses (dangersense) near boppie
 * Show genetic tree for entire simulation
 * Improve graph by drawing lines instead of pixels
 * Add more graphs 
@@ -102,7 +101,6 @@ Quickstart: after starting a simulation: press `9` to simulate quickly. After a 
 * Improve display of recurrent connections
 * Check DNA importing, such that no object references are mentioned in the DNA
 * Use textures on the ground (fertile vs infertile land)
-* Disable spike rotation and blood in performance mode
 * Show version/commit id in application
 * Make the fittest tab somehow always selectable
 * Add world configuration tab with seed and other such stuff
@@ -115,6 +113,10 @@ Quickstart: after starting a simulation: press `9` to simulate quickly. After a 
 ## Changelog
 
 ### v0.3.0 (not yet released)
+
+* UI/UX Improvements
+    * Show additional danger-sense near boppie
+    * Disabled spike rotation and blood in performance mode
 
 ### [v0.2.0](https://github.com/LiquidFun/BoppieEvolution/releases/tag/0.2.0) (2022-02-17)
 

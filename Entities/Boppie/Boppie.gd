@@ -60,6 +60,7 @@ var turn_speed := 2.0
 var ray_count_additional := 2
 var ray_angle := deg2rad(20)
 var ray_length := 300.0
+var danger_sense_radius = 150.0
 var max_boost_factor := 2.0
 var max_backwards_factor := -0.75
 var offspring_mutability := 0.05
@@ -84,6 +85,7 @@ var dna_allowed_values = {
 #	"ray_count_additional": Vector2(0, 3),
 	"ray_angle": Vector2(deg2rad(5), deg2rad(50)),
 	"ray_length": Vector2(100, 600),
+	"danger_sense_radius": Vector2(100, 200),
 	"max_boost_factor": Vector2(1.5, 2.5),
 	"max_backwards_factor": Vector2(-1.0, -0.5),
 	"offspring_mutability": Vector2(0.03, .5),
@@ -101,17 +103,20 @@ var energy_consumption_existing = 1 * difficulty
 var energy_consumption_walking = .5 * difficulty
 
 var vision_rays = []
-var draw_vision_rays = false
+var draw_senses = false setget set_draw_senses
 
+# AI
 var ai = null
 var temp_ai = null
 
 var ai_input = {}
 var nn_input_array
+var nn_input_array_senses_start_indeces = {}
 
 var selected = false setget set_selected
 var hovered = false setget set_hovered
 
+# Drawing
 enum BodyType {ROUND, HEXAGONAL}
 var draw_body_type =  BodyType.ROUND
 var draw_ears = false
@@ -139,6 +144,7 @@ var spawn_time = 0
 signal BoppieClicked(Boppie)
 signal BoppieOffspring(Boppie)
 signal BoppieDied(Boppie)
+signal DrawSenses(new_value)
 
 # ==========================================================================
 # Init and draw
@@ -242,6 +248,10 @@ func add_ray(angle_radians, push_back=true, ray=null):
 		self.vision_rays.push_front(ray)
 	ai_input[Data.NNInput.RAY_DIST].append(1)
 	ai_input[Data.NNInput.RAY_TYPE].append(Data.Raytype.NONE)
+	
+func set_draw_senses(value):
+	draw_senses = value
+	emit_signal("DrawSenses", draw_senses)
 
 # ==========================================================================
 # AI
@@ -265,12 +275,14 @@ func calc_ai_input(delta):
 	var index = 0
 	var loss = 1.0 - delta * 10
 	if senses.bitmask & Data.Senses.VISION_RAY_EATS:
+		nn_input_array_senses_start_indeces[Data.Senses.DANGER_SENSE] = index
 		for i in range(vision_rays.size()):
 			nn_input_array[index] *= loss
 			if vision_rays[i].collision_type() == eats:
 				nn_input_array[index] = 1.0 - vision_rays[i].collision_distance() / 2.0
 			index += 1
 	if senses.bitmask & Data.Senses.DANGER_SENSE:
+		nn_input_array_senses_start_indeces[Data.Senses.DANGER_SENSE] = index
 		for i in range(danger_sense_parts):
 			nn_input_array[index + i] *= loss
 		for body in $DangerSense.get_overlapping_bodies() + $DangerSense.get_overlapping_areas():
@@ -396,6 +408,7 @@ func _physics_process(delta):
 		$Hair.modulate = self_modulate
 	
 
+		
 		
 # ==========================================================================
 # Life and death

@@ -360,13 +360,13 @@ __meta__ = {
 margin_left = 10.0
 margin_top = 10.0
 margin_right = 438.0
-margin_bottom = 476.0
+margin_bottom = 479.0
 mouse_filter = 2
 custom_styles/panel = SubResource( 9 )
 
 [node name="InsideMargin" type="MarginContainer" parent="LeftSidePanel/PanelContainer"]
 margin_right = 428.0
-margin_bottom = 466.0
+margin_bottom = 469.0
 mouse_filter = 2
 custom_constants/margin_right = 10
 custom_constants/margin_top = 10
@@ -377,7 +377,7 @@ custom_constants/margin_bottom = 10
 margin_left = 10.0
 margin_top = 10.0
 margin_right = 418.0
-margin_bottom = 456.0
+margin_bottom = 459.0
 mouse_filter = 2
 size_flags_vertical = 15
 custom_constants/separation = 0
@@ -424,40 +424,51 @@ custom_fonts/font = SubResource( 6 )
 text = "Offspring Count: X"
 valign = 2
 
-[node name="Level" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
+[node name="Generation" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
 margin_top = 110.0
 margin_right = 408.0
 margin_bottom = 135.0
+custom_fonts/font = SubResource( 6 )
+text = "Generation: X"
+valign = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Level" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
+margin_top = 135.0
+margin_right = 408.0
+margin_bottom = 160.0
 custom_fonts/font = SubResource( 6 )
 text = "Level: x/max (size)"
 valign = 2
 
 [node name="Survived" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
-margin_top = 135.0
+margin_top = 160.0
 margin_right = 408.0
-margin_bottom = 160.0
+margin_bottom = 185.0
 custom_fonts/font = SubResource( 6 )
 text = "Survived: mm:hh"
 valign = 2
 
 [node name="Eaten" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
-margin_top = 160.0
+margin_top = 185.0
 margin_right = 408.0
-margin_bottom = 185.0
+margin_bottom = 210.0
 custom_fonts/font = SubResource( 6 )
 text = "Eaten: x"
 valign = 2
 
 [node name="HSeparator5" type="HSeparator" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
-margin_top = 185.0
+margin_top = 210.0
 margin_right = 408.0
-margin_bottom = 195.0
+margin_bottom = 220.0
 custom_constants/separation = 10
 
 [node name="TabContainer" type="TabContainer" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
-margin_top = 195.0
+margin_top = 220.0
 margin_right = 408.0
-margin_bottom = 446.0
+margin_bottom = 449.0
 size_flags_vertical = 15
 
 [node name="Neural network" type="VBoxContainer" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/TabContainer"]
@@ -496,8 +507,8 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
 margin_top = 32.0
-margin_right = -364.0
-margin_bottom = -157.0
+margin_right = -4.0
+margin_bottom = -4.0
 rect_min_size = Vector2( 0, 700 )
 
 [node name="DNAName" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/TabContainer/DNA"]

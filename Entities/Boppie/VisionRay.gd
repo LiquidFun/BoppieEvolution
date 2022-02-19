@@ -21,7 +21,8 @@ func collision_type():
 	return Data.Raytype.NONE
 
 func _physics_process(_delta):
-	if Globals.draw_vision_rays or get_parent().draw_vision_rays:
+	if Globals.draw_senses or get_parent().draw_senses:
+		self.visible = true
 		if is_colliding():
 			var collider = get_collider()
 			if collider is Owlie:
@@ -33,4 +34,4 @@ func _physics_process(_delta):
 		else:
 			self.modulate = Color.white
 	else:
-		self.modulate = Color(1, 1, 1, 0)
+		self.visible = false

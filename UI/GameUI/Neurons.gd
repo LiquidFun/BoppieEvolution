@@ -45,7 +45,7 @@ func set_neural_network(nn):
 			rect_min_size = Vector2(width, height)
 		self.update()
 	
-func _process(delta):
+func _process(_delta):
 	update()
 
 func _draw():

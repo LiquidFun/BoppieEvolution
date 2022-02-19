@@ -165,13 +165,13 @@ func spawn_food(count=max_food_count):
 func take_control_of_boppie(boppie):
 	if controlled_boppie != null:
 		controlled_boppie.set_selected(false)
-		controlled_boppie.draw_vision_rays = false
+		controlled_boppie.draw_senses = false
 		if controlled_boppie.temp_ai == player_ai:
 			controlled_boppie.pop_temp_ai()
 	controlled_boppie = boppie
 	emit_signal("BoppieControlChanged", controlled_boppie)
 	if controlled_boppie != null:
-		controlled_boppie.draw_vision_rays = Globals.draw_current_vision_rays
+		controlled_boppie.draw_senses = Globals.draw_current_senses
 		controlled_boppie.set_selected(true)
 
 
@@ -194,11 +194,11 @@ func _unhandled_input(event):
 			controlled_boppie.produce_offspring()
 			control_newest_boppie = true
 	if event.is_action_pressed("toggle_vision_rays"):
-		Globals.draw_vision_rays = !Globals.draw_vision_rays
+		Globals.draw_senses = !Globals.draw_senses
 	if event.is_action_pressed("toggle_vision_rays_of_focused_boppie"):
-		Globals.draw_current_vision_rays = !Globals.draw_current_vision_rays
+		Globals.draw_current_senses = !Globals.draw_current_senses
 		if controlled_boppie != null:
-			controlled_boppie.draw_vision_rays = Globals.draw_current_vision_rays
+			controlled_boppie.draw_senses = Globals.draw_current_senses
 	if event.is_action_pressed("toggle_performance_mode"):
 		Globals.performance_mode = !Globals.performance_mode
 	if event.is_action_pressed("increase_time_factor"):

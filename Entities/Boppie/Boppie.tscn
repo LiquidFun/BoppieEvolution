@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=2]
+[gd_scene load_steps=32 format=2]
 
 [ext_resource path="res://Entities/Boppie/Boppie.gd" type="Script" id=1]
 [ext_resource path="res://Entities/Boppie/Face.gd" type="Script" id=2]
@@ -9,6 +9,7 @@
 [ext_resource path="res://Particles/ParticlesManager.gd" type="Script" id=7]
 [ext_resource path="res://Entities/Boppie/AboveFace.gd" type="Script" id=8]
 [ext_resource path="res://Entities/Boppie/BelowFace.gd" type="Script" id=9]
+[ext_resource path="res://Entities/Boppie/DangerSense.gd" type="Script" id=10]
 
 [sub_resource type="CircleShape2D" id=1]
 radius = 20.108
@@ -245,12 +246,16 @@ pause_mode = 2
 shape = SubResource( 20 )
 
 [node name="DangerSense" type="Area2D" parent="."]
+visible = false
+z_index = -5
 collision_layer = 0
 collision_mask = 24
+script = ExtResource( 10 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DangerSense"]
 shape = SubResource( 21 )
 
+[connection signal="DrawSenses" from="." to="DangerSense" method="_on_Boppie_DrawSenses"]
 [connection signal="input_event" from="." to="." method="_on_Boppie_input_event"]
 [connection signal="mouse_entered" from="." to="." method="_on_Boppie_mouse_entered"]
 [connection signal="mouse_exited" from="." to="." method="_on_Boppie_mouse_exited"]

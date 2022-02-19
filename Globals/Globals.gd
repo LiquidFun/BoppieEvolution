@@ -2,8 +2,8 @@ extends Node
 
 
 var current_food_count := 0
-var draw_vision_rays := false
-var draw_current_vision_rays := false
+var draw_senses := false
+var draw_current_senses := false
 var boppies_died := 0
 var boppies_born := 0
 var boppies_spawned := 0

@@ -51,6 +51,7 @@ func _process(_delta):
 		boppie.required_offspring_energy,
 	]
 	$OffspringCount.text = "Offspring count: %d" % boppie.offspring_count
+	$Generation.text = "Generation: %d" % boppie.generation.i
 	$Level.text = "Level: %d (size: %.1f)" % [boppie.level, boppie.scale.x]
 	$Survived.text = "Spawned: %s (%.1f s)" % [
 		Globals.formatted_time(int(boppie.spawn_time)), 
@@ -59,7 +60,7 @@ func _process(_delta):
 	$Eaten.text = "Eaten: %d" % boppie.times_eaten
 	
 
-func _on_Show_toggled(button_pressed=true):
+func _on_Show_toggled(_button_pressed=true):
 	show_dna = $TabContainer/DNA/HBoxContainer/ShowDNA.pressed
 	dna.text = ("%s" % boppie.get_dna_str()) if show_dna else "{ ... }"
 	

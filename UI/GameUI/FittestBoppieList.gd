@@ -34,7 +34,7 @@ func _on_Fittest_item_selected(index: int) -> void:
 			return
 		index -= len(game_controller.boppie_configurations)
 		
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if dragging_boppie != null:
 		dragging_boppie.position = game_controller.get_mouse_world_coords()
 
