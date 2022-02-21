@@ -52,4 +52,13 @@ func _draw():
 	for i in range(4):
 		draw_lake_poly(water_color.darkened(0.1 * i), 0.8 - i * 0.1)
 		
-	
+
+func _on_Lake_body_entered(body: Node) -> void:
+	if body is Boppie:
+		body.ground_movement_penalty_factor = 0.3
+		body.update_water(100)
+
+
+func _on_Lake_body_exited(body: Node) -> void:
+	if body is Boppie:
+		body.ground_movement_penalty_factor = 1

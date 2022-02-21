@@ -11,4 +11,5 @@ enum Senses {
 	HUNGER = 1 << 5,
 	THIRST = 1 << 6,
 	WATER_RAY = 1 << 7,
+	GROUND = 1 << 8,
 }

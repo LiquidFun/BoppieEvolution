@@ -29,6 +29,7 @@ func get_nn_input_neurons():
 	input_neurons.append("Thirst")
 	input_neurons.append("Water")
 	nn_input_initial_neurons.append(input_neurons[-1])
+	input_neurons.append("Ground")
 	input_neurons.append("Bias")
 	return input_neurons
 

@@ -186,9 +186,20 @@ position = Vector2( -0.280617, 0.14031 )
 modulate = Color( 1, 1, 1, 0 )
 z_index = -5
 enabled = true
+cast_to = Vector2( 50, 0 )
 collision_mask = 3
 collide_with_areas = true
 script = ExtResource( 4 )
+
+[node name="WaterRay" type="RayCast2D" parent="."]
+z_index = -6
+enabled = true
+cast_to = Vector2( 1000, 0 )
+collision_mask = 32
+collide_with_areas = true
+collide_with_bodies = false
+script = ExtResource( 4 )
+default_color = Color( 0.560784, 0.945098, 0.882353, 0.317647 )
 
 [node name="Tween" type="Tween" parent="."]
 

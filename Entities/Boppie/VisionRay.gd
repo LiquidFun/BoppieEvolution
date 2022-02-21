@@ -1,13 +1,14 @@
 extends RayCast2D
 
+export(Color) var default_color = Color(1, 1, 1, 0.8)
 
 func _draw():
-	draw_line(Vector2.ZERO, self.cast_to, Color.white, 1)
+	draw_line(Vector2.ZERO, self.cast_to, default_color, 1)
 		
 func collision_distance():
 	if is_colliding():
 		return global_transform.origin.distance_to(get_collision_point()) / self.cast_to.length()
-	return 1
+	return 2
 	
 func collision_type():
 	if is_colliding():
@@ -31,6 +32,8 @@ func _physics_process(_delta):
 				self.modulate = Color.cyan
 			elif collider is Food:
 				self.modulate = Color.red
+			elif collider is Area2D:
+				self.modulate = Color.blue
 		else:
 			self.modulate = Color.white
 	else:

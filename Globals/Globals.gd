@@ -25,7 +25,7 @@ func _ready():
 	
 	
 signal PerformanceModeChanged(value)
-var performance_mode = false setget set_performance_mode
+var performance_mode = true setget set_performance_mode
 func set_performance_mode(new_value):
 	if performance_mode != new_value:
 		performance_mode = new_value

@@ -72,7 +72,6 @@ Quickstart: after starting a simulation: press `9` to simulate quickly. After a 
     * Instead of rays try neural network inputs with information for angle+distance
     * Cone for detection of food
     * Your own kin (so that ant-like behaviour could emerge)
-    * Timer
     * History neuron both input/output, but cap with sigmoid as it easily escalates
 * Add sexual reproduction, as in the real world merging DNA from two individuals has greatly benefited survival of the fittest
 * Add loading/saving of simulations
@@ -117,6 +116,11 @@ Quickstart: after starting a simulation: press `9` to simulate quickly. After a 
     * Show additional danger-sense near boppie
     * Disabled spike rotation and blood in performance mode
     * Improved graphs by drawing lines instead of pixels in texture, graphs can be hidden
+* Added lakes, water requirement for boppies and neurons for detecting lakes
+* New neurons/senses
+    * Timer
+    * Energy/water
+    * Water ray
 
 ### [v0.2.0](https://github.com/LiquidFun/BoppieEvolution/releases/tag/0.2.0) (2022-02-17)
 

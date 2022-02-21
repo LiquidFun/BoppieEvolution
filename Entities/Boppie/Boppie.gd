@@ -7,6 +7,7 @@ var type = "Boppie"
 var radius := 20.0  # (too much hardcoded, don't change)
 var can_die := true
 var nutrition := 20.0
+var ground_movement_penalty_factor = 1
 
 
 class Generation:
@@ -91,6 +92,7 @@ var senses = Senses.new(0
 	| Data.Senses.HUNGER
 	| Data.Senses.THIRST
 	| Data.Senses.WATER_RAY
+	| Data.Senses.GROUND
 	| Data.Senses.BIAS
 )
 var timer_neuron = NeuronTimer.new()
@@ -122,7 +124,7 @@ var dna := {} setget set_dna
 var difficulty = Globals.difficulty
 var energy_consumption_existing = 1 * difficulty
 var energy_consumption_walking = 0.5 * difficulty
-var water_consumption_existing = 0.05 * difficulty
+var water_consumption_existing = 0.2 * (difficulty - 0.2)
 
 var vision_rays = []
 var draw_senses = false setget set_draw_senses
@@ -327,7 +329,10 @@ func calc_ai_input(delta):
 		nn_input_array[index] = (max_water - water) / max_water
 		index += 1
 	if senses.bitmask & Data.Senses.WATER_RAY:
-		nn_input_array[index] = (max_water - water) / max_water
+		nn_input_array[index] = 1.0 - $WaterRay.collision_distance() / 2.0
+		index += 1
+	if senses.bitmask & Data.Senses.GROUND:
+		nn_input_array[index] = 1 - ground_movement_penalty_factor
 		index += 1
 
 		
@@ -407,7 +412,7 @@ func rotation_vector():
 func move(factor, delta):
 	var rot = rotation_vector()
 	$Face.scale_eyes(factor)
-	var velocity = rot * factor * move_speed / scale
+	var velocity = rot * factor * move_speed * ground_movement_penalty_factor / scale
 	self.move_and_slide(velocity, Vector2.UP)
 	
 	
