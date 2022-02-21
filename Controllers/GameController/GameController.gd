@@ -34,6 +34,7 @@ export var food_per_500ms = 7
 export var spawn_food_on_death = false
 export var keep_n_fittest_boppies = 30
 export var kloppies_cannibals = false
+export var number_of_lakes = 1
 
 # Game size
 export var total_width = 4000
@@ -54,6 +55,7 @@ export var background_color = Color("#6d6d6d")
 
 # Boppies
 var food_scene = preload("res://Entities/Food/Food.tscn")
+var lake_scene = preload("res://Entities/World/Water/Lake.tscn")
 var controlled_boppie: Boppie = null
 var player_ai = Player.new()
 
@@ -70,6 +72,20 @@ func random_coordinate():
 func random_world_coordinate():
 	return random_coordinate() * (world_zone_end - world_zone_start) + world_zone_start
 	
+
+func random_empty_world_coordinate():
+	var coordinate
+	for i in range(10):
+		coordinate = random_world_coordinate()
+
+		var space_state = get_world_2d().get_direct_space_state()
+		var result = space_state.intersect_point(coordinate, 1, [], 0x7FFFFFFF, true, true)
+
+		if not result:
+			break
+	return coordinate
+
+	
 func random_game_coordinate():
 	return random_coordinate() * total_size
 
@@ -84,11 +100,24 @@ func get_mouse_world_coords():
 	var pos = get_global_mouse_position()
 	return pos
 	
+func add_lakes():
+	for i in range(number_of_lakes):
+		var lake = lake_scene.instance()
+		add_child(lake)
+		lake.rotation = PI * 2 * Globals.rng.randf()
+		var offset = lake.radius * 2
+		var allowed_width = total_width - offset * 2
+		var allowed_height = total_height - offset * 2
+		lake.position.x = offset + allowed_width * Globals.rng.randf()
+		lake.position.y = offset + allowed_height * Globals.rng.randf()
+		
+	
 func _draw():
 	var offset = Vector2(14, 14)
 	draw_rect(Rect2(-offset, total_size+offset), background_color)
 
 func _ready():
+	add_lakes()
 	Globals.kloppies_cannibals = kloppies_cannibals
 	for boppie in get_tree().get_nodes_in_group("Boppie"):
 		handle_boppie(boppie)
@@ -130,7 +159,7 @@ func add_boppie(at: Vector2, scene: PackedScene, dna=null, dna2=null):
 		control_newest_boppie = false
 		take_control_of_boppie(instance)
 	return instance
-	
+
 
 func add_random_boppies(count: int, config: BoppieConfiguration):
 	for _i in range(count):
@@ -142,7 +171,11 @@ func add_random_boppies(count: int, config: BoppieConfiguration):
 			var dna2_index = (dna1_index + (fittest_len - 1)) % fittest_len
 			dna1 = config.fittest[dna1_index][1]
 			dna2 = config.fittest[dna2_index][1]
-		add_boppie(random_world_coordinate(), config.scene, dna1, dna2)
+		var boppie = add_boppie(random_empty_world_coordinate(), config.scene, dna1, dna2)
+		#Globals.deactivate(boppie)
+		#spawn_queue.append(boppie)
+
+			
 		
 		
 func add_food(at: Vector2):
@@ -160,7 +193,7 @@ func _on_FoodEaten(food):
 func spawn_food(count=max_food_count):
 	var target_food_count = min(max_food_count, Globals.current_food_count + count)
 	while Globals.current_food_count < target_food_count:
-		add_food(random_world_coordinate())
+		add_food(random_empty_world_coordinate())
 
 func take_control_of_boppie(boppie):
 	if controlled_boppie != null:

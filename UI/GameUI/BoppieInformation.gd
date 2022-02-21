@@ -46,6 +46,7 @@ func _process(_delta):
 		return
 	$BoppieName.text = "Boppie"
 	$Energy.text = "Energy: %.1f/%.1f" % [abs(boppie.energy), boppie.max_energy]
+	$Water.text = "Water: %.1f/%.1f" % [abs(boppie.water), boppie.max_water]
 	$OffspringEnergy.text = "Offspring energy: %.1f/%.1f" % [
 		fmod(boppie.offspring_energy, boppie.required_offspring_energy), 
 		boppie.required_offspring_energy,

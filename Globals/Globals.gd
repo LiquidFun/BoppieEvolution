@@ -52,3 +52,20 @@ var difficulty = .3 setget set_difficulty
 func set_difficulty(new_value):
 	difficulty = new_value
 	emit_signal("DifficultyChanged", difficulty)
+
+var saved_collision_layer_mask = {}
+
+func activate(node):
+	var collision_layer_mask = saved_collision_layer_mask[node]
+	saved_collision_layer_mask.erase(node)
+	node.collision_layer = collision_layer_mask[0]
+	node.collision_mask = collision_layer_mask[1]
+	node.set_process(true)
+	node.set_physics_process(true)
+	
+func deactivate(node):
+	saved_collision_layer_mask[node] = [node.collision_layer, node.collision_mask]
+	node.collision_layer = 0
+	node.collision_mask = 0
+	node.set_process(false)
+	node.set_physics_process(false)

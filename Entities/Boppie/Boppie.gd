@@ -78,6 +78,7 @@ var max_boost_factor := 2.0
 var max_backwards_factor := -0.75
 var offspring_mutability := 0.05
 var max_energy = 15
+var max_water = 10
 var required_offspring_energy = 10
 var generation = Generation.new()
 var scale_factor = 1
@@ -87,6 +88,9 @@ var senses = Senses.new(0
 	| Data.Senses.VISION_RAY_EATS
 	| Data.Senses.DANGER_SENSE
 	| Data.Senses.TIMER
+	| Data.Senses.HUNGER
+	| Data.Senses.THIRST
+	| Data.Senses.WATER_RAY
 	| Data.Senses.BIAS
 )
 var timer_neuron = NeuronTimer.new()
@@ -95,6 +99,7 @@ var dna_allowed_values = {
 	"move_speed": Vector2(50, 100), 
 	"scale_factor": Vector2(.9, 1.1), 
 	"max_energy": Vector2(10, 30), 
+	"max_water": Vector2(8, 12), 
 	"required_offspring_energy": Vector2(8, 15), 
 	"turn_speed": Vector2(.5, 3),
 #	"ray_count_additional": Vector2(0, 3),
@@ -116,7 +121,8 @@ var dna := {} setget set_dna
 # var energy_gradient = "res://Entities/Boppie/DefaultEnergyGradient.tres"
 var difficulty = Globals.difficulty
 var energy_consumption_existing = 1 * difficulty
-var energy_consumption_walking = .5 * difficulty
+var energy_consumption_walking = 0.5 * difficulty
+var water_consumption_existing = 0.05 * difficulty
 
 var vision_rays = []
 var draw_senses = false setget set_draw_senses
@@ -145,7 +151,8 @@ var draw_hair = false
 # Energy and offspring
 var size_increases = [0.8, 1, 1.2]
 var level = 1
-var energy = max_energy * .8 + Globals.rng.randf() * max_energy * .2
+var energy = max_energy * (0.8 + Globals.rng.randf() * 0.2)
+var water = max_water
 var offspring_energy = 0
 var eats = Data.Raytype.FOOD
 
@@ -313,6 +320,15 @@ func calc_ai_input(delta):
 	if senses.bitmask & Data.Senses.TIMER:
 		nn_input_array[index] = timer_neuron.neuron_value()
 		index += 1
+	if senses.bitmask & Data.Senses.HUNGER:
+		nn_input_array[index] = (max_energy - energy) / max_energy
+		index += 1
+	if senses.bitmask & Data.Senses.THIRST:
+		nn_input_array[index] = (max_water - water) / max_water
+		index += 1
+	if senses.bitmask & Data.Senses.WATER_RAY:
+		nn_input_array[index] = (max_water - water) / max_water
+		index += 1
 
 		
 # ==========================================================================
@@ -403,7 +419,8 @@ func turn(factor, delta):
 func _physics_process(delta):
 	if not self.dead:
 		update_energy(-delta * energy_consumption_existing)
-		if energy >= 0 or not can_die:
+		update_water(-delta * water_consumption_existing)
+		if (water >= 0 and energy >= 0) or not can_die:
 			var curr_ai = ai if temp_ai == null else temp_ai
 			if curr_ai:
 				calc_ai_input(delta)
@@ -447,6 +464,9 @@ func die():
 
 func curr_level():
 	return int(offspring_energy / required_offspring_energy)
+	
+func update_water(add_water):
+	water = min(max_water, water+add_water)
 		
 func update_energy(add_energy):
 	energy += add_energy

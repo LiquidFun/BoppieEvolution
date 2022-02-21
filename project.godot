@@ -291,6 +291,7 @@ produce_and_focus_offspring={
 2d_physics/layer_3="Owlies"
 2d_physics/layer_4="Kloppies"
 2d_physics/layer_5="Traps"
+2d_physics/layer_6="Water"
 
 [physics]
 
