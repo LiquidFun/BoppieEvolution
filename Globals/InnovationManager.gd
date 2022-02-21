@@ -7,6 +7,7 @@ var common_innovation_ids: Array = []
 var fully_connected_neurons: int = 0
 var max_ray_count_additional = 2
 var danger_sense_parts = 4
+var nn_input_initial_neurons = []
 var nn_input_neurons = get_nn_input_neurons()
 var nn_output_neurons = ["Move", "Turn"]
 
@@ -19,16 +20,17 @@ func get_nn_input_neurons():
 	var input_neurons = []
 	for i in range(1 + 2 * max_ray_count_additional):
 		input_neurons.append("VisionRayEats" + str(i))
+		nn_input_initial_neurons.append(input_neurons[-1])
 	for i in range(danger_sense_parts):
 		input_neurons.append("DangerSense" + str(i))
+		nn_input_initial_neurons.append(input_neurons[-1])
+	input_neurons.append("Timer1")
 	input_neurons.append("Bias")
 	return input_neurons
 
 func _ready() -> void:
 	# Bias neuron should be connected to every neuron without the need for innovations
-	var no_bias_input_neurons = nn_input_neurons.duplicate()
-	no_bias_input_neurons.erase("Bias")
-	make_initial_innovations(no_bias_input_neurons)
+	make_initial_innovations(nn_input_initial_neurons)
 	
 func make_initial_innovations(inputs):
 	if fully_connected_neurons > 0:

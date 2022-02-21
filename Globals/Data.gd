@@ -8,4 +8,5 @@ enum Senses {
 	DANGER_SENSE = 1 << 2,
 	MEMORY = 1 << 3,
 	TIMER = 1 << 4,
+	ENERGY = 1 << 5,
 }

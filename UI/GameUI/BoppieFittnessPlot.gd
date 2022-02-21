@@ -31,5 +31,5 @@ func get_average_fitness(group):
 func replot():
 	for group in ["Owlie", "Kloppie"]:
 		var stats = get_average_fitness(group)
-		add_point(group + "s", stats.mean, stats.stderr)
+		add_point(group + "s", stats.mean)
 	update()

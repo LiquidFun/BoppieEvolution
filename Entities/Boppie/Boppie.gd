@@ -53,6 +53,19 @@ class Coloration:
 		energy_gradient.set_color(0, Color.from_hsv(hue, 0, .5))
 		#energy_gradient.set_color(1, Color.from_hsv(hue, 1, 1).darkened(.2))
 		energy_gradient.set_color(1, Color.from_hsv(hue, 1, 1))
+		
+class NeuronTimer:
+	extends Timer
+	func _init():
+		wait_time = 5
+	func _ready() -> void:
+		self.start()
+	func neuron_value():
+		return (wait_time - time_left) / wait_time
+	func mutate(_property, mutability):
+		self.wait_time += mutability * (Globals.rng.randf() * 10)
+	func crossover(_property, other_seconds):
+		self.wait_time = [wait_time, other_seconds][Globals.rng.randi() % 2]
 
 # DNA
 var move_speed := 85.0
@@ -73,8 +86,10 @@ var color = Coloration.new()
 var senses = Senses.new(0
 	| Data.Senses.VISION_RAY_EATS
 	| Data.Senses.DANGER_SENSE
+	| Data.Senses.TIMER
 	| Data.Senses.BIAS
 )
+var timer_neuron = NeuronTimer.new()
 
 var dna_allowed_values = {
 	"move_speed": Vector2(50, 100), 
@@ -93,6 +108,7 @@ var dna_allowed_values = {
 	"generation.i": null,
 	"senses.bitmask": null,
 	"color.hue": null,
+	"timer_neuron.wait_time": Vector2(1, 30),
 }
 
 var dna := {} setget set_dna
@@ -171,6 +187,7 @@ func _ready():
 	initialize_ai_input()
 	initialize_rays()
 	initialize_dna()
+	add_child(timer_neuron)
 
 # ==========================================================================
 # DNA
@@ -183,7 +200,7 @@ func initialize_dna():
 		for subproperty in property.split("."):
 			dna[property] = dna[property].get(subproperty)
 
-func set_dna(new_dna: Dictionary, mutation_factor=0, crossover_dna=null):
+func set_dna(new_dna: Dictionary, mutation_factor=1, crossover_dna=null):
 	new_dna = new_dna.duplicate(true)
 	for property in new_dna:
 		var resolved_subproperty = self
@@ -293,9 +310,9 @@ func calc_ai_input(delta):
 			var value = 1.0 - (vec_to.length() / (radius * scale.x)) / 2.0
 			nn_input_array[index + ds_index] = max(value, nn_input_array[index + ds_index])
 		index += danger_sense_parts
-	#if senses.bitmask & Data.Senses.BIAS:
-	#	nn_input_array[index] = 1
-	#	index += 1
+	if senses.bitmask & Data.Senses.TIMER:
+		nn_input_array[index] = timer_neuron.neuron_value()
+		index += 1
 
 		
 # ==========================================================================

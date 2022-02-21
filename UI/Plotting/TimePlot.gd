@@ -44,7 +44,7 @@ func add_dataset(name, color, plot_stderr=false):
 	datasets[name] = Dataset.new(name, color, rect_size.x, plot_stderr)
 
 func add_point(dataset_name, y, stderr=0):
-	datasets[dataset_name].add_point(y)
+	datasets[dataset_name].add_point(y, stderr)
 	
 func _draw():
 	var size = rect_size
