@@ -22,4 +22,3 @@ func draw_eyebrows():
 	var add = Vector2(face.eye_radius * .35, 0)
 	draw_colored_polygon(get_points(face.pos, -add), Color.white)
 	draw_colored_polygon(get_points(face.pos_other, add), Color.white)
-

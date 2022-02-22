@@ -9,65 +9,6 @@ var can_die := true
 var nutrition := 20.0
 var ground_movement_penalty_factor = 1
 
-
-class Generation:
-	var i = 1
-	func mutate(_property, _mutability):
-		i += 1
-	func crossover(_property, other_i):
-		i = max(i, other_i)
-		
-class Senses:
-	var bitmask = 0
-	
-	func _init(bitmask=0):
-		self.bitmask |= bitmask
-		
-	func mutate(_property, _mutability):
-		pass
-		
-	func crossover(_property, other_bitmask):
-		bitmask |= other_bitmask
-		
-class Coloration:
-	var energy_gradient = Gradient.new()
-	var hue setget set_hue
-	
-	func _init():
-		self.hue = Globals.rng.randf()
-		#energy_gradient.add_point(.5, Color.white)
-	
-	func mutate(_property, mutability):
-		hue += (Globals.rng.randf() * 2 - 1) * mutability / 4.0
-		self.hue = fmod(hue + 1.0, 1.0)
-		
-	func crossover(_property, other_hue):
-		var new_hue = 0
-		var best_diff = 100
-		if abs(hue - other_hue) < 0.5:
-			self.hue = (hue + other_hue) / 2.0
-		else:
-			self.hue = fmod((hue + other_hue + 1) / 2.0, 1.0)
-		
-	func set_hue(new_hue):
-		hue = new_hue
-		energy_gradient.set_color(0, Color.from_hsv(hue, 0, .5))
-		#energy_gradient.set_color(1, Color.from_hsv(hue, 1, 1).darkened(.2))
-		energy_gradient.set_color(1, Color.from_hsv(hue, 1, 1))
-		
-class NeuronTimer:
-	extends Timer
-	func _init():
-		wait_time = 5
-	func _ready() -> void:
-		self.start()
-	func neuron_value():
-		return (wait_time - time_left) / wait_time
-	func mutate(_property, mutability):
-		self.wait_time += mutability * (Globals.rng.randf() * 10)
-	func crossover(_property, other_seconds):
-		self.wait_time = [wait_time, other_seconds][Globals.rng.randi() % 2]
-
 # DNA
 var move_speed := 85.0
 var turn_speed := 2.0
@@ -81,22 +22,22 @@ var offspring_mutability := 0.05
 var max_energy = 15
 var max_water = 10
 var required_offspring_energy = 10
-var generation = Generation.new()
+var generation = Data.Generation.new()
 var scale_factor = 1
 var danger_sense_parts = 4
-var color = Coloration.new()
-var senses = Senses.new(0
-	| Data.Senses.VISION_RAY_EATS
-	| Data.Senses.DANGER_SENSE
-	| Data.Senses.TIMER
-	| Data.Senses.HUNGER
-	| Data.Senses.THIRST
-	| Data.Senses.WATER_RAY
-	| Data.Senses.GROUND
-	| Data.Senses.BIAS
-	| Data.Senses.ALLY_SENSE
+var color = Data.Coloration.new()
+var senses = Data.Senses.new(0
+	| Data.Sense.VISION_RAY_EATS
+	| Data.Sense.DANGER_SENSE
+	| Data.Sense.TIMER
+	| Data.Sense.HUNGER
+	| Data.Sense.THIRST
+	| Data.Sense.WATER_RAY
+	| Data.Sense.GROUND
+	| Data.Sense.BIAS
+	| Data.Sense.ALLY_SENSE
 )
-var timer_neuron = NeuronTimer.new()
+var timer_neuron = Data.NeuronTimer.new()
 
 var dna_allowed_values = {
 	"move_speed": Vector2(50, 100), 
@@ -182,6 +123,7 @@ func _init(ai=null):
 		ai = NeuralNetwork.new(InnovationManager.common_innovation_ids)
 	nn_input_array = ai.values
 	self.ai = ai
+	add_child(timer_neuron)
 	
 func _ready():
 	spawn_time = Globals.elapsed_time
@@ -196,7 +138,6 @@ func _ready():
 	$SpawnParticles.emitting = true
 	initialize_rays()
 	initialize_dna()
-	add_child(timer_neuron)
 
 # ==========================================================================
 # DNA
@@ -292,39 +233,39 @@ func pop_temp_ai():
 func calc_ai_input(delta):
 	var index = 0
 	var loss = 1.0 - delta * 10
-	if senses.bitmask & Data.Senses.HUNGER:
+	if senses.bitmask & Data.Sense.HUNGER:
 		nn_input_array[index] = (max_energy - energy) / max_energy
 		index += 1
-	if senses.bitmask & Data.Senses.VISION_RAY_EATS:
-		nn_input_array_senses_start_indeces[Data.Senses.DANGER_SENSE] = index
+	if senses.bitmask & Data.Sense.VISION_RAY_EATS:
+		nn_input_array_senses_start_indeces[Data.Sense.DANGER_SENSE] = index
 		for i in range(vision_rays.size()):
 			nn_input_array[index] *= loss
 			if vision_rays[i].collision_type() == eats:
 				nn_input_array[index] = 1.0 - vision_rays[i].collision_distance() / 2.0
 			index += 1
-	if senses.bitmask & Data.Senses.DANGER_SENSE:
-		nn_input_array_senses_start_indeces[Data.Senses.DANGER_SENSE] = index
+	if senses.bitmask & Data.Sense.DANGER_SENSE:
+		nn_input_array_senses_start_indeces[Data.Sense.DANGER_SENSE] = index
 		var activations = $DangerSense.get_activations()
 		for i in range(danger_sense_parts):
 			nn_input_array[index + i] *= loss
 			nn_input_array[index + i] = max(nn_input_array[index + i], activations[i])
 		index += danger_sense_parts
-	if senses.bitmask & Data.Senses.TIMER:
+	if senses.bitmask & Data.Sense.TIMER:
 		nn_input_array[index] = timer_neuron.neuron_value()
 		index += 1
-	if senses.bitmask & Data.Senses.THIRST:
+	if senses.bitmask & Data.Sense.THIRST:
 		nn_input_array[index] = (max_water - water) / max_water
 		index += 1
-	if senses.bitmask & Data.Senses.WATER_RAY:
+	if senses.bitmask & Data.Sense.WATER_RAY:
 		nn_input_array[index] = 1.0 - $WaterRay.collision_distance() / 2.0
 		index += 1
-	if senses.bitmask & Data.Senses.GROUND:
+	if senses.bitmask & Data.Sense.GROUND:
 		nn_input_array[index] = 1 - ground_movement_penalty_factor
 		index += 1
 		nn_input_array[index] = $TerrainSense.resistance_ahead
 		index += 1
-	if senses.bitmask & Data.Senses.ALLY_SENSE:
-		nn_input_array_senses_start_indeces[Data.Senses.ALLY_SENSE] = index
+	if senses.bitmask & Data.Sense.ALLY_SENSE:
+		nn_input_array_senses_start_indeces[Data.Sense.ALLY_SENSE] = index
 		var activations = $AllySense.get_activations()
 		for i in range(danger_sense_parts):
 			nn_input_array[index + i] *= loss

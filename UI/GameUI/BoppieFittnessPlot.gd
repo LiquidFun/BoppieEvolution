@@ -8,6 +8,7 @@ func _ready() -> void:
 	add_dataset("Kloppies", Color.blue, true)
 	
 class DataStatistics:
+	# Careful about using classes like this, as these are orphaned after use
 	var variance = 0
 	var stderr = 0
 	var mean = 0
@@ -25,11 +26,17 @@ class DataStatistics:
 	
 func get_average_fitness(group):
 	var boppies = get_tree().get_nodes_in_group(group)
-	return DataStatistics.new(boppies)
+	# return DataStatistics.new(boppies)
+	var mean = 0
+	var sum = 0
+	for boppie in boppies:
+		sum += boppie.fitness()
+	if len(boppies) != 0:
+		mean = sum / len(boppies)
+	return mean
 	
 	
 func replot():
 	for group in ["Owlie", "Kloppie"]:
-		var stats = get_average_fitness(group)
-		add_point(group + "s", stats.mean)
+		add_point(group + "s", get_average_fitness(group))
 	update()

@@ -5,7 +5,7 @@ onready var parts = parent.danger_sense_parts
 
 export var inherit_parent_collision_mask = -1
 export var color = Color.red
-export var sense = Data.Senses.DANGER_SENSE
+export var sense = Data.Sense.DANGER_SENSE
 
 func _ready() -> void:
 	$CollisionShape2D.shape.radius = radius

@@ -9,4 +9,3 @@ func _ready():
 	
 func _on_PerformanceModeChange(new_value):
 	self.visible = !new_value
-

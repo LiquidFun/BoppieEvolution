@@ -7,7 +7,7 @@ var draw_current_senses := false
 var boppies_died := 0
 var boppies_born := 0
 var boppies_spawned := 0
-var nn_thread: Thread = Thread.new()
+# var nn_thread: Thread = Thread.new()
 var elapsed_time := 0.0
 var dna_clipboard = null
 var kloppies_cannibals = false
@@ -40,6 +40,7 @@ func _process(delta):
 	if last_emit_time + 500 < OS.get_ticks_msec():
 		last_emit_time = OS.get_ticks_msec()
 		emit_signal("HalfSecondTimer")
+		print_stray_nodes()
 
 func formatted_time(seconds = null):
 	if seconds == null:

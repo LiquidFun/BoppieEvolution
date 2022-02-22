@@ -9,6 +9,7 @@ onready var pupil_offset = Vector2(radius * .1, 0)
 
 onready var tween = parent.get_node("Tween")
 
+
 func _draw():
 	if parent.draw_eyes:
 		draw_eyes()
