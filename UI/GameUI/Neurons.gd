@@ -8,8 +8,12 @@ var margins = neuron_radius * 3
 var neuron_dist = neuron_radius * 2.2
 var font = get_font("font") 
 var neuron_weight_gradient: Gradient = load("res://UI/GameUI/NeuronWeight.tres")
+var neuron_activation_gradient: Gradient = load("res://UI/GameUI/NeuronActivation.tres")
 var depth_map = {}
 var layers = []
+
+enum DisplayProfile { ACTIVATIONS, WEIGHTS } # , IMPORTANCE
+var profile = DisplayProfile.ACTIVATIONS
 
 # Colors
 var default_neuron_color = Color.darkolivegreen
@@ -66,6 +70,11 @@ func calculate_depth_map():
 
 func _ready():
 	self.rect_min_size = Vector2(width, height)
+	for display_profile in DisplayProfile.keys():
+		$HBoxContainer/DisplayProfile.add_item(str(display_profile).capitalize())
+		
+func _on_OptionButton_item_selected(index: int) -> void:
+	profile = DisplayProfile.values()[index]
 
 func set_neural_network(nn):
 	neural_network = nn
@@ -88,17 +97,19 @@ func _draw():
 	var inside_width = width - margins * 2
 	var xs = []
 	var start_ys = []
+	var neuron_dists = []
 	
 	# Calculate offsets
 	for layer in range(layers.size()):
 		xs.append(margins + layer * inside_width / (layers.size() - 1))
-		start_ys.append(margins + (inside_height / 2) - ((layers[layer].size() - 1) * neuron_dist) / 2)
+		neuron_dists.append(neuron_dist + max(0, 10 - len(layers[layer])) * 10)
+		start_ys.append(margins + (inside_height / 2) - ((layers[layer].size() - 1) * neuron_dists[-1]) / 2)
 		
 	# Neuron index to position lookup
 	var lookup_index_to_pos = {}
 	for layer in range(layers.size()):
 		for neuron in range(layers[layer].size()):
-			var y = start_ys[layer] + neuron * neuron_dist
+			var y = start_ys[layer] + neuron * neuron_dists[layer]
 			lookup_index_to_pos[layers[layer][neuron]] = Vector2(xs[layer], y)
 		
 	# Draw connections between neurons
@@ -108,8 +119,17 @@ func _draw():
 			var left_pos = lookup_index_to_pos[connection[1][i]]
 			var weight = connection[1][i+1]
 			var dendron = weight * values[connection[1][i]]
-			var color = neuron_weight_gradient.interpolate((dendron + 1) / 2.0)
-			draw_line(left_pos, right_pos, color, abs(dendron * 3))
+			var thickness 
+			var gradient
+			match profile:
+				DisplayProfile.ACTIVATIONS: 
+					thickness = dendron
+					gradient = neuron_activation_gradient
+				DisplayProfile.WEIGHTS: 
+					thickness = weight
+					gradient = neuron_weight_gradient
+			var color = gradient.interpolate((thickness + 1) / 2.0)
+			draw_line(left_pos, right_pos, color, abs(thickness * 3))
 
 	# Draw neurons
 	for index in lookup_index_to_pos:
@@ -143,7 +163,7 @@ func _draw():
 	for text in neuron_group_ranges:
 		var upper_lower_pos = neuron_group_ranges[text]
 		draw_line(upper_lower_pos[0], upper_lower_pos[1], Color(1, 1, 1), 1, true)
-		var divets =  Vector2(-5, 0) * upper_lower_pos[2]
+		var divets =  Vector2(-8, 0) * upper_lower_pos[2]
 		draw_line(upper_lower_pos[0], upper_lower_pos[0] + divets, Color(1, 1, 1), 1, true)
 		draw_line(upper_lower_pos[1], upper_lower_pos[1] + divets, Color(1, 1, 1), 1, true)
 		
@@ -154,3 +174,4 @@ func _draw():
 		text_pos -= Vector2(-3, 7 * len(text) / 2) * upper_lower_pos[2]
 		draw_set_transform(text_pos, upper_lower_pos[2] * PI/2, Vector2.ONE)
 		draw_string(font, Vector2.ZERO, text)
+

@@ -195,6 +195,7 @@ collide_with_areas = true
 script = ExtResource( 4 )
 
 [node name="WaterRay" type="RayCast2D" parent="."]
+modulate = Color( 1, 1, 1, 0 )
 position = Vector2( 30, 0 )
 z_index = -6
 enabled = true

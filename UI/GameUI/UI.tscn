@@ -540,9 +540,27 @@ margin_bottom = -4.0
 [node name="Neurons" type="PanelContainer" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/TabContainer/Neural network"]
 margin_right = 400.0
 margin_bottom = 150.0
+grow_horizontal = 0
+grow_vertical = 0
 rect_min_size = Vector2( 400, 150 )
 mouse_filter = 2
 script = ExtResource( 7 )
+
+[node name="HBoxContainer" type="HBoxContainer" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/TabContainer/Neural network/Neurons"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 393.0
+margin_bottom = 27.0
+size_flags_vertical = 0
+alignment = 2
+
+[node name="DisplayProfile" type="OptionButton" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/TabContainer/Neural network/Neurons/HBoxContainer"]
+margin_left = 286.0
+margin_right = 386.0
+margin_bottom = 20.0
+text = "Activations"
+align = 1
+selected = 0
 
 [node name="DNA" type="VBoxContainer" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/TabContainer"]
 visible = false
@@ -632,6 +650,7 @@ script = ExtResource( 11 )
 [connection signal="timeout" from="RightSidePanel/VBoxContainer/BoppieCountPlot/Timer" to="RightSidePanel/VBoxContainer/BoppieCountPlot" method="replot"]
 [connection signal="toggled" from="RightSidePanel/VBoxContainer/HBoxContainer2/DisablePlotBelow" to="RightSidePanel/VBoxContainer/HBoxContainer2/DisablePlotBelow" method="_on_DisablePlotBelow_toggled"]
 [connection signal="timeout" from="RightSidePanel/VBoxContainer/BoppieFittnessPlot/Timer" to="RightSidePanel/VBoxContainer/BoppieFittnessPlot" method="replot"]
+[connection signal="item_selected" from="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/TabContainer/Neural network/Neurons/HBoxContainer/DisplayProfile" to="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/TabContainer/Neural network/Neurons" method="_on_OptionButton_item_selected"]
 [connection signal="toggled" from="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/TabContainer/DNA/HBoxContainer/ShowDNA" to="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation" method="_on_Show_toggled"]
 [connection signal="pressed" from="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/TabContainer/DNA/HBoxContainer/ApplyDNA" to="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation" method="_on_ApplyDNA_pressed"]
 [connection signal="pressed" from="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/TabContainer/DNA/HBoxContainer/CopyDNA" to="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation" method="_on_CopyDNA_pressed"]
