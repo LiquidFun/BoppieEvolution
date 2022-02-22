@@ -12,4 +12,5 @@ enum Senses {
 	THIRST = 1 << 6,
 	WATER_RAY = 1 << 7,
 	GROUND = 1 << 8,
+	ALLY_SENSE = 1 << 9,
 }

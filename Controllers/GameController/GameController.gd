@@ -74,16 +74,12 @@ func random_world_coordinate():
 	
 
 func random_empty_world_coordinate():
-	var coordinate
 	for i in range(10):
-		coordinate = random_world_coordinate()
-
+		var coordinate = random_world_coordinate()
 		var space_state = get_world_2d().get_direct_space_state()
 		var result = space_state.intersect_point(coordinate, 1, [], 0x7FFFFFFF, true, true)
-
-		if not result:
-			break
-	return coordinate
+		if not result or i == 9:
+			return coordinate
 
 	
 func random_game_coordinate():
@@ -172,8 +168,6 @@ func add_random_boppies(count: int, config: BoppieConfiguration):
 			dna1 = config.fittest[dna1_index][1]
 			dna2 = config.fittest[dna2_index][1]
 		var boppie = add_boppie(random_empty_world_coordinate(), config.scene, dna1, dna2)
-		#Globals.deactivate(boppie)
-		#spawn_queue.append(boppie)
 
 			
 		

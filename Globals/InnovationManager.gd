@@ -4,7 +4,7 @@ var innovation_id = 0
 # 0th element is ignored 
 var innovations: Array = [["Input", "Output"]]
 var common_innovation_ids: Array = []
-var fully_connected_neurons: int = 0
+var fully_connected_neurons: int = 4
 var max_ray_count_additional = 2
 var danger_sense_parts = 4
 var nn_input_initial_neurons = []
@@ -18,6 +18,8 @@ func add_innovation(input: String, output: String) -> int:
 	
 func get_nn_input_neurons():
 	var input_neurons = []
+	input_neurons.append("Hunger") # Hunger 
+	nn_input_initial_neurons.append(input_neurons[-1])
 	for i in range(1 + 2 * max_ray_count_additional):
 		input_neurons.append("VisionRayEats" + str(i))
 		nn_input_initial_neurons.append(input_neurons[-1])
@@ -25,11 +27,17 @@ func get_nn_input_neurons():
 		input_neurons.append("DangerSense" + str(i))
 		nn_input_initial_neurons.append(input_neurons[-1])
 	input_neurons.append("Timer1")
-	input_neurons.append("Hunger")
-	input_neurons.append("Thirst")
-	input_neurons.append("Water")
+	input_neurons.append("Water1") # Thirst
 	nn_input_initial_neurons.append(input_neurons[-1])
-	input_neurons.append("Ground")
+	input_neurons.append("Water2") # Water
+	nn_input_initial_neurons.append(input_neurons[-1])
+	input_neurons.append("Ground1") # Current ground
+	nn_input_initial_neurons.append(input_neurons[-1])
+	input_neurons.append("Ground2") # Ahead ground
+	nn_input_initial_neurons.append(input_neurons[-1])
+	for i in range(danger_sense_parts):
+		input_neurons.append("AllySense" + str(i))
+		nn_input_initial_neurons.append(input_neurons[-1])
 	input_neurons.append("Bias")
 	return input_neurons
 
@@ -44,7 +52,9 @@ func make_initial_innovations(inputs):
 			hidden_neurons.append("HiddenNeuron" + str(i))
 		for hidden_neuron in hidden_neurons:
 			for input in inputs:
-				add_innovation(input, hidden_neuron)
+				var innovation_id = add_innovation(input, hidden_neuron)
+				common_innovation_ids.append(innovation_id)
+		inputs = hidden_neurons
 	for output_neuron in nn_output_neurons:
 		for input in inputs:
 			var innovation_id = add_innovation(input, output_neuron)

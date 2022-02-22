@@ -407,13 +407,13 @@ __meta__ = {
 margin_left = 10.0
 margin_top = 10.0
 margin_right = 438.0
-margin_bottom = 504.0
+margin_bottom = 476.0
 mouse_filter = 2
 custom_styles/panel = SubResource( 9 )
 
 [node name="InsideMargin" type="MarginContainer" parent="LeftSidePanel/PanelContainer"]
 margin_right = 428.0
-margin_bottom = 494.0
+margin_bottom = 466.0
 mouse_filter = 2
 custom_constants/margin_right = 10
 custom_constants/margin_top = 10
@@ -424,7 +424,7 @@ custom_constants/margin_bottom = 10
 margin_left = 10.0
 margin_top = 10.0
 margin_right = 418.0
-margin_bottom = 484.0
+margin_bottom = 456.0
 mouse_filter = 2
 size_flags_vertical = 15
 custom_constants/separation = 0
@@ -526,7 +526,7 @@ custom_constants/separation = 10
 [node name="TabContainer" type="TabContainer" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
 margin_top = 245.0
 margin_right = 408.0
-margin_bottom = 474.0
+margin_bottom = 446.0
 size_flags_vertical = 15
 
 [node name="Neural network" type="VBoxContainer" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/TabContainer"]
@@ -537,24 +537,9 @@ margin_top = 32.0
 margin_right = -4.0
 margin_bottom = -4.0
 
-[node name="NeuralNetworkName" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/TabContainer/Neural network"]
-margin_right = 400.0
-margin_bottom = 25.0
-custom_fonts/font = SubResource( 6 )
-text = "Neural Network"
-align = 1
-valign = 2
-
-[node name="HSeparator3" type="HSeparator" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/TabContainer/Neural network"]
-margin_top = 29.0
-margin_right = 400.0
-margin_bottom = 39.0
-custom_constants/separation = 10
-
 [node name="Neurons" type="PanelContainer" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/TabContainer/Neural network"]
-margin_top = 43.0
 margin_right = 400.0
-margin_bottom = 193.0
+margin_bottom = 150.0
 rect_min_size = Vector2( 400, 150 )
 mouse_filter = 2
 script = ExtResource( 7 )
@@ -568,20 +553,6 @@ margin_top = 32.0
 margin_right = -4.0
 margin_bottom = -4.0
 rect_min_size = Vector2( 0, 700 )
-
-[node name="DNAName" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/TabContainer/DNA"]
-margin_right = 345.0
-margin_bottom = 25.0
-custom_fonts/font = SubResource( 6 )
-text = "DNA"
-align = 1
-valign = 2
-
-[node name="HSeparator2" type="HSeparator" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/TabContainer/DNA"]
-margin_top = 29.0
-margin_right = 345.0
-margin_bottom = 39.0
-custom_constants/separation = 10
 
 [node name="HBoxContainer" type="HBoxContainer" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/TabContainer/DNA"]
 margin_top = 43.0

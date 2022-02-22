@@ -5,6 +5,7 @@ extends Area2D
 export var redraw = true
 export var height = 100
 export var radius = 500
+export var resistance = 0.7
 var points = []
 var water_color = Color.deepskyblue
 
@@ -55,7 +56,7 @@ func _draw():
 
 func _on_Lake_body_entered(body: Node) -> void:
 	if body is Boppie:
-		body.ground_movement_penalty_factor = 0.3
+		body.ground_movement_penalty_factor = 1 - resistance
 		body.update_water(100)
 
 

@@ -94,6 +94,7 @@ var senses = Senses.new(0
 	| Data.Senses.WATER_RAY
 	| Data.Senses.GROUND
 	| Data.Senses.BIAS
+	| Data.Senses.ALLY_SENSE
 )
 var timer_neuron = NeuronTimer.new()
 
@@ -124,7 +125,7 @@ var dna := {} setget set_dna
 var difficulty = Globals.difficulty
 var energy_consumption_existing = 1 * difficulty
 var energy_consumption_walking = 0.5 * difficulty
-var water_consumption_existing = 0.2 * (difficulty - 0.2)
+var water_consumption_existing = 1 * (difficulty - 0.26)
 
 var vision_rays = []
 var draw_senses = false setget set_draw_senses
@@ -193,7 +194,6 @@ func _ready():
 	)
 	$Tween.start()
 	$SpawnParticles.emitting = true
-	initialize_ai_input()
 	initialize_rays()
 	initialize_dna()
 	add_child(timer_neuron)
@@ -272,8 +272,8 @@ func add_ray(angle_radians, push_back=true, ray=null):
 		self.vision_rays.push_back(ray)
 	else:
 		self.vision_rays.push_front(ray)
-	ai_input[Data.NNInput.RAY_DIST].append(1)
-	ai_input[Data.NNInput.RAY_TYPE].append(Data.Raytype.NONE)
+	#ai_input[Data.NNInput.RAY_DIST].append(1)
+	#ai_input[Data.NNInput.RAY_TYPE].append(Data.Raytype.NONE)
 	
 func set_draw_senses(value):
 	draw_senses = value
@@ -282,14 +282,6 @@ func set_draw_senses(value):
 # ==========================================================================
 # AI
 # ==========================================================================
-	
-func initialize_ai_input():
-	ai_input[Data.NNInput.EATS] = eats
-	ai_input[Data.NNInput.RAY_DIST] = []
-	ai_input[Data.NNInput.RAY_TYPE] = []
-	ai_input[Data.NNInput.DANGER_SENSE] = []
-	for i in range(4):
-		ai_input[Data.NNInput.DANGER_SENSE].append(1.0)
 
 func add_temp_ai(ai):
 	temp_ai = ai
@@ -300,6 +292,9 @@ func pop_temp_ai():
 func calc_ai_input(delta):
 	var index = 0
 	var loss = 1.0 - delta * 10
+	if senses.bitmask & Data.Senses.HUNGER:
+		nn_input_array[index] = (max_energy - energy) / max_energy
+		index += 1
 	if senses.bitmask & Data.Senses.VISION_RAY_EATS:
 		nn_input_array_senses_start_indeces[Data.Senses.DANGER_SENSE] = index
 		for i in range(vision_rays.size()):
@@ -309,21 +304,13 @@ func calc_ai_input(delta):
 			index += 1
 	if senses.bitmask & Data.Senses.DANGER_SENSE:
 		nn_input_array_senses_start_indeces[Data.Senses.DANGER_SENSE] = index
+		var activations = $DangerSense.get_activations()
 		for i in range(danger_sense_parts):
 			nn_input_array[index + i] *= loss
-		for body in $DangerSense.get_overlapping_bodies() + $DangerSense.get_overlapping_areas():
-			var vec_to = body.position - position
-			var angle = rotation_vector().angle_to(vec_to)
-			var ds_index = int((angle + PI + PI / 4) * 4 / (PI * 2)) % 4
-			var radius = $DangerSense/CollisionShape2D.shape.radius
-			var value = 1.0 - (vec_to.length() / (radius * scale.x)) / 2.0
-			nn_input_array[index + ds_index] = max(value, nn_input_array[index + ds_index])
+			nn_input_array[index + i] = max(nn_input_array[index + i], activations[i])
 		index += danger_sense_parts
 	if senses.bitmask & Data.Senses.TIMER:
 		nn_input_array[index] = timer_neuron.neuron_value()
-		index += 1
-	if senses.bitmask & Data.Senses.HUNGER:
-		nn_input_array[index] = (max_energy - energy) / max_energy
 		index += 1
 	if senses.bitmask & Data.Senses.THIRST:
 		nn_input_array[index] = (max_water - water) / max_water
@@ -334,6 +321,15 @@ func calc_ai_input(delta):
 	if senses.bitmask & Data.Senses.GROUND:
 		nn_input_array[index] = 1 - ground_movement_penalty_factor
 		index += 1
+		nn_input_array[index] = $TerrainSense.resistance_ahead
+		index += 1
+	if senses.bitmask & Data.Senses.ALLY_SENSE:
+		nn_input_array_senses_start_indeces[Data.Senses.ALLY_SENSE] = index
+		var activations = $AllySense.get_activations()
+		for i in range(danger_sense_parts):
+			nn_input_array[index + i] *= loss
+			nn_input_array[index + i] = max(nn_input_array[index + i], activations[i])
+		index += danger_sense_parts
 
 		
 # ==========================================================================
@@ -401,6 +397,10 @@ func set_hovered(new_value):
 		hovered = new_value
 		self.modulate = self.modulate.darkened(.3) if hovered else Color.white
 		
+func current_boppie_color(value):
+	var darken = max(0, (max_water - water) / max_water - 0.5)
+	return color.energy_gradient.interpolate(value).darkened(darken)
+		
 		
 # ==========================================================================
 # Movement
@@ -440,7 +440,7 @@ func _physics_process(delta):
 				ai.get_movement_factor(ai_input)
 		else:
 			die()
-		self.self_modulate = color.energy_gradient.interpolate(self.energy / (max_energy * .7))
+		self.self_modulate = current_boppie_color(self.energy / (max_energy * .7))
 		$WalkingParticles.modulate = self_modulate
 		$Face.get_node("AboveFace").self_modulate = self_modulate
 		$Face.get_node("BelowFace").self_modulate = self_modulate

@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=2]
+[gd_scene load_steps=34 format=2]
 
 [ext_resource path="res://Entities/Boppie/Boppie.gd" type="Script" id=1]
 [ext_resource path="res://Entities/Boppie/Face.gd" type="Script" id=2]
@@ -10,6 +10,7 @@
 [ext_resource path="res://Entities/Boppie/AboveFace.gd" type="Script" id=8]
 [ext_resource path="res://Entities/Boppie/BelowFace.gd" type="Script" id=9]
 [ext_resource path="res://Entities/Boppie/DangerSense.gd" type="Script" id=10]
+[ext_resource path="res://Entities/Boppie/TerrainSense.gd" type="Script" id=11]
 
 [sub_resource type="CircleShape2D" id=1]
 radius = 20.108
@@ -150,6 +151,8 @@ radius = 30.0938
 [sub_resource type="CircleShape2D" id=21]
 radius = 150.0
 
+[sub_resource type="CircleShape2D" id=22]
+
 [node name="Boppie" type="KinematicBody2D" groups=["Boppie"]]
 pause_mode = 1
 z_index = 30
@@ -192,9 +195,10 @@ collide_with_areas = true
 script = ExtResource( 4 )
 
 [node name="WaterRay" type="RayCast2D" parent="."]
+position = Vector2( 30, 0 )
 z_index = -6
 enabled = true
-cast_to = Vector2( 1000, 0 )
+cast_to = Vector2( 2000, 0 )
 collision_mask = 32
 collide_with_areas = true
 collide_with_bodies = false
@@ -266,10 +270,35 @@ script = ExtResource( 10 )
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DangerSense"]
 shape = SubResource( 21 )
 
+[node name="AllySense" type="Area2D" parent="."]
+visible = false
+z_index = -5
+collision_layer = 0
+collision_mask = 0
+script = ExtResource( 10 )
+inherit_parent_collision_mask = 12
+color = Color( 0, 1, 0, 1 )
+sense = 512
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AllySense"]
+shape = SubResource( 21 )
+
+[node name="TerrainSense" type="Area2D" parent="."]
+position = Vector2( 80, 0 )
+collision_layer = 0
+collision_mask = 64
+script = ExtResource( 11 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TerrainSense"]
+shape = SubResource( 22 )
+
 [connection signal="DrawSenses" from="." to="DangerSense" method="_on_Boppie_DrawSenses"]
+[connection signal="DrawSenses" from="." to="AllySense" method="_on_Boppie_DrawSenses"]
 [connection signal="input_event" from="." to="." method="_on_Boppie_input_event"]
 [connection signal="mouse_entered" from="." to="." method="_on_Boppie_mouse_entered"]
 [connection signal="mouse_exited" from="." to="." method="_on_Boppie_mouse_exited"]
 [connection signal="input_event" from="ClickableArea" to="ClickableArea" method="_on_ClickableArea_input_event"]
 [connection signal="mouse_entered" from="ClickableArea" to="ClickableArea" method="_on_ClickableArea_mouse_entered"]
 [connection signal="mouse_exited" from="ClickableArea" to="ClickableArea" method="_on_ClickableArea_mouse_exited"]
+[connection signal="area_entered" from="TerrainSense" to="TerrainSense" method="_on_TerrainSense_area_entered"]
+[connection signal="area_exited" from="TerrainSense" to="TerrainSense" method="_on_TerrainSense_area_exited"]

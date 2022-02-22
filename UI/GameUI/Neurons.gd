@@ -3,13 +3,43 @@ extends PanelContainer
 var neural_network = null setget set_neural_network
 var height := 250.0
 var width := 400.0
-var neuron_radius := 15
+var neuron_radius := 14
 var margins = neuron_radius * 3
-var neuron_dist = neuron_radius * 2.5
+var neuron_dist = neuron_radius * 2.2
 var font = get_font("font") 
 var neuron_weight_gradient: Gradient = load("res://UI/GameUI/NeuronWeight.tres")
 var depth_map = {}
 var layers = []
+
+# Colors
+var default_neuron_color = Color.darkolivegreen
+var neuron_colors = {
+	"HiddenNeuron": Color.dimgray,
+	"VisionRayEats": Color.darkgoldenrod,
+	"DangerSense": Color.darkred,
+	"FriendlySense": Color.darkgreen,
+	"Thrst": Color.darkblue,
+	"Watr": Color.darkcyan,
+	"Bias": Color.white,
+	"Hnger": Color.darkgreen,
+	"Tmer": Color.midnightblue,
+	"Timer": Color.midnightblue,
+	"Hunger": Color.coral,
+	"Water": Color.darkcyan,
+	"Grnd": Color("4f2907"),
+	"Ground": Color("4f2907"),
+	"Move": Color.maroon,
+	"Turn": Color.darkcyan,
+}
+
+
+func get_neuron_color(index, value):
+	var name = generalize_neuron_name(neural_network.neuron_index_to_name[index])
+	var color = neuron_colors.get(name, default_neuron_color)
+	return color.lightened(clamp(value, -0.8, 0.8))
+		
+func generalize_neuron_name(name):
+	return name.rstrip("0123456789")
 
 func calculate_depth_map():
 	depth_map = {}
@@ -32,6 +62,7 @@ func calculate_depth_map():
 		while layers.size() < depth_map[key]:
 			layers.append([])
 		layers[depth_map[key]-1].append(key)
+				
 
 func _ready():
 	self.rect_min_size = Vector2(width, height)
@@ -84,8 +115,8 @@ func _draw():
 	for index in lookup_index_to_pos:
 		var pos = lookup_index_to_pos[index]
 		var text_pos = pos + Vector2(-neuron_radius * .7, neuron_radius * .4)
-		var value = clamp((values[index] + 1) / 3.0, 0, 1)
-		draw_circle(pos, neuron_radius, Color.darkolivegreen.lightened(value))
+		var color = get_neuron_color(index, values[index])
+		draw_circle(pos, neuron_radius, color)
 		draw_string(font, text_pos, "%.1f" % values[index], Color.black)
 		
 	# Calculate positions of help-banners explaining neuron meaning
@@ -95,8 +126,10 @@ func _draw():
 		var first_index = 0
 		var layer = layers[layer_index]
 		for index in range(0, len(layer)):
-			var similarity = input_neurons[layer[index]].similarity(input_neurons[layer[first_index]])
-			if similarity < .4:
+			var text = generalize_neuron_name(input_neurons[layer[index]])
+			var comparison_text = generalize_neuron_name(input_neurons[layer[first_index]])
+			# var similarity = input_neurons[layer[index]].similarity(input_neurons[layer[first_index]])
+			if text != comparison_text:
 				first_index = index
 			var upper_pos = lookup_index_to_pos[layer[index]]
 			var lower_pos = lookup_index_to_pos[layer[first_index]]
@@ -104,7 +137,6 @@ func _draw():
 			var add_x = (neuron_radius + 5) * start_or_end_factor
 			upper_pos += Vector2(add_x, neuron_radius)
 			lower_pos += Vector2(add_x, -neuron_radius)
-			var text = input_neurons[layer[index]].rstrip("0123456789")
 			neuron_group_ranges[text] = [upper_pos, lower_pos, start_or_end_factor]
 
 	# Draw lines for the help banners
