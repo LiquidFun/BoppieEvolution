@@ -11,6 +11,9 @@ var neuron_weight_gradient: Gradient = load("res://UI/GameUI/NeuronWeight.tres")
 var neuron_activation_gradient: Gradient = load("res://UI/GameUI/NeuronActivation.tres")
 var depth_map = {}
 var layers = []
+var lookup_index_to_pos = {}
+var focused_neuron_index = -1
+var default_connection_color = Color("1dffffff")
 
 enum DisplayProfile { ACTIVATIONS, WEIGHTS } # , IMPORTANCE
 var profile = DisplayProfile.ACTIVATIONS
@@ -106,7 +109,7 @@ func _draw():
 		start_ys.append(margins + (inside_height / 2) - ((layers[layer].size() - 1) * neuron_dists[-1]) / 2)
 		
 	# Neuron index to position lookup
-	var lookup_index_to_pos = {}
+	lookup_index_to_pos = {}
 	for layer in range(layers.size()):
 		for neuron in range(layers[layer].size()):
 			var y = start_ys[layer] + neuron * neuron_dists[layer]
@@ -119,16 +122,21 @@ func _draw():
 			var left_pos = lookup_index_to_pos[connection[1][i]]
 			var weight = connection[1][i+1]
 			var dendron = weight * values[connection[1][i]]
-			var thickness 
-			var gradient
-			match profile:
-				DisplayProfile.ACTIVATIONS: 
-					thickness = dendron
-					gradient = neuron_activation_gradient
-				DisplayProfile.WEIGHTS: 
-					thickness = weight
-					gradient = neuron_weight_gradient
-			var color = gradient.interpolate((thickness + 1) / 2.0)
+			var thickness = 0.2
+			var color = default_connection_color
+			if focused_neuron_index == connection[0] or focused_neuron_index == -1:
+				match profile:
+					DisplayProfile.ACTIVATIONS: 
+						thickness = dendron
+						color = neuron_activation_gradient.interpolate((thickness + 1) / 2.0)
+					DisplayProfile.WEIGHTS: 
+						thickness = weight
+						color = neuron_weight_gradient.interpolate((thickness + 1) / 2.0)
+				if focused_neuron_index != -1:
+					# var mid_pos = left_pos * 0.85 + right_pos * 0.15
+					var mid_pos = left_pos + Vector2(neuron_radius * 1.5, 3)
+					var color_opaque = Color(color.r, color.g, color.b, 1)
+					draw_string(font, mid_pos, str(round(thickness * 100) / 100.0), color_opaque)
 			draw_line(left_pos, right_pos, color, abs(thickness * 3))
 
 	# Draw neurons
@@ -136,6 +144,8 @@ func _draw():
 		var pos = lookup_index_to_pos[index]
 		var text_pos = pos + Vector2(-neuron_radius * .7, neuron_radius * .4)
 		var color = get_neuron_color(index, values[index])
+		if focused_neuron_index == index and focused_neuron_index != -1:
+			draw_circle(pos, neuron_radius*1.1, Color.white)
 		draw_circle(pos, neuron_radius, color)
 		draw_string(font, text_pos, "%.1f" % values[index], Color.black)
 		
@@ -175,3 +185,11 @@ func _draw():
 		draw_set_transform(text_pos, upper_lower_pos[2] * PI/2, Vector2.ONE)
 		draw_string(font, Vector2.ZERO, text)
 
+func _input(event):
+	if event is InputEventMouseMotion and neural_network:
+		focused_neuron_index = -1
+		var mouse = get_local_mouse_position()
+		for conn in neural_network.connections_internal:
+			if conn[0] in lookup_index_to_pos:
+				if mouse.distance_to(lookup_index_to_pos[conn[0]]) < neuron_radius * 1.2:
+					focused_neuron_index = conn[0]
