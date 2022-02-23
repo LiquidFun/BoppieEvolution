@@ -14,6 +14,7 @@ var layers = []
 var lookup_index_to_pos = {}
 var focused_neuron_index = -1
 var default_connection_color = Color("1dffffff")
+var dragging_neuron = false
 
 enum DisplayProfile { ACTIVATIONS, WEIGHTS } # , IMPORTANCE
 var profile = DisplayProfile.ACTIVATIONS
@@ -81,6 +82,7 @@ func _on_OptionButton_item_selected(index: int) -> void:
 
 func set_neural_network(nn):
 	neural_network = nn
+	lookup_index_to_pos = {}
 	if neural_network != null:
 		calculate_depth_map()
 		for layer in layers:
@@ -109,11 +111,11 @@ func _draw():
 		start_ys.append(margins + (inside_height / 2) - ((layers[layer].size() - 1) * neuron_dists[-1]) / 2)
 		
 	# Neuron index to position lookup
-	lookup_index_to_pos = {}
-	for layer in range(layers.size()):
-		for neuron in range(layers[layer].size()):
-			var y = start_ys[layer] + neuron * neuron_dists[layer]
-			lookup_index_to_pos[layers[layer][neuron]] = Vector2(xs[layer], y)
+	if not lookup_index_to_pos:
+		for layer in range(layers.size()):
+			for neuron in range(layers[layer].size()):
+				var y = start_ys[layer] + neuron * neuron_dists[layer]
+				lookup_index_to_pos[layers[layer][neuron]] = Vector2(xs[layer], y)
 		
 	# Draw connections between neurons
 	for connection in connections:
@@ -187,9 +189,18 @@ func _draw():
 
 func _input(event):
 	if event is InputEventMouseMotion and neural_network:
-		focused_neuron_index = -1
 		var mouse = get_local_mouse_position()
-		for conn in neural_network.connections_internal:
-			if conn[0] in lookup_index_to_pos:
-				if mouse.distance_to(lookup_index_to_pos[conn[0]]) < neuron_radius * 1.2:
-					focused_neuron_index = conn[0]
+		if not dragging_neuron:
+			focused_neuron_index = -1
+			for conn in neural_network.connections_internal:
+				if conn[0] in lookup_index_to_pos:
+					if mouse.distance_to(lookup_index_to_pos[conn[0]]) < neuron_radius * 1.2:
+						focused_neuron_index = conn[0]
+		if focused_neuron_index != -1 and dragging_neuron:
+			lookup_index_to_pos[focused_neuron_index] = mouse
+	if event is InputEventMouseButton and neural_network:
+		if dragging_neuron and event.button_mask == 0:
+			dragging_neuron = false
+		elif focused_neuron_index != -1:
+			dragging_neuron = true
+		
