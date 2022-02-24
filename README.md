@@ -115,7 +115,7 @@ Quickstart: after starting a simulation: press `9` to simulate quickly. After a 
     * Show additional danger-sense near boppie
     * Disabled spike rotation and blood in performance mode
     * Improved graphs by drawing lines instead of pixels in texture, graphs can be hidden
-    * Neurons have colors based on their type
+    * Neurons have colors based on their type, can now drag neurons
 * Added lakes, water requirement for boppies and neurons for detecting lakes
 * Boppie colors now represent: hue: dna, saturation: energy, luminance: water
 * New neurons/senses

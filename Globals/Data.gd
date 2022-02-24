@@ -86,3 +86,20 @@ class NeuronTimer:
 	func _to_string() -> String:
 		return "[NeuronTimer]"
 
+class DNABounds:
+	var lower
+	var upper
+	var offspring_cost_scaling
+	var add
+	var power
+	func _init(lower, upper, offspring_cost_scaling=0, add=0, power=1):
+		self.lower = lower
+		self.upper = upper
+		self.offspring_cost_scaling = offspring_cost_scaling
+		self.add = add
+		self.power = power
+	func cost(value):
+		return pow(value, power) * offspring_cost_scaling + add
+	func random():
+		return lower + (upper - lower) * Globals.rng.randf() 
+	

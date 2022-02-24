@@ -9,19 +9,22 @@ var can_die := true
 var nutrition := 20.0
 var ground_movement_penalty_factor = 1
 
+
+# Based on DNA
+var max_energy = 15
+var max_water = 10
+var required_offspring_energy = 10
+var ray_count_additional := 2
+
 # DNA
 var move_speed := 85.0
 var turn_speed := 2.0
-var ray_count_additional := 2
 var ray_angle := deg2rad(20)
 var ray_length := 300.0
 var danger_sense_radius = 150.0
 var max_boost_factor := 2.0
 var max_backwards_factor := -0.75
 var offspring_mutability := 0.05
-var max_energy = 15
-var max_water = 10
-var required_offspring_energy = 10
 var generation = Data.Generation.new()
 var scale_factor = 1
 var danger_sense_parts = 4
@@ -40,24 +43,24 @@ var senses = Data.Senses.new(0
 var timer_neuron = Data.NeuronTimer.new()
 
 var dna_allowed_values = {
-	"move_speed": Vector2(50, 100), 
-	"scale_factor": Vector2(.9, 1.1), 
-	"max_energy": Vector2(10, 30), 
-	"max_water": Vector2(8, 12), 
-	"required_offspring_energy": Vector2(8, 15), 
-	"turn_speed": Vector2(.5, 3),
-#	"ray_count_additional": Vector2(0, 3),
-	"ray_angle": Vector2(deg2rad(5), deg2rad(50)),
-	"ray_length": Vector2(100, 600),
-	"danger_sense_radius": Vector2(100, 200),
-	"max_boost_factor": Vector2(1.5, 2.5),
-	"max_backwards_factor": Vector2(-1.0, -0.5),
-	"offspring_mutability": Vector2(0.03, .5),
+	"move_speed": Data.DNABounds.new(50, 100, 1 / 15),  # 3 - 6
+	"scale_factor": Data.DNABounds.new(.7, 1.3, 6, 0, 2),  # 3 - 9
+	# "max_energy": Data.DNABounds(10, 30), 
+	# "max_water": Data.DNABounds(8, 12), 
+	# "required_offspring_energy": Vector2(8, 15), 
+	"turn_speed": Data.DNABounds.new(0.5, 3),
+	# "ray_count_additional": Vector2(0, 3),
+	"ray_angle": Data.DNABounds.new(deg2rad(5), deg2rad(50)),
+	"ray_length": Data.DNABounds.new(100, 600, 1 / 1000), # 0.1 - 0.6
+	"danger_sense_radius": Data.DNABounds.new(100, 200, 1 / 400), # 0.25 - 0.5
+	"max_boost_factor": Data.DNABounds.new(1.5, 2.5, 2), # 2.5 - 5
+	"max_backwards_factor": Data.DNABounds.new(-1.0, -0.5), 
+	"offspring_mutability": Data.DNABounds.new(0.03, 0.1),
 	"ai.dna": null,
 	"generation.i": null,
 	"senses.bitmask": null,
 	"color.hue": null,
-	"timer_neuron.wait_time": Vector2(1, 30),
+	"timer_neuron.wait_time": Data.DNABounds.new(1, 30),
 }
 
 var dna := {} setget set_dna
@@ -124,8 +127,10 @@ func _init(ai=null):
 	nn_input_array = ai.values
 	self.ai = ai
 	add_child(timer_neuron)
+	randomize_dna()
 	
 func _ready():
+	initialize_dna()
 	spawn_time = Globals.elapsed_time
 	# energy_gradient = load(energy_gradient)
 	# energy_gradient.set_color(1, Color.from_hsv(color.hue, .5, .5))
@@ -137,40 +142,59 @@ func _ready():
 	$Tween.start()
 	$SpawnParticles.emitting = true
 	initialize_rays()
-	initialize_dna()
 
 # ==========================================================================
 # DNA
 # ==========================================================================
 
-func initialize_dna():
-	dna = {}
+func randomize_dna():
 	for property in dna_allowed_values:
-		dna[property] = self
-		for subproperty in property.split("."):
-			dna[property] = dna[property].get(subproperty)
+		var bounds = dna_allowed_values[property]
+		if bounds != null:
+			match resolve_subproperty(property):
+				[var resolved_subproperty, var last]:
+					resolved_subproperty.set(last, bounds.random())
+
+func initialize_dna(random_dna=false):
+	dna = {}
+	required_offspring_energy = 0
+	for property in dna_allowed_values:
+		match resolve_subproperty(property):
+			[var resolved_subproperty, var last]:
+				dna[property] = resolved_subproperty.get(last)
+	
+				var bounds = dna_allowed_values[property]
+				if bounds != null:
+					required_offspring_energy += bounds.cost(dna[property])
+	max_water = 10 * pow(scale_factor, 2)
+	max_energy = 15 * pow(scale_factor, 2)
+	
+func resolve_subproperty(property):
+	var resolved_subproperty = self
+	var subproperties = property.split(".")
+	var last = subproperties[-1]
+	subproperties.remove(subproperties.size() - 1)
+	for subproperty in subproperties:
+		resolved_subproperty = resolved_subproperty.get(subproperty)
+	return [resolved_subproperty, last]
 
 func set_dna(new_dna: Dictionary, mutation_factor=1, crossover_dna=null):
 	new_dna = new_dna.duplicate(true)
 	for property in new_dna:
-		var resolved_subproperty = self
-		var subproperties = property.split(".")
-		var last = subproperties[-1]
-		subproperties.remove(subproperties.size() - 1)
-		for subproperty in subproperties:
-			resolved_subproperty = resolved_subproperty.get(subproperty)
-		resolved_subproperty.set(last, new_dna[property])
-		if crossover_dna != null and property in crossover_dna:
-			resolved_subproperty.crossover(property, crossover_dna[property])
-		if mutation_factor > 0:
-			resolved_subproperty.mutate(last, new_dna["offspring_mutability"] * mutation_factor)
+		match resolve_subproperty(property):
+			[var resolved_subproperty, var last]:
+				resolved_subproperty.set(last, new_dna[property])
+				if crossover_dna != null and property in crossover_dna:
+					resolved_subproperty.crossover(last, crossover_dna[property])
+				if mutation_factor > 0:
+					resolved_subproperty.mutate(last, new_dna["offspring_mutability"] * mutation_factor)
 	initialize_dna()
 		
 func mutate(property: String, mutability: float):
 	var value_range = dna_allowed_values[property]
-	var mutation = value_range.y * mutability * Globals.rng.randfn()
+	var mutation = value_range.upper * mutability * Globals.rng.randfn()
 	if dna_allowed_values != null:
-		set(property, clamp(get(property) + mutation, value_range.x, value_range.y))
+		set(property, clamp(get(property) + mutation, value_range.lower, value_range.upper))
 		
 func crossover(property: String, other_value):
 	var remain_current = Globals.rng.randf()
