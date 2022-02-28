@@ -125,6 +125,7 @@ Quickstart: after starting a simulation: press `9` to simulate quickly. After a 
     * A single large water ray for detecting water
     * Ally sense for detecting allies (same as danger sense)
 * Fixed bug where each time a new boppie was spawned the AIs and NeuronTimers would become orphaned
+* Required boppie offspring energy depends on DNA:
 
 ### [v0.2.0](https://github.com/LiquidFun/BoppieEvolution/releases/tag/0.2.0) (2022-02-17)
 

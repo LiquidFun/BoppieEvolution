@@ -3,17 +3,29 @@ extends Node
 enum NNInput {ENERGY, RAY_DIST, RAY_TYPE, EATS, DANGER_SENSE}
 enum Raytype {NONE, OWLIE, KLOPPIE, FOOD}
 enum Sense {
-	BIAS = 1 << 0,
+	HUNGER = 1 << 0,
 	VISION_RAY_EATS = 1 << 1,
-	DANGER_SENSE = 1 << 2,
-	MEMORY = 1 << 3,
-	TIMER = 1 << 4,
-	HUNGER = 1 << 5,
-	THIRST = 1 << 6,
-	WATER_RAY = 1 << 7,
-	GROUND = 1 << 8,
-	ALLY_SENSE = 1 << 9,
+	MEMORY = 1 << 2,
+	TIMER = 1 << 3,
+	DANGER_SENSE = 1 << 4,
+	THIRST = 1 << 5,
+	WATER_RAY = 1 << 6,
+	GROUND = 1 << 7,
+	ALLY_SENSE = 1 << 8,
+	BIAS = 1 << 9,
 }
+		
+func generalize_neuron_name(name):
+	return name.rstrip("0123456789")
+
+class SenseConfiguration:
+	var in_initial: bool
+	var count: int
+	var string: String
+	func _init(string, in_initial=true, count=1):
+		self.in_initial = in_initial
+		self.count = count
+		self.string = string
 
 class Generation:
 	extends Reference
@@ -85,21 +97,30 @@ class NeuronTimer:
 		self.wait_time = [wait_time, other_seconds][Globals.rng.randi() % 2]
 	func _to_string() -> String:
 		return "[NeuronTimer]"
+		
 
 class DNABounds:
 	var lower
 	var upper
-	var offspring_cost_scaling
-	var add
-	var power
-	func _init(lower, upper, offspring_cost_scaling=0, add=0, power=1):
+	var cost
+	var mean
+	var deviation
+	func _init(lower: float, upper: float, cost: String = "", mean=null, deviation=null):
 		self.lower = lower
 		self.upper = upper
-		self.offspring_cost_scaling = offspring_cost_scaling
-		self.add = add
-		self.power = power
+		if cost == "":
+			self.cost = null
+		else:
+			self.cost = Expression.new()
+			self.cost.parse(cost, ["x"])
+		self.mean = (lower + upper) / 2 if mean == null else mean
+		self.deviation = (upper - lower) / 4 if deviation == null else deviation
+		
 	func cost(value):
-		return pow(value, power) * offspring_cost_scaling + add
+		if self.cost == null:
+			return 0
+		return self.cost.execute([value])
+		
 	func random():
-		return lower + (upper - lower) * Globals.rng.randf() 
+		return clamp(Globals.rng.randfn(mean, deviation), lower, upper)
 	

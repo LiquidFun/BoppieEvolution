@@ -5,7 +5,7 @@ onready var parts = parent.danger_sense_parts
 
 export var inherit_parent_collision_mask = -1
 export var color = Color.red
-export var sense = Data.Sense.DANGER_SENSE
+export(Data.Sense) var sense = Data.Sense.DANGER_SENSE
 
 func _ready() -> void:
 	$CollisionShape2D.shape.radius = radius
@@ -34,7 +34,7 @@ func get_activations():
 
 	
 func _draw():
-	var nn_index = parent.nn_input_array_senses_start_indeces[sense]
+	var nn_index = parent.ai.sense_bit_to_index[sense]
 	var angle = PI * 2 / parts
 	for i in range(parts):
 		var start_angle = angle / 2 + i * angle - PI / 2

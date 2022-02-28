@@ -42,12 +42,9 @@ var neuron_colors = {
 
 
 func get_neuron_color(index, value):
-	var name = generalize_neuron_name(neural_network.neuron_index_to_name[index])
+	var name = Data.generalize_neuron_name(neural_network.neuron_index_to_name[index])
 	var color = neuron_colors.get(name, default_neuron_color)
 	return color.lightened(clamp(value, -0.8, 0.8))
-		
-func generalize_neuron_name(name):
-	return name.rstrip("0123456789")
 
 func calculate_depth_map():
 	depth_map = {}
@@ -158,8 +155,8 @@ func _draw():
 		var first_index = 0
 		var layer = layers[layer_index]
 		for index in range(0, len(layer)):
-			var text = generalize_neuron_name(input_neurons[layer[index]])
-			var comparison_text = generalize_neuron_name(input_neurons[layer[first_index]])
+			var text = Data.generalize_neuron_name(input_neurons[layer[index]])
+			var comparison_text = Data.generalize_neuron_name(input_neurons[layer[first_index]])
 			# var similarity = input_neurons[layer[index]].similarity(input_neurons[layer[first_index]])
 			if text != comparison_text:
 				first_index = index

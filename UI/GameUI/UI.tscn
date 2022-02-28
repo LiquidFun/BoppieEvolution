@@ -560,7 +560,6 @@ margin_right = 386.0
 margin_bottom = 20.0
 text = "Activations"
 align = 1
-selected = 0
 
 [node name="DNA" type="VBoxContainer" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/TabContainer"]
 visible = false

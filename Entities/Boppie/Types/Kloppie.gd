@@ -32,7 +32,7 @@ func _ready():
 func _on_EatingArea_body_entered(body):
 	if can_attack and not dead:
 		if body is Owlie or (body.type == "Kloppie" and eats == Data.Raytype.KLOPPIE and body != self):
-			if body.take_damage(damage * self.scale.x * self.scale.x * max(.1, movement)):
+			if body.take_damage(damage * self.scale.x * self.scale.x * max(.1, movement)) > 0:
 				eat(body)
 			else:
 				yield(get_tree().create_timer(.5), "timeout")

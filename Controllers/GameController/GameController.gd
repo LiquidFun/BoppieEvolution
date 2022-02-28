@@ -216,6 +216,7 @@ func _unhandled_input(event):
 	if event.is_action_pressed("add_energy_to_focused_boppie"):
 		if controlled_boppie:
 			controlled_boppie.update_energy(5)
+			controlled_boppie.update_water(5)
 	if event.is_action_pressed("produce_and_focus_offspring"):
 		if controlled_boppie:
 			controlled_boppie.produce_offspring()

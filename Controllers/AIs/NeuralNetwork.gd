@@ -9,10 +9,11 @@ class NN_DNA:
 
 var input_neuron_count
 var output_neurons_from
-var neuron_name_to_index: Dictionary
-var neuron_index_to_name: Dictionary
-var connections_internal
-var dna = NN_DNA.new() setget set_dna
+var neuron_name_to_index: Dictionary = {}
+var neuron_index_to_name: Dictionary = {}
+var sense_bit_to_index: Dictionary = {}
+var connections_internal = []
+var dna = NN_DNA.new() setget set_dna, get_dna
 var values = []
 var move_value_index
 var turn_value_index
@@ -35,17 +36,28 @@ var turn_value_index
 
 # neuron_name_to_index is provided to lookup the integer from the string name
 
-func set_dna(new_dna):
-	# dna = new_dna.copy()
-	dna.connections = new_dna.connections.duplicate(true)
-	dna.innovations = new_dna.innovations.duplicate(true)
-	recalculate_internal_connections()
+func get_dna():
+	return {"connections": dna.connections, "innovations": dna.innovations}
 
+func set_dna(new_dna: Dictionary):
+	# dna = new_dna.copy()
+	dna.connections = new_dna["connections"].duplicate(true)
+	dna.innovations = new_dna["innovations"].duplicate(true)
+	recalculate_internal_connections()
+	
+func initalize_senses_indeces_lookup():
+	sense_bit_to_index = {}
+	for name in neuron_name_to_index:
+		var index = neuron_name_to_index[name]
+		for sense_bit in InnovationManager.senses_configuration:
+			var config = InnovationManager.senses_configuration[sense_bit]
+			if Data.generalize_neuron_name(name) == config.string:
+				sense_bit_to_index[sense_bit] = min(sense_bit_to_index.get(sense_bit, 1e9), index)
 
 func recalculate_internal_connections():
-	self.connections_internal = []
-	self.neuron_name_to_index = {}
-	self.neuron_index_to_name = {}
+	self.connections_internal.clear() # = []
+	self.neuron_name_to_index.clear() # = {}
+	self.neuron_index_to_name.clear() # = {}
 	self.values.clear()
 	input_neuron_count = len(InnovationManager.nn_input_neurons)
 	for output in InnovationManager.nn_input_neurons + dna.connections.keys():
@@ -67,16 +79,12 @@ func recalculate_internal_connections():
 		for key in connect_into:
 			connections_internal[-1][1].append(neuron_name_to_index[key])
 			connections_internal[-1][1].append(connect_into[key])
+	initalize_senses_indeces_lookup()
 		
 	
 func random_weight():
 	return Globals.rng.randf() * 2.0 - 1.0
-	
-func get_weight_for_innovation(innovation_id):
-	# TODO: change to connections_internal? connections weights might not be right
-	var innovation = InnovationManager.innovations[innovation_id]
-	return dna.connections[innovation[1]][innovation[0]]
-	
+
 
 func add_innovation_to_dictionary(innovation_id):
 	dna.innovations.append(innovation_id)
