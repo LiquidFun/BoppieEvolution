@@ -18,21 +18,17 @@ var values = []
 var move_value_index
 var turn_value_index
 
-# old:
-# connections: List[Tuple[str (name), Dict[str (name), float (weight)]]
-# e.g.: [[VisionRayEats0, {}], [Move, {Bias:0.647106, DangerSense0:-0.622663}], ...].
-
 # connections: Dict[str (name), Dict[str (name), float (weight)]]
 # e.g.: {VisionRayEats0:{}, Move:{Bias:0.647106, DangerSense0:-0.622663}, ...}
 # Connects neurons with previous neurons, specifying the weight of the connection
 
-# connections_internal: List[Tuple[int, List[alternating int / float]]]
-# e.g.: [[0, []], [11, [1, 0.647106, 13, -0.622663]], ...]
+# connections_internal: List[Tuple[int, List[alternating int / float / float]]]
+# e.g.: [[0, []], [11, [1, 0.647106, 0.1, 13, -0.622663, 0.43]], ...]
 # It represents the same information as in 'connections', however to 
 # improve performance this is written such that string comparisons
 # need not be done and instead of a Dictionary, the List can 
-# traversed linearly in steps of 2. This was by far the largest
-# bottleneck, so some readability is sacrificed.
+# traversed linearly in steps of 3. This was by far the largest
+# bottleneck, so some readability is sacrificed. Third value is importance.
 
 # neuron_name_to_index is provided to lookup the integer from the string name
 
@@ -79,6 +75,7 @@ func recalculate_internal_connections():
 		for key in connect_into:
 			connections_internal[-1][1].append(neuron_name_to_index[key])
 			connections_internal[-1][1].append(connect_into[key])
+			connections_internal[-1][1].append(0)
 	initalize_senses_indeces_lookup()
 		
 	
@@ -145,14 +142,14 @@ func crossover(property, other_dna):
 func crossover_connections(other_connections):
 	var old_connections = dna.connections
 	self.make_and_merge_nns(dna.innovations)
-	print(old_connections)
-	print("---")
-	print(other_connections)
-	print("---")
-	print(dna.connections)
-	print()
-	print()
-	print()
+	#print(old_connections)
+	# print("Crossover")
+	#print(other_connections)
+	#print("---")
+	#print(dna.connections)
+	#print()
+	#print()
+	#print()
 	if other_connections == null:
 		other_connections = {}
 	for output in dna.connections:
@@ -168,7 +165,16 @@ func crossover_connections(other_connections):
 			else:
 				dna.connections[output][input] = random_weight()
 	recalculate_internal_connections()
-
+	
+func strengthen_important_connections(factor=1):
+	# e.g.: [[0, []], [11, [1, 0.647106, 0.1, 13, -0.622663, 0.43]], ...]
+	print("Strengthening " + str(factor))
+	for connection in connections_internal:
+		var curr = connection[0]
+		var inputs = connection[1]
+		for i in range(0, len(inputs), 3):
+			inputs[i+1] += factor * inputs[i+2]
+		
 
 func mutate(property, mutability):
 	if property == "dna":
@@ -249,7 +255,7 @@ func mutate_structure(mutability):
 func mutate_weights(mutability):
 	for connection in connections_internal:
 		var output = neuron_index_to_name[connection[0]]
-		for i in range(0, len(connection[1]), 2):
+		for i in range(0, len(connection[1]), 3):
 			var mutation = mutability * Globals.rng.randfn()
 			connection[1][i+1] += mutation
 			var input = neuron_index_to_name[connection[1][i]]
@@ -260,11 +266,15 @@ func relu(num):
 
 func feed_forward():
 	for i in range(input_neuron_count, len(connections_internal)):
+		var is_output_neuron = i == turn_value_index or i == move_value_index
 		var conn = connections_internal[i]
 		var new_value := 0.0
-		for j in range(0, len(conn[1]), 2):
-			new_value += values[conn[1][j]] * conn[1][j+1]
-		values[conn[0]] = new_value if i >= len(connections_internal) - 2 else relu(new_value)
+		var activation
+		for j in range(0, len(conn[1]), 3):
+			activation = values[conn[1][j]] * conn[1][j+1]
+			new_value += activation
+			conn[1][j+2] = conn[1][j+2] * 0.99 + abs(activation) * 0.01
+		values[conn[0]] = new_value if is_output_neuron else relu(new_value)
 
 func get_movement_factor(ai_input=null):
 	#if thread.is_active():

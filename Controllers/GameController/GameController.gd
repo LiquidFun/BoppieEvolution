@@ -150,6 +150,7 @@ func add_boppie(at: Vector2, scene: PackedScene, dna=null, dna2=null):
 		handle_boppie(instance)
 	instance.rotation = Globals.rng.randf() * 2 * PI
 	add_child(instance)
+	instance.set_owner(self)
 	instance.global_position = at
 	if control_newest_boppie:
 		control_newest_boppie = false
@@ -294,7 +295,7 @@ func check_boppies():
 				lookup_boppie_type_to_config["Kloppie"].min_count = 3
 				difficulty_level += 1
 				last_difficulty_level_change_time = Globals.elapsed_time
-				Globals.difficulty += .1
+				Globals.difficulty += .05
 				config.new_dna_chance = 1 - ((1 - config.new_dna_chance) * .9)
 		for boppie in boppies:
 			if not is_within_game(boppie.global_position):

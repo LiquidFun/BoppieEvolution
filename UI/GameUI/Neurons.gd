@@ -9,6 +9,7 @@ var neuron_dist = neuron_radius * 2.2
 var font = get_font("font") 
 var neuron_weight_gradient: Gradient = load("res://UI/GameUI/NeuronWeight.tres")
 var neuron_activation_gradient: Gradient = load("res://UI/GameUI/NeuronActivation.tres")
+var neuron_importance_gradient: Gradient = load("res://UI/GameUI/NeuronImportance.tres")
 var depth_map = {}
 var layers = []
 var lookup_index_to_pos = {}
@@ -16,7 +17,7 @@ var focused_neuron_index = -1
 var default_connection_color = Color("1dffffff")
 var dragging_neuron = false
 
-enum DisplayProfile { ACTIVATIONS, WEIGHTS } # , IMPORTANCE
+enum DisplayProfile { ACTIVATIONS, WEIGHTS, IMPORTANCE } # , IMPORTANCE
 var profile = DisplayProfile.ACTIVATIONS
 
 # Colors
@@ -57,7 +58,7 @@ func calculate_depth_map():
 		if neural_network.neuron_index_to_name[connection[0]] in InnovationManager.nn_output_neurons:
 			continue
 		depth_map[connection[0]] = 1
-		for i in range(0, len(connection[1]), 2):
+		for i in range(0, len(connection[1]), 3):
 			depth_map[connection[0]] = max(depth_map[connection[1][i]]+1, depth_map[connection[0]])
 		max_depth = max(max_depth, depth_map[connection[0]])
 	for connection in InnovationManager.nn_output_neurons:
@@ -100,6 +101,7 @@ func _draw():
 	var xs = []
 	var start_ys = []
 	var neuron_dists = []
+	var neuron_importance_sums = {-1: 1}
 	
 	# Calculate offsets
 	for layer in range(layers.size()):
@@ -117,7 +119,7 @@ func _draw():
 	# Draw connections between neurons
 	for connection in connections:
 		var right_pos = lookup_index_to_pos[connection[0]]
-		for i in range(0, len(connection[1]), 2):
+		for i in range(0, len(connection[1]), 3):
 			var left_pos = lookup_index_to_pos[connection[1][i]]
 			var weight = connection[1][i+1]
 			var dendron = weight * values[connection[1][i]]
@@ -131,13 +133,19 @@ func _draw():
 					DisplayProfile.WEIGHTS: 
 						thickness = weight
 						color = neuron_weight_gradient.interpolate((thickness + 1) / 2.0)
+					DisplayProfile.IMPORTANCE: 
+						thickness = connection[1][i+2]
+						neuron_importance_sums[connection[1][i]] = thickness + neuron_importance_sums.get(connection[1][i], 0)
+						color = neuron_importance_gradient.interpolate(thickness)
 				if focused_neuron_index != -1:
 					# var mid_pos = left_pos * 0.85 + right_pos * 0.15
 					var mid_pos = left_pos + Vector2(neuron_radius * 1.5, 3)
 					var color_opaque = Color(color.r, color.g, color.b, 1)
 					draw_string(font, mid_pos, str(round(thickness * 100) / 100.0), color_opaque)
 			draw_line(left_pos, right_pos, color, abs(thickness * 3))
+			
 
+	
 	# Draw neurons
 	for index in lookup_index_to_pos:
 		var pos = lookup_index_to_pos[index]
@@ -145,7 +153,12 @@ func _draw():
 		var color = get_neuron_color(index, values[index])
 		if focused_neuron_index == index and focused_neuron_index != -1:
 			draw_circle(pos, neuron_radius*1.1, Color.white)
-		draw_circle(pos, neuron_radius, color)
+		var curr_neuron_radius = neuron_radius
+		match profile:
+			DisplayProfile.IMPORTANCE:
+				var max_neuron_importance = neuron_importance_sums.values().max()
+				curr_neuron_radius = neuron_radius * neuron_importance_sums.get(index, 0) / max_neuron_importance
+		draw_circle(pos, curr_neuron_radius, color)
 		draw_string(font, text_pos, "%.1f" % values[index], Color.black)
 		
 	# Calculate positions of help-banners explaining neuron meaning

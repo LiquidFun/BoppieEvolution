@@ -8,6 +8,7 @@ var radius := 20.0  # (too much hardcoded, don't change)
 var can_die := true
 var nutrition := 20.0
 var ground_movement_penalty_factor = 1
+var no_food_eaten_penalty = 3.0
 
 
 # Based on DNA
@@ -45,13 +46,13 @@ var senses = Data.Senses.new(0
 var timer_neuron = Data.NeuronTimer.new()
 
 var dna_allowed_values = {
-	"move_speed": Data.DNABounds.new(70, 100, "x*1/15", 85, 5),  # 3 - 6
-	"scale_factor": Data.DNABounds.new(.7, 1.3, "x*x*6"),  # 3 - 9
+	"move_speed": Data.DNABounds.new(70, 100, "x*1/30", 85, 5),  # 3 - 6
+	"scale_factor": Data.DNABounds.new(.7, 1.3, "x*x*4"),  # 3 - 9
 	"armor": Data.DNABounds.new(0, 5, "x", 0, 0.1),  # 3 - 9
 	# "max_energy": Data.DNABounds(10, 30), 
 	# "max_water": Data.DNABounds(8, 12), 
 	# "required_offspring_energy": Vector2(8, 15), 
-	"turn_speed": Data.DNABounds.new(1, 2),
+	"turn_speed": Data.DNABounds.new(1.7, 3),
 	# "ray_count_additional": Vector2(0, 3),
 	"meat_tolerance": Data.DNABounds.new(0, 1, "", 0, 0),
 	"ray_angle": Data.DNABounds.new(deg2rad(5), deg2rad(50)),
@@ -59,7 +60,7 @@ var dna_allowed_values = {
 	"danger_sense_radius": Data.DNABounds.new(100, 200, "x*1/400"), # 0.25 - 0.5
 	"max_boost_factor": Data.DNABounds.new(1.5, 2.5, "x*2"), # 2.5 - 5
 	"max_backwards_factor": Data.DNABounds.new(-1.0, -0.5), 
-	"offspring_mutability": Data.DNABounds.new(0.03, 0.1),
+	"offspring_mutability": Data.DNABounds.new(0.03, 0.3, "", 0.05, 0.05),
 	"ai.dna": null,
 	"generation.i": null,
 	"senses.bitmask": null,
@@ -386,8 +387,8 @@ func turn(factor, delta):
 	
 func _physics_process(delta):
 	if not self.dead:
-		update_energy(-delta * energy_consumption_existing)
-		update_water(-delta * water_consumption_existing)
+		update_energy(-delta * energy_consumption_existing * no_food_eaten_penalty)
+		update_water(-delta * water_consumption_existing * no_food_eaten_penalty)
 		if (water >= 0 and energy >= 0) or not can_die:
 			var curr_ai = ai if temp_ai == null else temp_ai
 			if curr_ai:
@@ -437,6 +438,9 @@ func update_water(add_water):
 	water = min(max_water, water+add_water)
 		
 func update_energy(add_energy):
+	var reward_factor = add_energy * abs(add_energy) / 1000.0
+	if reward_factor > 0.01:
+		ai.strengthen_important_connections(reward_factor)
 	energy += add_energy
 	if energy > max_energy:
 		var old_level = curr_level()
@@ -470,6 +474,7 @@ func produce_offspring():
 	emit_signal("BoppieOffspring", self)
 	
 func eat(food):
+	no_food_eaten_penalty = max(0.5, no_food_eaten_penalty * 0.7)
 	times_eaten += 1
 	update_energy(food.nutrition)
 	

@@ -76,7 +76,7 @@ Quickstart: after starting a simulation: press `9` to simulate quickly. After a 
 * Add loading/saving of simulations
 * Add areas of high ground productivity (where more food spawns)
 * Add (for example), a river in the middle of the map, which separates the species on the left/right of it. 
-* Encode how many creatures are reproduced in the DNA of the creature
+* Encode how many creatures are reproduced in the DNA of the creature (number of children)
 * Make boppies leave flesh after death
 * Change meat-eating from boolean to a float, where it essentially becomes meat-tolerance or meat effectiveness (a factor of how much energy can be gained from meat). However high meat-tolerance means low 
 * Extend boppie color as part of DNA 
@@ -93,7 +93,6 @@ Quickstart: after starting a simulation: press `9` to simulate quickly. After a 
 * Add more graphs 
     * Fittest creature each second
     * Species stacked bar-plot
-* Select different profiles for displaying neural network (weights or activations)
 * Full screen on neural network, which shows actual weights
 * Improve display of recurrent connections
 * Check DNA importing, such that no object references are mentioned in the DNA
@@ -102,30 +101,47 @@ Quickstart: after starting a simulation: press `9` to simulate quickly. After a 
 * Make the fittest tab somehow always selectable
 * Add world configuration tab with seed and other such stuff
 
+### Rework
+
+* All globals should be in gamecontroller, so that those could be loaded and saved easier
+* Neural networks in GDNative C++ instead of GDScript (by far largest bottleneck)
+
 ### Experiments
 
 * Can the boppies learn recurrent connections if their inputs are delayed
+* Instead of sexual reproduction, only reproduce fittest creatures by crossover
+
+### Known bugs
+
+* Currently crossover is not performed when spawning new boppies
+* Cannot copy DNA over to other boppies
+* Loading and saving does not work
 
 
 ## Changelog
 
-### v0.3.0 (not yet released)
+### v0.4.0 (not yet released)
+
+### v0.3.0 (2022-03-09)
 
 * UI/UX Improvements
     * Show additional danger-sense near boppie
     * Disabled spike rotation and blood in performance mode
     * Improved graphs by drawing lines instead of pixels in texture, graphs can be hidden
     * Neurons have colors based on their type, can now drag neurons
+    * Show importance of neural network connections
+    * Can now select different profiles for displaying neural network (weights or activations)
 * Added lakes, water requirement for boppies and neurons for detecting lakes
 * Boppie colors now represent: hue: dna, saturation: energy, luminance: water
+* Added reinforcement learning, where neural net weights are adjusted based on rewards
 * New neurons/senses
     * Terrain resistance sense below and ahead of boppie
     * Timer (time encoded in DNA)
     * Hunger/thirst
     * A single large water ray for detecting water
     * Ally sense for detecting allies (same as danger sense)
-* Fixed bug where each time a new boppie was spawned the AIs and NeuronTimers would become orphaned
-* Required boppie offspring energy depends on DNA:
+* Fixed major bug where each time a new boppie was spawned the AIs and NeuronTimers would become orphaned
+* Required boppie offspring energy depends on DNA
 
 ### [v0.2.0](https://github.com/LiquidFun/BoppieEvolution/releases/tag/0.2.0) (2022-02-17)
 
