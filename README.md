@@ -100,12 +100,11 @@ Quickstart: after starting a simulation: press `9` to simulate quickly. After a 
 * Add high-contrast (bright world background) and large font mode for beamer presentations
 * Ease of use:
     * Make the hotkey button more apparent (e.g. show a HOTKEYS text after starting for a couple seconds)
-    * Add tooltips for all buttons, also help tooltips for boppie and world window
+    * Add help tooltips for boppie and world window
+    * Show WASD + SHIFT display when controlling boppie
     * Add buttons for common actions 
-        * Eat food, show sensors, show all sensors
+        * Eat food, show sensors
         * Load and save simulations
-        * Performance mode
-        * Follow fittest boppie
 * Alternative display of neural network, where the input neurons are shown at the positions of the sensory neurons near the actual boppie
 * Add menu bar at the top: Simulation/Help, with multiple dropdown menu options to restart simulation, back to menu, keyboard help, explanation help etc
 
@@ -136,10 +135,15 @@ Quickstart: after starting a simulation: press `9` to simulate quickly. After a 
 ### v0.4.0 (not yet released)
 
 * Added progress bars for energy/water/offspring, improving legibility
+* Left panel is now for boppies, right panel is for world, status bar has been cleaned up
 * Ease of use:
+    * Added tooltips for most buttons
     * Added buttons for common actions:
         * Faster/slower game-speeds, pause play
         * Take control of boppie, make invincible, produce offspring
+        * Performance mode
+        * Follow fittest boppie
+        * Show all vision rays
 
 ### v0.3.0 (2022-03-09)
 

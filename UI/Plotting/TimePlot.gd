@@ -73,6 +73,11 @@ func _draw():
 			var dataset = datasets[name]
 			draw_rect(Rect2(offset, curr_y, box_size, box_size), dataset.color)
 			draw_string(font, Vector2(offset * 2 + box_size, curr_y+box_size), name)
+			if len(dataset.points) > 0:
+				var is_int = abs(int(dataset.points[-1].y) - dataset.points[-1].y) < 1e-6
+				var value = ("%d" if is_int else "%.1f") % dataset.points[-1].y
+				var pos = Vector2(rect_size.x - offset * 2 - len(value) * 8, curr_y+box_size)
+				draw_string(font, pos, value, dataset.color)
 			curr_y += box_size + offset
 			
 		

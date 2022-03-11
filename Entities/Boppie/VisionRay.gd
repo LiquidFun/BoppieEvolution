@@ -1,6 +1,7 @@
 extends RayCast2D
 
 export(Color) var default_color = Color(1, 1, 1, 0.8)
+export var draw_when_all = true
 
 func _draw():
 	draw_line(Vector2.ZERO, self.cast_to, default_color, 1)
@@ -22,7 +23,7 @@ func collision_type():
 	return Data.Raytype.NONE
 
 func _physics_process(_delta):
-	if Globals.draw_senses or get_parent().draw_senses:
+	if Globals.draw_senses and draw_when_all or get_parent().draw_senses:
 		self.visible = true
 		if is_colliding():
 			var collider = get_collider()

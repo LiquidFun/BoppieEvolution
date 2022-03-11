@@ -205,6 +205,7 @@ collide_with_areas = true
 collide_with_bodies = false
 script = ExtResource( 4 )
 default_color = Color( 0.560784, 0.945098, 0.882353, 0.317647 )
+draw_when_all = false
 
 [node name="Tween" type="Tween" parent="."]
 

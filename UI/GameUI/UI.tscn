@@ -1,4 +1,4 @@
-[gd_scene load_steps=63 format=2]
+[gd_scene load_steps=69 format=2]
 
 [ext_resource path="res://UI/GameUI/BoppieInformation.gd" type="Script" id=1]
 [ext_resource path="res://UI/GameUI/BoppieFittnessPlot.gd" type="Script" id=2]
@@ -8,11 +8,11 @@
 [ext_resource path="res://UI/GameUI/IconGameSpeed.gd" type="Script" id=6]
 [ext_resource path="res://UI/GameUI/Neurons.gd" type="Script" id=7]
 [ext_resource path="res://UI/GameUI/TimeScale.gd" type="Script" id=8]
-[ext_resource path="res://UI/GameUI/CheckFollowFittest.gd" type="Script" id=9]
+[ext_resource path="res://UI/GameUI/World.gd" type="Script" id=9]
 [ext_resource path="res://UI/GameUI/Difficulty.gd" type="Script" id=10]
 [ext_resource path="res://UI/GameUI/FittestBoppieList.gd" type="Script" id=11]
 [ext_resource path="res://UI/GameUI/HelpButton.gd" type="Script" id=12]
-[ext_resource path="res://UI/GameUI/Seed.gd" type="Script" id=13]
+[ext_resource path="res://UI/GameUI/Performance.gd" type="Script" id=13]
 [ext_resource path="res://UI/GameUI/BoppieCountPlot.gd" type="Script" id=14]
 [ext_resource path="res://UI/GameUI/DisablePlotBelow.gd" type="Script" id=15]
 [ext_resource path="res://UI/GameUI/ChangeSpeedButton.gd" type="Script" id=16]
@@ -21,6 +21,8 @@
 [ext_resource path="res://UI/GameUI/Invincible.gd" type="Script" id=19]
 [ext_resource path="res://UI/GameUI/ShowOnSignal.gd" type="Script" id=20]
 [ext_resource path="res://UI/GameUI/ProduceOffspring.gd" type="Script" id=21]
+[ext_resource path="res://UI/GameUI/FollowFittest.gd" type="Script" id=22]
+[ext_resource path="res://UI/GameUI/ShowVision.gd" type="Script" id=23]
 
 [sub_resource type="DynamicFontData" id=1]
 font_path = "res://Resources/Fonts/FontAwesome/otfs/Font Awesome 5 Free-Solid-900.otf"
@@ -39,7 +41,7 @@ font_data = SubResource( 3 )
 font_path = "res://Resources/Fonts/FredokaOne-Regular.ttf"
 
 [sub_resource type="DynamicFont" id=6]
-size = 20
+size = 18
 font_data = SubResource( 5 )
 
 [sub_resource type="DynamicFontData" id=14]
@@ -84,6 +86,21 @@ font_data = SubResource( 5 )
 
 [sub_resource type="StyleBoxFlat" id=9]
 bg_color = Color( 1, 1, 1, 0.0980392 )
+
+[sub_resource type="InputEventAction" id=44]
+action = "toggle_performance_mode"
+
+[sub_resource type="ShortCut" id=45]
+shortcut = SubResource( 44 )
+
+[sub_resource type="InputEventAction" id=39]
+action = "toggle_vision_rays"
+
+[sub_resource type="ShortCut" id=46]
+shortcut = SubResource( 39 )
+
+[sub_resource type="StyleBoxFlat" id=43]
+bg_color = Color( 0.6, 0.6, 0.6, 0 )
 
 [sub_resource type="Gradient" id=31]
 offsets = PoolRealArray( 0.569507 )
@@ -138,9 +155,6 @@ action = "take_control_of_focused_boppie"
 
 [sub_resource type="ShortCut" id=38]
 shortcut = SubResource( 37 )
-
-[sub_resource type="InputEventAction" id=39]
-action = "make_invincible"
 
 [sub_resource type="ShortCut" id=40]
 shortcut = SubResource( 39 )
@@ -213,7 +227,7 @@ mouse_filter = 2
 [node name="MarginContainer" type="MarginContainer" parent="StatusBar/VBoxContainer"]
 margin_top = 188.0
 margin_right = 1910.0
-margin_bottom = 213.0
+margin_bottom = 211.0
 mouse_filter = 2
 custom_constants/margin_right = 10
 custom_constants/margin_top = 0
@@ -222,21 +236,21 @@ custom_constants/margin_left = 10
 [node name="HBoxContainer" type="HBoxContainer" parent="StatusBar/VBoxContainer/MarginContainer"]
 margin_left = 10.0
 margin_right = 1900.0
-margin_bottom = 25.0
+margin_bottom = 23.0
 mouse_filter = 2
-custom_constants/separation = 50
+custom_constants/separation = 10
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="Time" type="HBoxContainer" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer"]
 margin_right = 135.0
-margin_bottom = 25.0
+margin_bottom = 23.0
 
 [node name="IconTime" type="Label" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer/Time"]
-margin_top = 4.0
+margin_top = 3.0
 margin_right = 16.0
-margin_bottom = 20.0
+margin_bottom = 19.0
 custom_fonts/font = SubResource( 4 )
 text = ""
 valign = 2
@@ -247,7 +261,7 @@ __meta__ = {
 [node name="GameTime" type="Label" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer/Time"]
 margin_left = 20.0
 margin_right = 135.0
-margin_bottom = 25.0
+margin_bottom = 23.0
 rect_min_size = Vector2( 115, 0 )
 hint_tooltip = "[hint tooltip is changed in script]"
 mouse_filter = 1
@@ -260,14 +274,14 @@ script = ExtResource( 5 )
 autostart = true
 
 [node name="TimeScaleContainer" type="HBoxContainer" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer"]
-margin_left = 185.0
-margin_right = 255.0
-margin_bottom = 25.0
+margin_left = 145.0
+margin_right = 213.0
+margin_bottom = 23.0
 
 [node name="PauseSpeedButton" type="Button" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer/TimeScaleContainer"]
 pause_mode = 2
 margin_right = 13.0
-margin_bottom = 25.0
+margin_bottom = 23.0
 hint_tooltip = "space"
 custom_fonts/font = SubResource( 15 )
 shortcut_in_tooltip = false
@@ -279,7 +293,7 @@ factor = 0.0
 [node name="DecreaseSpeedButton" type="Button" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer/TimeScaleContainer"]
 margin_left = 17.0
 margin_right = 30.0
-margin_bottom = 25.0
+margin_bottom = 23.0
 hint_tooltip = "-"
 custom_fonts/font = SubResource( 15 )
 shortcut_in_tooltip = false
@@ -289,8 +303,10 @@ script = ExtResource( 16 )
 
 [node name="TimeScale" type="Label" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer/TimeScaleContainer"]
 margin_left = 34.0
-margin_right = 53.0
-margin_bottom = 25.0
+margin_right = 51.0
+margin_bottom = 23.0
+hint_tooltip = "Target simulation speed up (may not be achievable on higher speeds, see top-right for real speed-up). However a higher number still simulates quicker, as it reduces the number of ticks simulated per second."
+mouse_filter = 1
 custom_fonts/font = SubResource( 6 )
 text = "1x"
 valign = 2
@@ -298,9 +314,9 @@ script = ExtResource( 8 )
 
 [node name="IncreaseSpeedButton" type="Button" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer/TimeScaleContainer"]
 pause_mode = 2
-margin_left = 57.0
-margin_right = 70.0
-margin_bottom = 25.0
+margin_left = 55.0
+margin_right = 68.0
+margin_bottom = 23.0
 hint_tooltip = "+"
 custom_fonts/font = SubResource( 15 )
 shortcut_in_tooltip = false
@@ -309,71 +325,18 @@ text = ""
 script = ExtResource( 16 )
 factor = 2.0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer"]
-margin_left = 305.0
-margin_right = 464.0
-margin_bottom = 25.0
-
-[node name="FollowFittest" type="Label" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer/HBoxContainer"]
-margin_right = 139.0
-margin_bottom = 25.0
-custom_fonts/font = SubResource( 6 )
-text = "Follow fittest:"
-valign = 2
-
-[node name="CheckFollowFittest" type="Label" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer/HBoxContainer"]
-margin_left = 143.0
-margin_top = 4.0
-margin_right = 159.0
-margin_bottom = 20.0
-custom_fonts/font = SubResource( 4 )
-text = ""
-valign = 2
-script = ExtResource( 9 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="Difficulty" type="Label" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer"]
-margin_left = 514.0
-margin_right = 627.0
-margin_bottom = 25.0
-custom_fonts/font = SubResource( 6 )
-text = "Difficulty: x"
-valign = 2
-script = ExtResource( 10 )
-
-[node name="Seed" type="Label" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer"]
-margin_left = 677.0
-margin_right = 744.0
-margin_bottom = 25.0
-custom_fonts/font = SubResource( 6 )
-text = "Seed: x"
-valign = 2
-script = ExtResource( 13 )
-
 [node name="HBoxContainer2" type="HBoxContainer" parent="StatusBar/VBoxContainer/MarginContainer"]
 margin_left = 10.0
 margin_right = 1900.0
-margin_bottom = 25.0
+margin_bottom = 23.0
 mouse_filter = 2
 custom_constants/separation = 20
 alignment = 2
 
-[node name="BoppieCount" type="Label" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer2"]
-margin_left = 1772.0
-margin_right = 1842.0
-margin_bottom = 25.0
-custom_fonts/font = SubResource( 6 )
-text = "#count"
-align = 2
-valign = 2
-script = ExtResource( 3 )
-
 [node name="HelpButton" type="Button" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer2"]
 margin_left = 1862.0
 margin_right = 1890.0
-margin_bottom = 25.0
+margin_bottom = 23.0
 custom_fonts/font = SubResource( 11 )
 toggle_mode = true
 text = ""
@@ -426,7 +389,8 @@ __meta__ = {
 [node name="RightSidePanel" type="MarginContainer" parent="."]
 anchor_left = 1.0
 anchor_right = 1.0
-margin_bottom = 1080.0
+margin_left = -340.0
+margin_bottom = 588.0
 grow_horizontal = 0
 rect_min_size = Vector2( 300, 0 )
 mouse_filter = 2
@@ -434,20 +398,18 @@ custom_constants/margin_right = 10
 custom_constants/margin_top = 10
 custom_constants/margin_left = 10
 custom_constants/margin_bottom = 10
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="VBoxContainer" type="VBoxContainer" parent="RightSidePanel"]
 margin_left = 10.0
 margin_top = 10.0
-margin_right = 310.0
-margin_bottom = 1070.0
+margin_right = 330.0
+margin_bottom = 383.0
 mouse_filter = 2
+size_flags_vertical = 0
 
 [node name="FPS" type="Label" parent="RightSidePanel/VBoxContainer"]
 modulate = Color( 1, 1, 1, 0.486275 )
-margin_right = 300.0
+margin_right = 320.0
 margin_bottom = 13.0
 hint_tooltip = "FPS: frames per second (rendering)
 TPS: ticks per second (physics/simulation)
@@ -460,14 +422,272 @@ align = 2
 valign = 2
 script = ExtResource( 4 )
 
-[node name="HBoxContainer" type="HBoxContainer" parent="RightSidePanel/VBoxContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="RightSidePanel/VBoxContainer"]
 margin_top = 17.0
+margin_right = 320.0
+margin_bottom = 373.0
+mouse_filter = 2
+size_flags_vertical = 0
+custom_styles/panel = SubResource( 9 )
+__meta__ = {
+"_editor_description_": ""
+}
+
+[node name="MarginContainer" type="MarginContainer" parent="RightSidePanel/VBoxContainer/PanelContainer"]
+margin_right = 320.0
+margin_bottom = 356.0
+grow_horizontal = 0
+rect_min_size = Vector2( 300, 0 )
+mouse_filter = 2
+custom_constants/margin_right = 10
+custom_constants/margin_top = 10
+custom_constants/margin_left = 10
+custom_constants/margin_bottom = 10
+__meta__ = {
+"_editor_description_": ""
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer"]
+margin_left = 10.0
+margin_top = 10.0
+margin_right = 310.0
+margin_bottom = 346.0
+mouse_filter = 2
+
+[node name="Header" type="HBoxContainer" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
 margin_right = 300.0
-margin_bottom = 42.0
+margin_bottom = 23.0
+alignment = 1
+
+[node name="Birth" type="Label" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/Header"]
+margin_top = 3.0
+margin_right = 28.0
+margin_bottom = 19.0
+hint_tooltip = "Birth time"
+mouse_filter = 1
+custom_fonts/font = SubResource( 4 )
+text = "  "
+valign = 2
+
+[node name="World" type="Label" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/Header"]
+margin_left = 32.0
+margin_right = 193.0
+margin_bottom = 23.0
+hint_tooltip = "seed added programmatically"
+mouse_filter = 1
+size_flags_horizontal = 3
+custom_fonts/font = SubResource( 6 )
+text = "World"
+valign = 2
+script = ExtResource( 9 )
+
+[node name="Difficulty" type="Label" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/Header"]
+margin_left = 197.0
+margin_right = 300.0
+margin_bottom = 23.0
+hint_tooltip = "Higher difficulty means the boppies need more energy and especially more water for moving and existing. For example: at difficulty 0.4 water consumption is 3.5 times higher than at 0.3."
+mouse_filter = 1
+custom_fonts/font = SubResource( 6 )
+text = "Difficulty: x"
+valign = 2
+script = ExtResource( 10 )
+
+[node name="HSeparator" type="HSeparator" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
+margin_top = 27.0
+margin_right = 300.0
+margin_bottom = 37.0
+custom_constants/separation = 10
+
+[node name="CountContainer" type="HBoxContainer" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
+margin_top = 41.0
+margin_right = 300.0
+margin_bottom = 64.0
+hint_tooltip = "Current count of apples
+Total count of boppie births 
+Total count of boppie deaths
+Total count of boppie spawns
+(A birth is when a boppie reproduces,
+ a spawn is when a boppie is
+ spawned when there are fewer than
+ 10 boppies in the world)
+"
+script = ExtResource( 3 )
+
+[node name="Apples" type="Label" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/CountContainer"]
+margin_right = 11.0
+margin_bottom = 23.0
+custom_fonts/font = SubResource( 6 )
+text = "0"
+valign = 2
+
+[node name="AppleIcon" type="Label" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/CountContainer"]
+margin_left = 15.0
+margin_top = 3.0
+margin_right = 81.0
+margin_bottom = 19.0
+hint_tooltip = "Food"
+mouse_filter = 1
+size_flags_horizontal = 3
+custom_fonts/font = SubResource( 4 )
+text = "  "
+valign = 2
+
+[node name="Born" type="Label" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/CountContainer"]
+margin_left = 85.0
+margin_right = 96.0
+margin_bottom = 23.0
+custom_fonts/font = SubResource( 6 )
+text = "0"
+valign = 2
+
+[node name="BornIcon" type="Label" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/CountContainer"]
+margin_left = 100.0
+margin_top = 3.0
+margin_right = 167.0
+margin_bottom = 19.0
+hint_tooltip = "Food"
+mouse_filter = 1
+size_flags_horizontal = 3
+custom_fonts/font = SubResource( 4 )
+text = "  "
+valign = 2
+
+[node name="Died" type="Label" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/CountContainer"]
+margin_left = 171.0
+margin_right = 182.0
+margin_bottom = 23.0
+custom_fonts/font = SubResource( 6 )
+text = "0"
+valign = 2
+
+[node name="DiedIcon" type="Label" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/CountContainer"]
+margin_left = 186.0
+margin_top = 3.0
+margin_right = 252.0
+margin_bottom = 19.0
+hint_tooltip = "Food"
+mouse_filter = 1
+size_flags_horizontal = 3
+custom_fonts/font = SubResource( 4 )
+text = "  "
+valign = 2
+
+[node name="Spawned" type="Label" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/CountContainer"]
+margin_left = 256.0
+margin_right = 267.0
+margin_bottom = 23.0
+custom_fonts/font = SubResource( 6 )
+text = "0"
+valign = 2
+
+[node name="SpawnedIcon" type="Label" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/CountContainer"]
+margin_left = 271.0
+margin_top = 3.0
+margin_right = 299.0
+margin_bottom = 19.0
+hint_tooltip = "Food"
+mouse_filter = 1
+custom_fonts/font = SubResource( 4 )
+text = "  "
+valign = 2
+
+[node name="ButtonContainer" type="HBoxContainer" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
+margin_top = 68.0
+margin_right = 300.0
+margin_bottom = 96.0
+alignment = 1
+
+[node name="FollowFittest" type="Button" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/ButtonContainer"]
+margin_right = 300.0
+margin_bottom = 28.0
+hint_tooltip = "Camera will follow fittest boppie (the one which has survived the longest), if kept toggled it will jump to next fittest after death."
+size_flags_horizontal = 3
+theme = ExtResource( 17 )
+toggle_mode = true
+shortcut_in_tooltip = false
+text = "Follow fittest"
+script = ExtResource( 22 )
+
+[node name="ButtonContainer2" type="HBoxContainer" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
+margin_top = 100.0
+margin_right = 300.0
+margin_bottom = 130.0
+alignment = 1
+
+[node name="Performance" type="CheckBox" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/ButtonContainer2"]
+margin_right = 149.0
+margin_bottom = 30.0
+grow_horizontal = 0
+grow_vertical = 0
+hint_tooltip = "When on it disables: all particles, trap rotations and eye movements."
+size_flags_horizontal = 3
+theme = ExtResource( 17 )
+shortcut_in_tooltip = false
+shortcut = SubResource( 45 )
+text = "Fast rendering"
+script = ExtResource( 13 )
+
+[node name="ShowVision" type="CheckBox" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/ButtonContainer2"]
+margin_left = 153.0
+margin_right = 300.0
+margin_bottom = 30.0
+grow_horizontal = 0
+grow_vertical = 0
+hint_tooltip = "Show vision rays for all boppies matching their 5 food input neurons"
+size_flags_horizontal = 3
+theme = ExtResource( 17 )
+shortcut_in_tooltip = false
+shortcut = SubResource( 46 )
+text = "Show vision"
+script = ExtResource( 23 )
+
+[node name="HSeparator3" type="HSeparator" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
+margin_top = 134.0
+margin_right = 300.0
+margin_bottom = 144.0
+custom_constants/separation = 10
+
+[node name="TabContainer" type="TabContainer" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
+margin_top = 148.0
+margin_right = 300.0
+margin_bottom = 322.0
+custom_styles/panel = SubResource( 43 )
+
+[node name="Boppie count" type="Control" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/TabContainer"]
+pause_mode = 1
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = 24.0
+rect_min_size = Vector2( 300, 150 )
+script = ExtResource( 14 )
+
+[node name="Timer" type="Timer" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/TabContainer/Boppie count"]
+wait_time = 10.0
+autostart = true
+
+[node name="3Ø Fittest" type="Control" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/TabContainer"]
+pause_mode = 1
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = 24.0
+rect_min_size = Vector2( 300, 150 )
+hint_tooltip = "Average fitness of 3 fittest boppies in the simulation"
+script = ExtResource( 2 )
+
+[node name="Timer" type="Timer" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/TabContainer/3Ø Fittest"]
+wait_time = 10.0
+autostart = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
+visible = false
+margin_top = 178.0
+margin_right = 300.0
+margin_bottom = 203.0
 mouse_filter = 2
 alignment = 1
 
-[node name="PlotTitle" type="Label" parent="RightSidePanel/VBoxContainer/HBoxContainer"]
+[node name="PlotTitle" type="Label" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
 margin_left = 66.0
 margin_right = 205.0
 margin_bottom = 25.0
@@ -476,7 +696,7 @@ text = "Boppie Counts"
 align = 1
 valign = 2
 
-[node name="DisablePlotBelow2" type="CheckBox" parent="RightSidePanel/VBoxContainer/HBoxContainer"]
+[node name="DisablePlotBelow2" type="CheckBox" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
 margin_left = 209.0
 margin_right = 233.0
 margin_bottom = 25.0
@@ -485,28 +705,17 @@ script = ExtResource( 15 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
-plot = NodePath("../../BoppieCountPlot")
+plot = NodePath("../../TabContainer/Boppie count")
 
-[node name="BoppieCountPlot" type="Control" parent="RightSidePanel/VBoxContainer"]
-pause_mode = 1
-margin_top = 46.0
+[node name="HBoxContainer2" type="HBoxContainer" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
+visible = false
+margin_top = 178.0
 margin_right = 300.0
-margin_bottom = 196.0
-rect_min_size = Vector2( 300, 150 )
-script = ExtResource( 14 )
-
-[node name="Timer" type="Timer" parent="RightSidePanel/VBoxContainer/BoppieCountPlot"]
-wait_time = 10.0
-autostart = true
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="RightSidePanel/VBoxContainer"]
-margin_top = 200.0
-margin_right = 300.0
-margin_bottom = 225.0
+margin_bottom = 203.0
 mouse_filter = 2
 alignment = 1
 
-[node name="PlotTitle" type="Label" parent="RightSidePanel/VBoxContainer/HBoxContainer2"]
+[node name="PlotTitle" type="Label" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2"]
 margin_left = 57.0
 margin_right = 215.0
 margin_bottom = 25.0
@@ -515,25 +724,19 @@ text = "Average Fitness"
 align = 1
 valign = 2
 
-[node name="DisablePlotBelow" type="CheckBox" parent="RightSidePanel/VBoxContainer/HBoxContainer2"]
+[node name="DisablePlotBelow" type="CheckBox" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2"]
 margin_left = 219.0
 margin_right = 243.0
 margin_bottom = 25.0
 pressed = true
 script = ExtResource( 15 )
-plot = NodePath("../../BoppieFittnessPlot")
+plot = NodePath("../../TabContainer/3Ø Fittest")
 
-[node name="BoppieFittnessPlot" type="Control" parent="RightSidePanel/VBoxContainer"]
-pause_mode = 1
-margin_top = 229.0
+[node name="HSeparator2" type="HSeparator" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
+margin_top = 326.0
 margin_right = 300.0
-margin_bottom = 379.0
-rect_min_size = Vector2( 300, 150 )
-script = ExtResource( 2 )
-
-[node name="Timer" type="Timer" parent="RightSidePanel/VBoxContainer/BoppieFittnessPlot"]
-wait_time = 10.0
-autostart = true
+margin_bottom = 336.0
+custom_constants/separation = 10
 
 [node name="LeftSidePanel" type="MarginContainer" parent="."]
 margin_right = 340.0
@@ -543,9 +746,6 @@ custom_constants/margin_right = 10
 custom_constants/margin_top = 10
 custom_constants/margin_left = 10
 custom_constants/margin_bottom = 10
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="PanelContainer" type="PanelContainer" parent="LeftSidePanel"]
 margin_left = 10.0
@@ -579,21 +779,23 @@ __meta__ = {
 
 [node name="Header" type="HBoxContainer" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
 margin_right = 408.0
-margin_bottom = 25.0
+margin_bottom = 23.0
 alignment = 1
 
 [node name="BoppieName" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/Header"]
-margin_right = 214.0
-margin_bottom = 25.0
+margin_right = 231.0
+margin_bottom = 23.0
 size_flags_horizontal = 3
 custom_fonts/font = SubResource( 6 )
 text = "Name #123"
 valign = 2
 
 [node name="Survived" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/Header"]
-margin_left = 218.0
+margin_left = 235.0
 margin_right = 378.0
-margin_bottom = 25.0
+margin_bottom = 23.0
+hint_tooltip = "Simulation time when boppie was spawned and how many seconds it has survived so far."
+mouse_filter = 1
 custom_fonts/font = SubResource( 6 )
 text = "Survived: mm:hh"
 align = 2
@@ -601,9 +803,9 @@ valign = 2
 
 [node name="Birth" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/Header"]
 margin_left = 382.0
-margin_top = 4.0
+margin_top = 3.0
 margin_right = 408.0
-margin_bottom = 20.0
+margin_bottom = 19.0
 hint_tooltip = "Birth time"
 mouse_filter = 1
 custom_fonts/font = SubResource( 4 )
@@ -611,16 +813,17 @@ text = "  "
 valign = 2
 
 [node name="HSeparator" type="HSeparator" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
-margin_top = 25.0
+margin_top = 23.0
 margin_right = 408.0
-margin_bottom = 35.0
+margin_bottom = 33.0
 custom_constants/separation = 10
 
 [node name="HealthProgressBar" type="TextureProgress" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
-margin_top = 35.0
+margin_top = 33.0
 margin_right = 408.0
-margin_bottom = 59.0
+margin_bottom = 57.0
 rect_min_size = Vector2( 0, 24 )
+hint_tooltip = "Current boppie energy and max energy. When depleted the boppie dies (unless invincible). On the right is the number of apples eaten by the boppie."
 step = 0.0
 value = 100.0
 texture_under = SubResource( 30 )
@@ -659,8 +862,8 @@ script = ExtResource( 20 )
 
 [node name="Energy" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/HealthProgressBar/HealthBarContainer"]
 margin_left = 32.0
-margin_right = 362.0
-margin_bottom = 25.0
+margin_right = 363.0
+margin_bottom = 23.0
 size_flags_horizontal = 3
 custom_fonts/font = SubResource( 6 )
 text = "Energy/Max"
@@ -668,9 +871,9 @@ align = 1
 valign = 1
 
 [node name="Eaten" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/HealthProgressBar/HealthBarContainer"]
-margin_left = 366.0
+margin_left = 367.0
 margin_right = 378.0
-margin_bottom = 25.0
+margin_bottom = 23.0
 custom_fonts/font = SubResource( 6 )
 text = "0"
 valign = 2
@@ -688,10 +891,11 @@ align = 2
 valign = 2
 
 [node name="WaterProgressBar" type="TextureProgress" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
-margin_top = 59.0
+margin_top = 57.0
 margin_right = 408.0
-margin_bottom = 83.0
+margin_bottom = 81.0
 rect_min_size = Vector2( 0, 24 )
+hint_tooltip = "Current boppie water and max water capacity. When depleted the boppie dies (unless invincible)."
 step = 0.0
 value = 100.0
 texture_under = SubResource( 33 )
@@ -731,7 +935,7 @@ script = ExtResource( 20 )
 [node name="Water" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/WaterProgressBar/WaterBarContainer"]
 margin_left = 32.0
 margin_right = 363.0
-margin_bottom = 25.0
+margin_bottom = 23.0
 size_flags_horizontal = 3
 custom_fonts/font = SubResource( 6 )
 text = "Water/Max"
@@ -751,10 +955,13 @@ align = 2
 valign = 2
 
 [node name="OffspringProgressBar" type="TextureProgress" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
-margin_top = 83.0
+margin_top = 81.0
 margin_right = 408.0
-margin_bottom = 107.0
+margin_bottom = 105.0
 rect_min_size = Vector2( 0, 24 )
+hint_tooltip = "Energy collected which goes above the maximum goes towards an offspring. Once the required offspring energy is collected a child is born. 
+On the left the boppie size is shown in [brackets], then the current stage.
+On the right its generation and how many children it has is shown."
 step = 0.0
 value = 100.0
 texture_under = SubResource( 35 )
@@ -769,8 +976,8 @@ size_flags_vertical = 3
 alignment = 1
 
 [node name="Level" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/OffspringProgressBar/OffspringBarContainer"]
-margin_right = 73.0
-margin_bottom = 25.0
+margin_right = 67.0
+margin_bottom = 23.0
 hint_tooltip = "Adulthood stage"
 mouse_filter = 1
 custom_fonts/font = SubResource( 6 )
@@ -778,9 +985,9 @@ text = " [0.8] III "
 valign = 2
 
 [node name="OffspringEnergy" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/OffspringProgressBar/OffspringBarContainer"]
-margin_left = 77.0
-margin_right = 292.0
-margin_bottom = 25.0
+margin_left = 71.0
+margin_right = 294.0
+margin_bottom = 23.0
 size_flags_horizontal = 3
 theme = ExtResource( 17 )
 custom_fonts/font = SubResource( 6 )
@@ -789,9 +996,9 @@ align = 1
 valign = 2
 
 [node name="Generation" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/OffspringProgressBar/OffspringBarContainer"]
-margin_left = 296.0
-margin_right = 304.0
-margin_bottom = 25.0
+margin_left = 298.0
+margin_right = 305.0
+margin_bottom = 23.0
 custom_fonts/font = SubResource( 6 )
 text = "1"
 align = 2
@@ -801,9 +1008,9 @@ __meta__ = {
 }
 
 [node name="GenerationIcon" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/OffspringProgressBar/OffspringBarContainer"]
-margin_left = 308.0
+margin_left = 309.0
 margin_top = 4.0
-margin_right = 364.0
+margin_right = 365.0
 margin_bottom = 20.0
 hint_tooltip = "Generation"
 mouse_filter = 1
@@ -812,9 +1019,9 @@ text = "      "
 valign = 2
 
 [node name="OffspringCount" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/OffspringProgressBar/OffspringBarContainer"]
-margin_left = 368.0
+margin_left = 369.0
 margin_right = 380.0
-margin_bottom = 25.0
+margin_bottom = 23.0
 custom_fonts/font = SubResource( 6 )
 text = "0"
 align = 2
@@ -833,18 +1040,18 @@ align = 2
 valign = 2
 
 [node name="HSeparator5" type="HSeparator" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
-margin_top = 107.0
+margin_top = 105.0
 margin_right = 408.0
-margin_bottom = 117.0
+margin_bottom = 115.0
 custom_constants/separation = 10
 
-[node name="HBoxContainer" type="HBoxContainer" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
-margin_top = 117.0
+[node name="ButtonContainer" type="HBoxContainer" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
+margin_top = 115.0
 margin_right = 408.0
-margin_bottom = 147.0
+margin_bottom = 145.0
 alignment = 1
 
-[node name="TakeControl" type="Button" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/HBoxContainer"]
+[node name="TakeControl" type="Button" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/ButtonContainer"]
 margin_right = 147.0
 margin_bottom = 30.0
 hint_tooltip = "Take control of boppie (it's AI outputs are ignored, you can control it with WASD or the arrow keys)"
@@ -856,7 +1063,7 @@ shortcut = SubResource( 38 )
 text = "Take Control"
 script = ExtResource( 18 )
 
-[node name="Invincible" type="CheckBox" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/HBoxContainer"]
+[node name="Invincible" type="CheckBox" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/ButtonContainer"]
 margin_left = 151.0
 margin_right = 257.0
 margin_bottom = 30.0
@@ -869,7 +1076,7 @@ shortcut = SubResource( 40 )
 text = "Invincible"
 script = ExtResource( 19 )
 
-[node name="ProduceOffspring" type="Button" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/HBoxContainer"]
+[node name="ProduceOffspring" type="Button" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/ButtonContainer"]
 margin_left = 261.0
 margin_right = 408.0
 margin_bottom = 30.0
@@ -882,13 +1089,13 @@ text = "Offspring"
 script = ExtResource( 21 )
 
 [node name="HSeparator6" type="HSeparator" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
-margin_top = 147.0
+margin_top = 145.0
 margin_right = 408.0
-margin_bottom = 157.0
+margin_bottom = 155.0
 custom_constants/separation = 10
 
 [node name="TabContainer" type="TabContainer" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
-margin_top = 157.0
+margin_top = 155.0
 margin_right = 408.0
 margin_bottom = 446.0
 size_flags_vertical = 15
@@ -1012,13 +1219,16 @@ script = ExtResource( 11 )
 [connection signal="pressed" from="StatusBar/VBoxContainer/MarginContainer/HBoxContainer/TimeScaleContainer/DecreaseSpeedButton" to="StatusBar/VBoxContainer/MarginContainer/HBoxContainer/TimeScaleContainer/DecreaseSpeedButton" method="_on_ChangeSpeedButton_pressed"]
 [connection signal="pressed" from="StatusBar/VBoxContainer/MarginContainer/HBoxContainer/TimeScaleContainer/IncreaseSpeedButton" to="StatusBar/VBoxContainer/MarginContainer/HBoxContainer/TimeScaleContainer/IncreaseSpeedButton" method="_on_ChangeSpeedButton_pressed"]
 [connection signal="toggled" from="StatusBar/VBoxContainer/MarginContainer/HBoxContainer2/HelpButton" to="StatusBar/VBoxContainer/MarginContainer/HBoxContainer2/HelpButton" method="_on_HelpButton_toggled"]
-[connection signal="toggled" from="RightSidePanel/VBoxContainer/HBoxContainer/DisablePlotBelow2" to="RightSidePanel/VBoxContainer/HBoxContainer/DisablePlotBelow2" method="_on_DisablePlotBelow_toggled"]
-[connection signal="timeout" from="RightSidePanel/VBoxContainer/BoppieCountPlot/Timer" to="RightSidePanel/VBoxContainer/BoppieCountPlot" method="replot"]
-[connection signal="toggled" from="RightSidePanel/VBoxContainer/HBoxContainer2/DisablePlotBelow" to="RightSidePanel/VBoxContainer/HBoxContainer2/DisablePlotBelow" method="_on_DisablePlotBelow_toggled"]
-[connection signal="timeout" from="RightSidePanel/VBoxContainer/BoppieFittnessPlot/Timer" to="RightSidePanel/VBoxContainer/BoppieFittnessPlot" method="replot"]
-[connection signal="pressed" from="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/HBoxContainer/TakeControl" to="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/HBoxContainer/TakeControl" method="_on_TakeControl_pressed"]
-[connection signal="toggled" from="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/HBoxContainer/Invincible" to="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/HBoxContainer/Invincible" method="_on_Invincible_toggled"]
-[connection signal="pressed" from="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/HBoxContainer/ProduceOffspring" to="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/HBoxContainer/ProduceOffspring" method="_on_ProduceOffspring_pressed"]
+[connection signal="toggled" from="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/ButtonContainer/FollowFittest" to="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/ButtonContainer/FollowFittest" method="_on_FollowFittest_toggled"]
+[connection signal="toggled" from="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/ButtonContainer2/Performance" to="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/ButtonContainer2/Performance" method="_on_Performance_toggled"]
+[connection signal="toggled" from="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/ButtonContainer2/ShowVision" to="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/ButtonContainer2/ShowVision" method="_on_ShowVision_toggled"]
+[connection signal="timeout" from="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/TabContainer/Boppie count/Timer" to="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/TabContainer/Boppie count" method="replot"]
+[connection signal="timeout" from="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/TabContainer/3Ø Fittest/Timer" to="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/TabContainer/3Ø Fittest" method="replot"]
+[connection signal="toggled" from="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/DisablePlotBelow2" to="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/DisablePlotBelow2" method="_on_DisablePlotBelow_toggled"]
+[connection signal="toggled" from="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2/DisablePlotBelow" to="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2/DisablePlotBelow" method="_on_DisablePlotBelow_toggled"]
+[connection signal="pressed" from="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/ButtonContainer/TakeControl" to="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/ButtonContainer/TakeControl" method="_on_TakeControl_pressed"]
+[connection signal="toggled" from="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/ButtonContainer/Invincible" to="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/ButtonContainer/Invincible" method="_on_Invincible_toggled"]
+[connection signal="pressed" from="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/ButtonContainer/ProduceOffspring" to="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/ButtonContainer/ProduceOffspring" method="_on_ProduceOffspring_pressed"]
 [connection signal="item_selected" from="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/TabContainer/Neural network/Neurons/HBoxContainer/DisplayProfile" to="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/TabContainer/Neural network/Neurons" method="_on_OptionButton_item_selected"]
 [connection signal="toggled" from="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/TabContainer/DNA/HBoxContainer/ShowDNA" to="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation" method="_on_Show_toggled"]
 [connection signal="pressed" from="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/TabContainer/DNA/HBoxContainer/ApplyDNA" to="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation" method="_on_ApplyDNA_pressed"]

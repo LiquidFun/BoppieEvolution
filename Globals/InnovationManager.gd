@@ -4,7 +4,7 @@ var innovation_id = 0
 # 0th element is ignored 
 var innovations: Array = [["Input", "Output"]]
 var common_innovation_ids: Array = []
-var fully_connected_neurons: int = 4
+var fully_connected_neurons: int = 2
 var max_ray_count_additional = 2
 var danger_sense_parts = 4
 var nn_input_initial_neurons = []
@@ -20,7 +20,7 @@ var senses_configuration = {
 	Data.Sense.THIRST: Data.SenseConfiguration.new("Thirst"),
 	Data.Sense.WATER_RAY: Data.SenseConfiguration.new("Water"),
 	Data.Sense.GROUND: Data.SenseConfiguration.new("Ground", true, 2),
-	Data.Sense.ALLY_SENSE: Data.SenseConfiguration.new("AllySense", true, 4),
+	Data.Sense.ALLY_SENSE: Data.SenseConfiguration.new("AllySense", false, 4),
 }
 
 func add_innovation(input: String, output: String) -> int:

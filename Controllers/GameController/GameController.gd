@@ -220,14 +220,10 @@ func _unhandled_input(event):
 		if controlled_boppie:
 			controlled_boppie.update_energy(5)
 			controlled_boppie.update_water(5)
-	if event.is_action_pressed("toggle_vision_rays"):
-		Globals.draw_senses = !Globals.draw_senses
 	if event.is_action_pressed("toggle_vision_rays_of_focused_boppie"):
 		Globals.draw_current_senses = !Globals.draw_current_senses
 		if controlled_boppie != null:
 			controlled_boppie.draw_senses = Globals.draw_current_senses
-	if event.is_action_pressed("toggle_performance_mode"):
-		Globals.performance_mode = !Globals.performance_mode
 	if event.is_action_pressed("set_time_factor_to_2^(number-1)"):
 		var new_time_scale = 1 << (event.scancode - KEY_1)
 		change_time_scale(new_time_scale / Engine.time_scale)
@@ -305,12 +301,12 @@ func change_time_scale(factor):
 func check_boppies():
 	for config in boppie_configurations:
 		var boppies = get_tree().get_nodes_in_group(config.group)
-		if Globals.elapsed_time - last_difficulty_level_change_time > 300:
-			if difficulty_level < 2 and boppies.size() > 40:
+		if Globals.elapsed_time - last_difficulty_level_change_time > 1200:
+			if difficulty_level <= 10 and boppies.size() > 40:
 				lookup_boppie_type_to_config["Kloppie"].min_count = 3
 				difficulty_level += 1
 				last_difficulty_level_change_time = Globals.elapsed_time
-				Globals.difficulty += .05
+				Globals.difficulty += .01
 				config.new_dna_chance = 1 - ((1 - config.new_dna_chance) * .9)
 		for boppie in boppies:
 			if not is_within_game(boppie.global_position):

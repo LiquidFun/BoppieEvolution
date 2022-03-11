@@ -35,8 +35,20 @@ func get_average_fitness(group):
 		mean = sum / len(boppies)
 	return mean
 	
+func get_best_fitness(group, count=1):
+	var fitness = []
+	for boppie in get_tree().get_nodes_in_group(group):
+		fitness.append(boppie.fitness())
+	fitness.sort()
+	var bestn_average = 0
+	count = min(len(fitness), count)
+	if count == 0:
+		return 0
+	for i in range(count):
+		bestn_average += fitness[len(fitness) - i - 1]
+	return bestn_average / count
 	
 func replot():
 	for group in ["Owlie", "Kloppie"]:
-		add_point(group + "s", get_average_fitness(group))
+		add_point(group + "s", get_best_fitness(group, 3))
 	update()

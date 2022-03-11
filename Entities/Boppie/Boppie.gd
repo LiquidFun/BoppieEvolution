@@ -8,6 +8,9 @@ var radius := 20.0  # (too much hardcoded, don't change)
 var can_die := true
 var nutrition := 20.0
 var ground_movement_penalty_factor = 1
+
+# This is reduced down to 0.5 or so, essentially if a boppie does not manage to eat anything
+# then it gets a large penalty und it has eaten a few foodstuffs.
 var no_food_eaten_penalty = 3.0
 
 
