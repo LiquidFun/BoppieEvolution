@@ -90,7 +90,7 @@ Quickstart: after starting a simulation: press `9` to simulate quickly. After a 
 ### UI/UX
 * Add menu so that simulation could be configured
 * Show genetic tree for entire simulation
-* Add more graphs 
+* Add more graphs:
     * Fittest creature each second
     * Species stacked bar-plot
 * Full screen on neural network, which shows actual weights
@@ -100,16 +100,30 @@ Quickstart: after starting a simulation: press `9` to simulate quickly. After a 
 * Show version/commit id in application
 * Make the fittest tab somehow always selectable
 * Add world configuration tab with seed and other such stuff
+* Add high-contrast (bright world background) and large font mode for beamer presentations
+* Ease of use:
+    * Make the hotkey button more apparent (e.g. show a HOTKEYS text after starting for a couple seconds)
+    * Add buttons for common actions 
+        * Take control of boppie, eat food, make invincible, show sensors
+        * Load and save simulations
+        * Performance mode
+        * Follow fittest boppie
+* Alternative display of neural network, where the input neurons are shown at the positions of the sensory neurons near the actual boppie
 
 ### Rework
 
 * All globals should be in gamecontroller, so that those could be loaded and saved easier
 * Neural networks in GDNative C++ instead of GDScript (by far largest bottleneck)
+* Separate StatusBar, BoppieBar and WorldStats
 
 ### Experiments
 
 * Can the boppies learn recurrent connections if their inputs are delayed
 * Instead of sexual reproduction, only reproduce fittest creatures by crossover
+* Player vs evolution game mode
+    * Try to compete with evolution by creating an AI (code in game screen, use eval to evaluate code)
+    * Get access to better/more sensors over time
+    * Try to beat ever stronger kloppies
 
 ### Known bugs
 
@@ -121,6 +135,11 @@ Quickstart: after starting a simulation: press `9` to simulate quickly. After a 
 ## Changelog
 
 ### v0.4.0 (not yet released)
+
+* Added progress bars for energy/water/offspring, improving legibility
+* Ease of use:
+    * Added buttons for common actions :
+        * Faster/slower game-speeds, pause play
 
 ### v0.3.0 (2022-03-09)
 

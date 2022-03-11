@@ -230,10 +230,6 @@ func _unhandled_input(event):
 			controlled_boppie.draw_senses = Globals.draw_current_senses
 	if event.is_action_pressed("toggle_performance_mode"):
 		Globals.performance_mode = !Globals.performance_mode
-	if event.is_action_pressed("increase_time_factor"):
-		change_time_scale(2)
-	if event.is_action_pressed("decrease_time_factor"):
-		change_time_scale(0.5)
 	if event.is_action_pressed("set_time_factor_to_2^(number-1)"):
 		var new_time_scale = 1 << (event.scancode - KEY_1)
 		change_time_scale(new_time_scale / Engine.time_scale)
@@ -247,9 +243,6 @@ func _unhandled_input(event):
 		take_control_of_fittest_boppie_in_group("Owlie")
 	if event.is_action_pressed("follow_fittest_kloppie"):
 		take_control_of_fittest_boppie_in_group("Kloppie")
-	if event.is_action_pressed("pause_simulation"):
-		get_tree().paused = !get_tree().paused
-		emit_signal("EngineTimeScaleChange", int(!get_tree().paused))
 	if event.is_action_pressed("take_control_of_focused_boppie"):
 		if controlled_boppie != null:
 			if controlled_boppie.temp_ai != player_ai:
@@ -260,6 +253,10 @@ func _unhandled_input(event):
 		mouse_is_pressed = event.pressed
 	elif event is InputEventMouseMotion and mouse_is_pressed:
 		$Camera.position -= event.relative * $Camera._zoom_level
+
+func toggle_simulation_pause():
+	get_tree().paused = !get_tree().paused
+	emit_signal("EngineTimeScaleChange", int(!get_tree().paused))
 
 				
 func find_fittest_in_group(group):

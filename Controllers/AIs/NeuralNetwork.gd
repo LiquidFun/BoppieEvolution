@@ -167,8 +167,7 @@ func crossover_connections(other_connections):
 	recalculate_internal_connections()
 	
 func strengthen_important_connections(factor=1):
-	# e.g.: [[0, []], [11, [1, 0.647106, 0.1, 13, -0.622663, 0.43]], ...]
-	print("Strengthening " + str(factor))
+	# print("Strengthening " + str(factor))
 	for connection in connections_internal:
 		var curr = connection[0]
 		var inputs = connection[1]

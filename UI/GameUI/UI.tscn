@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=2]
+[gd_scene load_steps=51 format=2]
 
 [ext_resource path="res://UI/GameUI/BoppieInformation.gd" type="Script" id=1]
 [ext_resource path="res://UI/GameUI/BoppieFittnessPlot.gd" type="Script" id=2]
@@ -15,6 +15,7 @@
 [ext_resource path="res://UI/GameUI/Seed.gd" type="Script" id=13]
 [ext_resource path="res://UI/GameUI/BoppieCountPlot.gd" type="Script" id=14]
 [ext_resource path="res://UI/GameUI/DisablePlotBelow.gd" type="Script" id=15]
+[ext_resource path="res://UI/GameUI/ChangeSpeedButton.gd" type="Script" id=16]
 
 [sub_resource type="DynamicFontData" id=1]
 font_path = "res://Resources/Fonts/FontAwesome/otfs/Font Awesome 5 Free-Solid-900.otf"
@@ -36,6 +37,30 @@ font_path = "res://Resources/Fonts/FredokaOne-Regular.ttf"
 size = 20
 font_data = SubResource( 5 )
 
+[sub_resource type="DynamicFontData" id=14]
+font_path = "res://Resources/Fonts/FontAwesome/otfs/Font Awesome 5 Free-Solid-900.otf"
+
+[sub_resource type="DynamicFont" id=15]
+font_data = SubResource( 14 )
+
+[sub_resource type="InputEventAction" id=21]
+action = "pause_simulation"
+
+[sub_resource type="ShortCut" id=22]
+shortcut = SubResource( 21 )
+
+[sub_resource type="InputEventAction" id=18]
+action = "decrease_time_factor"
+
+[sub_resource type="ShortCut" id=17]
+shortcut = SubResource( 18 )
+
+[sub_resource type="InputEventAction" id=19]
+action = "increase_time_factor"
+
+[sub_resource type="ShortCut" id=20]
+shortcut = SubResource( 19 )
+
 [sub_resource type="DynamicFontData" id=10]
 font_path = "res://Resources/Fonts/FontAwesome/otfs/Font Awesome 5 Free-Solid-900.otf"
 
@@ -48,8 +73,56 @@ font_path = "res://Resources/Fonts/FredokaOne-Regular.ttf"
 [sub_resource type="DynamicFont" id=13]
 font_data = SubResource( 12 )
 
+[sub_resource type="DynamicFont" id=23]
+size = 10
+font_data = SubResource( 5 )
+
 [sub_resource type="StyleBoxFlat" id=9]
 bg_color = Color( 1, 1, 1, 0.0980392 )
+
+[sub_resource type="Gradient" id=31]
+offsets = PoolRealArray( 0.569507 )
+colors = PoolColorArray( 0.188235, 0.407843, 0.168627, 0.521569 )
+
+[sub_resource type="GradientTexture" id=30]
+gradient = SubResource( 31 )
+
+[sub_resource type="Gradient" id=24]
+offsets = PoolRealArray( 0, 0.641256 )
+colors = PoolColorArray( 0, 0, 0, 0.803922, 0.0784314, 1, 0, 1 )
+
+[sub_resource type="GradientTexture" id=25]
+gradient = SubResource( 24 )
+width = 1024
+
+[sub_resource type="Gradient" id=32]
+offsets = PoolRealArray( 0.663677 )
+colors = PoolColorArray( 0.168627, 0.305882, 0.407843, 0.521569 )
+
+[sub_resource type="GradientTexture" id=33]
+gradient = SubResource( 32 )
+
+[sub_resource type="Gradient" id=26]
+offsets = PoolRealArray( 0, 0.663677 )
+colors = PoolColorArray( 0, 0, 0, 0.709804, 0, 0.368627, 0.760784, 1 )
+
+[sub_resource type="GradientTexture" id=27]
+gradient = SubResource( 26 )
+width = 1024
+
+[sub_resource type="Gradient" id=34]
+offsets = PoolRealArray( 1 )
+colors = PoolColorArray( 0.388235, 0.407843, 0.168627, 0.521569 )
+
+[sub_resource type="GradientTexture" id=35]
+gradient = SubResource( 34 )
+
+[sub_resource type="Gradient" id=28]
+colors = PoolColorArray( 0, 0, 0, 0.364706, 0.898438, 1, 0, 1 )
+
+[sub_resource type="GradientTexture" id=29]
+gradient = SubResource( 28 )
+width = 1024
 
 [sub_resource type="DynamicFontData" id=7]
 font_path = "res://Resources/Fonts/FredokaOne-Regular.ttf"
@@ -72,9 +145,6 @@ custom_constants/margin_right = 5
 custom_constants/margin_top = 5
 custom_constants/margin_left = 5
 custom_constants/margin_bottom = 5
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="VBoxContainer" type="VBoxContainer" parent="StatusBar"]
 margin_left = 5.0
@@ -160,27 +230,58 @@ script = ExtResource( 5 )
 [node name="SecondTimer" type="Timer" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer/Time/GameTime"]
 autostart = true
 
-[node name="TimeScale" type="Label" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer"]
+[node name="TimeScaleContainer" type="HBoxContainer" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer"]
 margin_left = 185.0
-margin_right = 204.0
+margin_right = 255.0
+margin_bottom = 25.0
+
+[node name="PauseSpeedButton" type="Button" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer/TimeScaleContainer"]
+pause_mode = 2
+margin_right = 13.0
+margin_bottom = 25.0
+hint_tooltip = "space"
+custom_fonts/font = SubResource( 15 )
+shortcut_in_tooltip = false
+shortcut = SubResource( 22 )
+text = ""
+script = ExtResource( 16 )
+factor = 0.0
+
+[node name="DecreaseSpeedButton" type="Button" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer/TimeScaleContainer"]
+margin_left = 17.0
+margin_right = 30.0
+margin_bottom = 25.0
+hint_tooltip = "-"
+custom_fonts/font = SubResource( 15 )
+shortcut_in_tooltip = false
+shortcut = SubResource( 17 )
+text = ""
+script = ExtResource( 16 )
+
+[node name="TimeScale" type="Label" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer/TimeScaleContainer"]
+margin_left = 34.0
+margin_right = 53.0
 margin_bottom = 25.0
 custom_fonts/font = SubResource( 6 )
 text = "1x"
 valign = 2
 script = ExtResource( 8 )
 
-[node name="FPS" type="Label" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer"]
-margin_left = 254.0
-margin_right = 292.0
+[node name="IncreaseSpeedButton" type="Button" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer/TimeScaleContainer"]
+pause_mode = 2
+margin_left = 57.0
+margin_right = 70.0
 margin_bottom = 25.0
-custom_fonts/font = SubResource( 6 )
-text = "FPS"
-valign = 2
-script = ExtResource( 4 )
+hint_tooltip = "+"
+custom_fonts/font = SubResource( 15 )
+shortcut = SubResource( 20 )
+text = ""
+script = ExtResource( 16 )
+factor = 2.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer"]
-margin_left = 342.0
-margin_right = 501.0
+margin_left = 305.0
+margin_right = 464.0
 margin_bottom = 25.0
 
 [node name="FollowFittest" type="Label" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer/HBoxContainer"]
@@ -204,8 +305,8 @@ __meta__ = {
 }
 
 [node name="Difficulty" type="Label" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer"]
-margin_left = 551.0
-margin_right = 664.0
+margin_left = 514.0
+margin_right = 627.0
 margin_bottom = 25.0
 custom_fonts/font = SubResource( 6 )
 text = "Difficulty: x"
@@ -213,8 +314,8 @@ valign = 2
 script = ExtResource( 10 )
 
 [node name="Seed" type="Label" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer"]
-margin_left = 714.0
-margin_right = 781.0
+margin_left = 677.0
+margin_right = 744.0
 margin_bottom = 25.0
 custom_fonts/font = SubResource( 6 )
 text = "Seed: x"
@@ -317,9 +418,25 @@ margin_right = 310.0
 margin_bottom = 1070.0
 mouse_filter = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="RightSidePanel/VBoxContainer"]
+[node name="FPS" type="Label" parent="RightSidePanel/VBoxContainer"]
+modulate = Color( 1, 1, 1, 0.486275 )
 margin_right = 300.0
-margin_bottom = 25.0
+margin_bottom = 13.0
+hint_tooltip = "FPS: frames per second (rendering)
+TPS: ticks per second (physics/simulation)
+Target: what ratio of real seconds to simulation seconds is targeted
+Real: what ratio is actually achieved (due to performance limitations)"
+mouse_filter = 1
+custom_fonts/font = SubResource( 23 )
+text = "FPS"
+align = 2
+valign = 2
+script = ExtResource( 4 )
+
+[node name="HBoxContainer" type="HBoxContainer" parent="RightSidePanel/VBoxContainer"]
+margin_top = 17.0
+margin_right = 300.0
+margin_bottom = 42.0
 mouse_filter = 2
 alignment = 1
 
@@ -345,9 +462,9 @@ plot = NodePath("../../BoppieCountPlot")
 
 [node name="BoppieCountPlot" type="Control" parent="RightSidePanel/VBoxContainer"]
 pause_mode = 1
-margin_top = 29.0
+margin_top = 46.0
 margin_right = 300.0
-margin_bottom = 179.0
+margin_bottom = 196.0
 rect_min_size = Vector2( 300, 150 )
 script = ExtResource( 14 )
 
@@ -356,9 +473,9 @@ wait_time = 10.0
 autostart = true
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="RightSidePanel/VBoxContainer"]
-margin_top = 183.0
+margin_top = 200.0
 margin_right = 300.0
-margin_bottom = 208.0
+margin_bottom = 225.0
 mouse_filter = 2
 alignment = 1
 
@@ -381,9 +498,9 @@ plot = NodePath("../../BoppieFittnessPlot")
 
 [node name="BoppieFittnessPlot" type="Control" parent="RightSidePanel/VBoxContainer"]
 pause_mode = 1
-margin_top = 212.0
+margin_top = 229.0
 margin_right = 300.0
-margin_bottom = 362.0
+margin_bottom = 379.0
 rect_min_size = Vector2( 300, 150 )
 script = ExtResource( 2 )
 
@@ -433,12 +550,37 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="BoppieName" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
+[node name="Header" type="HBoxContainer" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
 margin_right = 408.0
 margin_bottom = 25.0
+alignment = 1
+
+[node name="BoppieName" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/Header"]
+margin_right = 214.0
+margin_bottom = 25.0
+size_flags_horizontal = 3
 custom_fonts/font = SubResource( 6 )
 text = "Name #123"
-align = 1
+valign = 2
+
+[node name="Survived" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/Header"]
+margin_left = 218.0
+margin_right = 378.0
+margin_bottom = 25.0
+custom_fonts/font = SubResource( 6 )
+text = "Survived: mm:hh"
+align = 2
+valign = 2
+
+[node name="Birth" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/Header"]
+margin_left = 382.0
+margin_top = 4.0
+margin_right = 408.0
+margin_bottom = 20.0
+hint_tooltip = "Birth time"
+mouse_filter = 1
+custom_fonts/font = SubResource( 4 )
+text = "  "
 valign = 2
 
 [node name="HSeparator" type="HSeparator" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
@@ -447,84 +589,203 @@ margin_right = 408.0
 margin_bottom = 35.0
 custom_constants/separation = 10
 
-[node name="Energy" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
+[node name="HealthProgressBar" type="TextureProgress" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
 margin_top = 35.0
 margin_right = 408.0
-margin_bottom = 60.0
+margin_bottom = 59.0
+rect_min_size = Vector2( 0, 24 )
+step = 0.0
+value = 100.0
+texture_under = SubResource( 30 )
+texture_progress = SubResource( 25 )
+nine_patch_stretch = true
+
+[node name="HealthBarContainer" type="HBoxContainer" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/HealthProgressBar"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+alignment = 1
+
+[node name="DeathIcon" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/HealthProgressBar/HealthBarContainer"]
+margin_top = 4.0
+margin_right = 28.0
+margin_bottom = 20.0
+hint_tooltip = "Death"
+mouse_filter = 1
+custom_fonts/font = SubResource( 4 )
+text = "  "
+valign = 2
+
+[node name="Energy" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/HealthProgressBar/HealthBarContainer"]
+margin_left = 32.0
+margin_right = 362.0
+margin_bottom = 25.0
+size_flags_horizontal = 3
 custom_fonts/font = SubResource( 6 )
 text = "Energy/Max"
+align = 1
+valign = 1
+
+[node name="Eaten" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/HealthProgressBar/HealthBarContainer"]
+margin_left = 366.0
+margin_right = 378.0
+margin_bottom = 25.0
+custom_fonts/font = SubResource( 6 )
+text = "0"
 valign = 2
 
-[node name="Water" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
-margin_top = 60.0
+[node name="AppleIcon" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/HealthProgressBar/HealthBarContainer"]
+margin_left = 382.0
+margin_top = 4.0
 margin_right = 408.0
-margin_bottom = 85.0
+margin_bottom = 20.0
+hint_tooltip = "Food"
+mouse_filter = 1
+custom_fonts/font = SubResource( 4 )
+text = "  "
+align = 2
+valign = 2
+
+[node name="WaterProgressBar" type="TextureProgress" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
+margin_top = 59.0
+margin_right = 408.0
+margin_bottom = 83.0
+rect_min_size = Vector2( 0, 24 )
+step = 0.0
+value = 100.0
+texture_under = SubResource( 33 )
+texture_progress = SubResource( 27 )
+nine_patch_stretch = true
+
+[node name="WaterBarContainer" type="HBoxContainer" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/WaterProgressBar"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+alignment = 1
+
+[node name="DeathIcon" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/WaterProgressBar/WaterBarContainer"]
+margin_top = 4.0
+margin_right = 28.0
+margin_bottom = 20.0
+hint_tooltip = "Death"
+mouse_filter = 1
+custom_fonts/font = SubResource( 4 )
+text = "  "
+valign = 2
+
+[node name="Water" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/WaterProgressBar/WaterBarContainer"]
+margin_left = 32.0
+margin_right = 363.0
+margin_bottom = 25.0
+size_flags_horizontal = 3
 custom_fonts/font = SubResource( 6 )
 text = "Water/Max"
+align = 1
+valign = 2
+
+[node name="WaterIcon" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/WaterProgressBar/WaterBarContainer"]
+margin_left = 367.0
+margin_top = 4.0
+margin_right = 408.0
+margin_bottom = 20.0
+hint_tooltip = "Water"
+mouse_filter = 1
+custom_fonts/font = SubResource( 4 )
+text = "     "
+align = 2
+valign = 2
+
+[node name="OffspringProgressBar" type="TextureProgress" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
+margin_top = 83.0
+margin_right = 408.0
+margin_bottom = 107.0
+rect_min_size = Vector2( 0, 24 )
+step = 0.0
+value = 100.0
+texture_under = SubResource( 35 )
+texture_progress = SubResource( 29 )
+nine_patch_stretch = true
+
+[node name="OffspringBarContainer" type="HBoxContainer" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/OffspringProgressBar"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+alignment = 1
+
+[node name="Level" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/OffspringProgressBar/OffspringBarContainer"]
+margin_right = 73.0
+margin_bottom = 25.0
+hint_tooltip = "Adulthood stage"
+mouse_filter = 1
+custom_fonts/font = SubResource( 6 )
+text = " [0.8] III "
+valign = 2
+
+[node name="OffspringEnergy" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/OffspringProgressBar/OffspringBarContainer"]
+margin_left = 77.0
+margin_right = 292.0
+margin_bottom = 25.0
+size_flags_horizontal = 3
+custom_fonts/font = SubResource( 6 )
+text = "Offspring/max"
+align = 1
+valign = 2
+
+[node name="Generation" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/OffspringProgressBar/OffspringBarContainer"]
+margin_left = 296.0
+margin_right = 304.0
+margin_bottom = 25.0
+custom_fonts/font = SubResource( 6 )
+text = "1"
+align = 2
 valign = 2
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="OffspringEnergy" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
-margin_top = 85.0
-margin_right = 408.0
-margin_bottom = 110.0
-custom_fonts/font = SubResource( 6 )
-text = "Offspring energy/max"
+[node name="GenerationIcon" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/OffspringProgressBar/OffspringBarContainer"]
+margin_left = 308.0
+margin_top = 4.0
+margin_right = 364.0
+margin_bottom = 20.0
+hint_tooltip = "Generation"
+mouse_filter = 1
+custom_fonts/font = SubResource( 4 )
+text = "      "
 valign = 2
 
-[node name="OffspringCount" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
-margin_top = 110.0
-margin_right = 408.0
-margin_bottom = 135.0
+[node name="OffspringCount" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/OffspringProgressBar/OffspringBarContainer"]
+margin_left = 368.0
+margin_right = 380.0
+margin_bottom = 25.0
 custom_fonts/font = SubResource( 6 )
-text = "Offspring Count: X"
+text = "0"
+align = 2
 valign = 2
 
-[node name="Generation" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
-margin_top = 135.0
+[node name="ChildIcon" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/OffspringProgressBar/OffspringBarContainer"]
+margin_left = 384.0
+margin_top = 4.0
 margin_right = 408.0
-margin_bottom = 160.0
-custom_fonts/font = SubResource( 6 )
-text = "Generation: X"
-valign = 2
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="Level" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
-margin_top = 160.0
-margin_right = 408.0
-margin_bottom = 185.0
-custom_fonts/font = SubResource( 6 )
-text = "Level: x/max (size)"
-valign = 2
-
-[node name="Survived" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
-margin_top = 185.0
-margin_right = 408.0
-margin_bottom = 210.0
-custom_fonts/font = SubResource( 6 )
-text = "Survived: mm:hh"
-valign = 2
-
-[node name="Eaten" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
-margin_top = 210.0
-margin_right = 408.0
-margin_bottom = 235.0
-custom_fonts/font = SubResource( 6 )
-text = "Eaten: x"
+margin_bottom = 20.0
+hint_tooltip = "Children count"
+mouse_filter = 1
+custom_fonts/font = SubResource( 4 )
+text = "  "
+align = 2
 valign = 2
 
 [node name="HSeparator5" type="HSeparator" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
-margin_top = 235.0
+margin_top = 107.0
 margin_right = 408.0
-margin_bottom = 245.0
+margin_bottom = 117.0
 custom_constants/separation = 10
 
 [node name="TabContainer" type="TabContainer" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
-margin_top = 245.0
+margin_top = 117.0
 margin_right = 408.0
 margin_bottom = 446.0
 size_flags_vertical = 15
@@ -644,6 +905,9 @@ script = ExtResource( 11 )
 
 [node name="Tween" type="Tween" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
 
+[connection signal="pressed" from="StatusBar/VBoxContainer/MarginContainer/HBoxContainer/TimeScaleContainer/PauseSpeedButton" to="StatusBar/VBoxContainer/MarginContainer/HBoxContainer/TimeScaleContainer/PauseSpeedButton" method="_on_ChangeSpeedButton_pressed"]
+[connection signal="pressed" from="StatusBar/VBoxContainer/MarginContainer/HBoxContainer/TimeScaleContainer/DecreaseSpeedButton" to="StatusBar/VBoxContainer/MarginContainer/HBoxContainer/TimeScaleContainer/DecreaseSpeedButton" method="_on_ChangeSpeedButton_pressed"]
+[connection signal="pressed" from="StatusBar/VBoxContainer/MarginContainer/HBoxContainer/TimeScaleContainer/IncreaseSpeedButton" to="StatusBar/VBoxContainer/MarginContainer/HBoxContainer/TimeScaleContainer/IncreaseSpeedButton" method="_on_ChangeSpeedButton_pressed"]
 [connection signal="toggled" from="StatusBar/VBoxContainer/MarginContainer/HBoxContainer2/HelpButton" to="StatusBar/VBoxContainer/MarginContainer/HBoxContainer2/HelpButton" method="_on_HelpButton_toggled"]
 [connection signal="toggled" from="RightSidePanel/VBoxContainer/HBoxContainer/DisablePlotBelow2" to="RightSidePanel/VBoxContainer/HBoxContainer/DisablePlotBelow2" method="_on_DisablePlotBelow_toggled"]
 [connection signal="timeout" from="RightSidePanel/VBoxContainer/BoppieCountPlot/Timer" to="RightSidePanel/VBoxContainer/BoppieCountPlot" method="replot"]

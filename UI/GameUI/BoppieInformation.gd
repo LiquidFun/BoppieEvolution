@@ -40,26 +40,44 @@ func _on_BoppieControlChanged(controlled_boppie):
 	else:
 		neurons.neural_network = null
 		
+	# Change health progress bar colors
+	if should_open:
+		$HealthProgressBar.max_value = boppie.max_energy
+		$WaterProgressBar.max_value = boppie.max_water
+		$OffspringProgressBar.max_value = boppie.required_offspring_energy
+		
 	
 func _process(_delta):
 	if boppie == null:
 		return
-	$BoppieName.text = "Boppie"
-	$Energy.text = "Energy: %.1f/%.1f" % [abs(boppie.energy), boppie.max_energy]
-	$Water.text = "Water: %.1f/%.1f" % [abs(boppie.water), boppie.max_water]
-	$OffspringEnergy.text = "Offspring energy: %.1f/%.1f" % [
-		fmod(boppie.offspring_energy, boppie.required_offspring_energy), 
+	$Header/BoppieName.text = "Boppie"
+	
+	$HealthProgressBar/HealthBarContainer/Energy.text = "%.1f/%.1f" % [abs(boppie.energy), boppie.max_energy]
+	$HealthProgressBar.value = boppie.energy
+	$HealthProgressBar/HealthBarContainer/Eaten.text = "%d" % boppie.times_eaten
+
+	
+	$WaterProgressBar/WaterBarContainer/Water.text = "%.1f/%.1f" % [abs(boppie.water), boppie.max_water]
+	$WaterProgressBar.value = boppie.water
+	
+	var offspring_energy_modulo = fmod(boppie.offspring_energy, boppie.required_offspring_energy)
+	$OffspringProgressBar/OffspringBarContainer/OffspringEnergy.text = "%.1f/%.1f" % [
+		offspring_energy_modulo, 
 		boppie.required_offspring_energy,
 	]
-	$OffspringCount.text = "Offspring count: %d" % boppie.offspring_count
-	$Generation.text = "Generation: %d" % boppie.generation.i
-	$Level.text = "Level: %d (size: %.1f)" % [boppie.level, boppie.scale.x]
-	$Survived.text = "Spawned: %s (%.1f s)" % [
+	$OffspringProgressBar/OffspringBarContainer/OffspringCount.text = str(boppie.offspring_count)
+	$OffspringProgressBar.value = offspring_energy_modulo
+	$OffspringProgressBar/OffspringBarContainer/Generation.text = "%d" % boppie.generation.i
+	var level = ["I", "II", "III", "IV", "V", "VI"][boppie.level - 1]
+	$OffspringProgressBar/OffspringBarContainer/Level.text = " [%.2f] %s     " % [boppie.scale.x, level]
+	$Header/Survived.text = " (%.1f s) %s" % [
+		Globals.elapsed_time - boppie.spawn_time,
 		Globals.formatted_time(int(boppie.spawn_time)), 
-		Globals.elapsed_time - boppie.spawn_time
 	]
-	$Eaten.text = "Eaten: %d" % boppie.times_eaten
 	
+	yield(get_tree(), "idle_frame")
+	var icon_scale = 2
+	$HealthProgressBar/HealthBarContainer/DeathIcon.rect_size = Vector2(icon_scale, icon_scale)
 
 func _on_Show_toggled(_button_pressed=true):
 	show_dna = $TabContainer/DNA/HBoxContainer/ShowDNA.pressed
