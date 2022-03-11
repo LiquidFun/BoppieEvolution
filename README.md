@@ -83,8 +83,6 @@ Quickstart: after starting a simulation: press `9` to simulate quickly. After a 
     * Ideas: 
         * HSL (where H is part of DNA, S shows energy, L = .5 or meat-tolerance )
         * RGB (where R, G is part of DNA, B shows meat-tolerance)
-* Add reinforcement learning
-    * Save which neurons most contributed to a reward in the last seconds (eating)/penalty (taking damage), increase the weights of those connections
 * Different parallel simulations where the best are merged into one
 
 ### UI/UX
@@ -95,7 +93,6 @@ Quickstart: after starting a simulation: press `9` to simulate quickly. After a 
     * Species stacked bar-plot
 * Full screen on neural network, which shows actual weights
 * Improve display of recurrent connections
-* Check DNA importing, such that no object references are mentioned in the DNA
 * Use textures on the ground (fertile vs infertile land)
 * Show version/commit id in application
 * Make the fittest tab somehow always selectable
@@ -103,12 +100,14 @@ Quickstart: after starting a simulation: press `9` to simulate quickly. After a 
 * Add high-contrast (bright world background) and large font mode for beamer presentations
 * Ease of use:
     * Make the hotkey button more apparent (e.g. show a HOTKEYS text after starting for a couple seconds)
+    * Add tooltips for all buttons, also help tooltips for boppie and world window
     * Add buttons for common actions 
-        * Take control of boppie, eat food, make invincible, show sensors
+        * Eat food, show sensors, show all sensors
         * Load and save simulations
         * Performance mode
         * Follow fittest boppie
 * Alternative display of neural network, where the input neurons are shown at the positions of the sensory neurons near the actual boppie
+* Add menu bar at the top: Simulation/Help, with multiple dropdown menu options to restart simulation, back to menu, keyboard help, explanation help etc
 
 ### Rework
 
@@ -138,8 +137,9 @@ Quickstart: after starting a simulation: press `9` to simulate quickly. After a 
 
 * Added progress bars for energy/water/offspring, improving legibility
 * Ease of use:
-    * Added buttons for common actions :
+    * Added buttons for common actions:
         * Faster/slower game-speeds, pause play
+        * Take control of boppie, make invincible, produce offspring
 
 ### v0.3.0 (2022-03-09)
 

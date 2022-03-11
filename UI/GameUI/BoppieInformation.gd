@@ -52,12 +52,12 @@ func _process(_delta):
 		return
 	$Header/BoppieName.text = "Boppie"
 	
-	$HealthProgressBar/HealthBarContainer/Energy.text = "%.1f/%.1f" % [abs(boppie.energy), boppie.max_energy]
+	$HealthProgressBar/HealthBarContainer/Energy.text = "%.1f/%.1f" % [max(0, boppie.energy), boppie.max_energy]
 	$HealthProgressBar.value = boppie.energy
 	$HealthProgressBar/HealthBarContainer/Eaten.text = "%d" % boppie.times_eaten
 
 	
-	$WaterProgressBar/WaterBarContainer/Water.text = "%.1f/%.1f" % [abs(boppie.water), boppie.max_water]
+	$WaterProgressBar/WaterBarContainer/Water.text = "%.1f/%.1f" % [max(0, boppie.water), boppie.max_water]
 	$WaterProgressBar.value = boppie.water
 	
 	var offspring_energy_modulo = fmod(boppie.offspring_energy, boppie.required_offspring_energy)

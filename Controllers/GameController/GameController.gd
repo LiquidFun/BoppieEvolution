@@ -64,6 +64,7 @@ var player_ai = Player.new()
 signal FollowFittestBoppie(new_value)
 signal EngineTimeScaleChange(factor)
 signal BoppieControlChanged(boppie)
+signal BoppieInvincibilityChanged(boppie, is_invincible)
 signal SpawnNewBoppie(at, dna)
 
 func random_coordinate():
@@ -198,6 +199,7 @@ func take_control_of_boppie(boppie):
 			controlled_boppie.pop_temp_ai()
 	controlled_boppie = boppie
 	emit_signal("BoppieControlChanged", controlled_boppie)
+	emit_signal("BoppieInvincibilityChanged", controlled_boppie, false)
 	if controlled_boppie != null:
 		controlled_boppie.draw_senses = Globals.draw_current_senses
 		controlled_boppie.set_selected(true)
@@ -218,10 +220,6 @@ func _unhandled_input(event):
 		if controlled_boppie:
 			controlled_boppie.update_energy(5)
 			controlled_boppie.update_water(5)
-	if event.is_action_pressed("produce_and_focus_offspring"):
-		if controlled_boppie:
-			controlled_boppie.produce_offspring()
-			control_newest_boppie = true
 	if event.is_action_pressed("toggle_vision_rays"):
 		Globals.draw_senses = !Globals.draw_senses
 	if event.is_action_pressed("toggle_vision_rays_of_focused_boppie"):
@@ -243,16 +241,36 @@ func _unhandled_input(event):
 		take_control_of_fittest_boppie_in_group("Owlie")
 	if event.is_action_pressed("follow_fittest_kloppie"):
 		take_control_of_fittest_boppie_in_group("Kloppie")
-	if event.is_action_pressed("take_control_of_focused_boppie"):
-		if controlled_boppie != null:
-			if controlled_boppie.temp_ai != player_ai:
-				controlled_boppie.add_temp_ai(player_ai)
-			else:
-				controlled_boppie.pop_temp_ai()
 	if event is InputEventMouseButton:
 		mouse_is_pressed = event.pressed
 	elif event is InputEventMouseMotion and mouse_is_pressed:
 		$Camera.position -= event.relative * $Camera._zoom_level
+		
+func produce_and_focus_offspring():
+	if controlled_boppie:
+		controlled_boppie.produce_offspring()
+		control_newest_boppie = true
+		
+func toggle_controlled_boppie_invincibility(new_value=null):
+	var is_invincible = false
+	if controlled_boppie != null:
+		if new_value == null:
+			controlled_boppie.can_die = !controlled_boppie.can_die
+			
+		else:
+			controlled_boppie.can_die = new_value
+		is_invincible = !controlled_boppie.can_die
+	emit_signal("BoppieInvincibilityChanged", controlled_boppie, is_invincible)
+		
+func take_control_of_focused_boppie() -> bool:
+	if controlled_boppie != null:
+		if controlled_boppie.temp_ai != player_ai:
+			controlled_boppie.add_temp_ai(player_ai)
+			return true
+		else:
+			controlled_boppie.pop_temp_ai()
+			return false
+	return false
 
 func toggle_simulation_pause():
 	get_tree().paused = !get_tree().paused

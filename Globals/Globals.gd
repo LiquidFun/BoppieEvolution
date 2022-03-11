@@ -12,6 +12,8 @@ var elapsed_time := 0.0
 var dna_clipboard = null
 var kloppies_cannibals = false
 var use_random_seed = true
+onready var simulation_real_start_time = OS.get_datetime()
+onready var simulation_unix_start_time = OS.get_unix_time()
 
 
 var rng = RandomNumberGenerator.new()
@@ -45,8 +47,21 @@ func _process(delta):
 func formatted_time(seconds = null):
 	if seconds == null:
 		seconds = int(elapsed_time)
+	if seconds is Dictionary:
+		seconds = 3600 * seconds["hour"] + 60 * seconds["minute"] + seconds["second"]
 	return "%02d:%02d:%02d" % [seconds / 3600, (seconds / 60) % 60, seconds % 60]
+	
+func formatted_date(date: Dictionary):
+	if date == null:
+		date = OS.get_date()
+	return "%04d-%02d-%02d" % [date["year"], date["month"], date["day"]]
 
+func formatted_real_time_passed():
+	return formatted_time(OS.get_unix_time() - simulation_unix_start_time)
+	
+func formatted_real_start_datetime():
+	return formatted_date(simulation_real_start_time) + " " + formatted_time(simulation_real_start_time)
+	
 signal DifficultyChanged(new_value)
 var difficulty = .3 setget set_difficulty
 

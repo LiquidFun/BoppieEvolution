@@ -1,4 +1,4 @@
-[gd_scene load_steps=51 format=2]
+[gd_scene load_steps=63 format=2]
 
 [ext_resource path="res://UI/GameUI/BoppieInformation.gd" type="Script" id=1]
 [ext_resource path="res://UI/GameUI/BoppieFittnessPlot.gd" type="Script" id=2]
@@ -16,6 +16,11 @@
 [ext_resource path="res://UI/GameUI/BoppieCountPlot.gd" type="Script" id=14]
 [ext_resource path="res://UI/GameUI/DisablePlotBelow.gd" type="Script" id=15]
 [ext_resource path="res://UI/GameUI/ChangeSpeedButton.gd" type="Script" id=16]
+[ext_resource path="res://Resources/Themes/default_theme.tres" type="Theme" id=17]
+[ext_resource path="res://UI/GameUI/TakeControl.gd" type="Script" id=18]
+[ext_resource path="res://UI/GameUI/Invincible.gd" type="Script" id=19]
+[ext_resource path="res://UI/GameUI/ShowOnSignal.gd" type="Script" id=20]
+[ext_resource path="res://UI/GameUI/ProduceOffspring.gd" type="Script" id=21]
 
 [sub_resource type="DynamicFontData" id=1]
 font_path = "res://Resources/Fonts/FontAwesome/otfs/Font Awesome 5 Free-Solid-900.otf"
@@ -95,6 +100,10 @@ colors = PoolColorArray( 0, 0, 0, 0.803922, 0.0784314, 1, 0, 1 )
 gradient = SubResource( 24 )
 width = 1024
 
+[sub_resource type="DynamicFont" id=36]
+size = 22
+font_data = SubResource( 3 )
+
 [sub_resource type="Gradient" id=32]
 offsets = PoolRealArray( 0.663677 )
 colors = PoolColorArray( 0.168627, 0.305882, 0.407843, 0.521569 )
@@ -123,6 +132,24 @@ colors = PoolColorArray( 0, 0, 0, 0.364706, 0.898438, 1, 0, 1 )
 [sub_resource type="GradientTexture" id=29]
 gradient = SubResource( 28 )
 width = 1024
+
+[sub_resource type="InputEventAction" id=37]
+action = "take_control_of_focused_boppie"
+
+[sub_resource type="ShortCut" id=38]
+shortcut = SubResource( 37 )
+
+[sub_resource type="InputEventAction" id=39]
+action = "make_invincible"
+
+[sub_resource type="ShortCut" id=40]
+shortcut = SubResource( 39 )
+
+[sub_resource type="InputEventAction" id=41]
+action = "produce_and_focus_offspring"
+
+[sub_resource type="ShortCut" id=42]
+shortcut = SubResource( 41 )
 
 [sub_resource type="DynamicFontData" id=7]
 font_path = "res://Resources/Fonts/FredokaOne-Regular.ttf"
@@ -222,6 +249,8 @@ margin_left = 20.0
 margin_right = 135.0
 margin_bottom = 25.0
 rect_min_size = Vector2( 115, 0 )
+hint_tooltip = "[hint tooltip is changed in script]"
+mouse_filter = 1
 custom_fonts/font = SubResource( 6 )
 text = "hh:mm:ss"
 valign = 2
@@ -274,6 +303,7 @@ margin_right = 70.0
 margin_bottom = 25.0
 hint_tooltip = "+"
 custom_fonts/font = SubResource( 15 )
+shortcut_in_tooltip = false
 shortcut = SubResource( 20 )
 text = ""
 script = ExtResource( 16 )
@@ -353,9 +383,6 @@ script = ExtResource( 12 )
 visible = true
 margin_right = 40.0
 margin_bottom = 40.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="MarginContainer" type="MarginContainer" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer2/HelpButton/HelpPopup"]
 margin_left = 4.0
@@ -617,6 +644,19 @@ custom_fonts/font = SubResource( 4 )
 text = "  "
 valign = 2
 
+[node name="Cross" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/HealthProgressBar/HealthBarContainer/DeathIcon" groups=["ShowWhenInvincible"]]
+modulate = Color( 1, 0, 0, 1 )
+margin_left = -3.0
+margin_top = -3.0
+margin_right = 30.0
+margin_bottom = 20.0
+hint_tooltip = "Death"
+mouse_filter = 1
+custom_fonts/font = SubResource( 36 )
+text = "  "
+valign = 2
+script = ExtResource( 20 )
+
 [node name="Energy" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/HealthProgressBar/HealthBarContainer"]
 margin_left = 32.0
 margin_right = 362.0
@@ -675,6 +715,19 @@ custom_fonts/font = SubResource( 4 )
 text = "  "
 valign = 2
 
+[node name="Cross" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/WaterProgressBar/WaterBarContainer/DeathIcon" groups=["ShowWhenInvincible"]]
+modulate = Color( 1, 0, 0, 1 )
+margin_left = -3.0
+margin_top = -4.0
+margin_right = 30.0
+margin_bottom = 19.0
+hint_tooltip = "Death"
+mouse_filter = 1
+custom_fonts/font = SubResource( 36 )
+text = "  "
+valign = 2
+script = ExtResource( 20 )
+
 [node name="Water" type="Label" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/WaterProgressBar/WaterBarContainer"]
 margin_left = 32.0
 margin_right = 363.0
@@ -729,6 +782,7 @@ margin_left = 77.0
 margin_right = 292.0
 margin_bottom = 25.0
 size_flags_horizontal = 3
+theme = ExtResource( 17 )
 custom_fonts/font = SubResource( 6 )
 text = "Offspring/max"
 align = 1
@@ -784,8 +838,57 @@ margin_right = 408.0
 margin_bottom = 117.0
 custom_constants/separation = 10
 
-[node name="TabContainer" type="TabContainer" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
+[node name="HBoxContainer" type="HBoxContainer" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
 margin_top = 117.0
+margin_right = 408.0
+margin_bottom = 147.0
+alignment = 1
+
+[node name="TakeControl" type="Button" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/HBoxContainer"]
+margin_right = 147.0
+margin_bottom = 30.0
+hint_tooltip = "Take control of boppie (it's AI outputs are ignored, you can control it with WASD or the arrow keys)"
+size_flags_horizontal = 3
+theme = ExtResource( 17 )
+toggle_mode = true
+shortcut_in_tooltip = false
+shortcut = SubResource( 38 )
+text = "Take Control"
+script = ExtResource( 18 )
+
+[node name="Invincible" type="CheckBox" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/HBoxContainer"]
+margin_left = 151.0
+margin_right = 257.0
+margin_bottom = 30.0
+grow_horizontal = 0
+grow_vertical = 0
+hint_tooltip = "Whether the boppie can die"
+theme = ExtResource( 17 )
+shortcut_in_tooltip = false
+shortcut = SubResource( 40 )
+text = "Invincible"
+script = ExtResource( 19 )
+
+[node name="ProduceOffspring" type="Button" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/HBoxContainer"]
+margin_left = 261.0
+margin_right = 408.0
+margin_bottom = 30.0
+hint_tooltip = "Produce offspring, mutate its DNA and then move focus to it"
+size_flags_horizontal = 3
+theme = ExtResource( 17 )
+shortcut_in_tooltip = false
+shortcut = SubResource( 42 )
+text = "Offspring"
+script = ExtResource( 21 )
+
+[node name="HSeparator6" type="HSeparator" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
+margin_top = 147.0
+margin_right = 408.0
+margin_bottom = 157.0
+custom_constants/separation = 10
+
+[node name="TabContainer" type="TabContainer" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
+margin_top = 157.0
 margin_right = 408.0
 margin_bottom = 446.0
 size_flags_vertical = 15
@@ -913,6 +1016,9 @@ script = ExtResource( 11 )
 [connection signal="timeout" from="RightSidePanel/VBoxContainer/BoppieCountPlot/Timer" to="RightSidePanel/VBoxContainer/BoppieCountPlot" method="replot"]
 [connection signal="toggled" from="RightSidePanel/VBoxContainer/HBoxContainer2/DisablePlotBelow" to="RightSidePanel/VBoxContainer/HBoxContainer2/DisablePlotBelow" method="_on_DisablePlotBelow_toggled"]
 [connection signal="timeout" from="RightSidePanel/VBoxContainer/BoppieFittnessPlot/Timer" to="RightSidePanel/VBoxContainer/BoppieFittnessPlot" method="replot"]
+[connection signal="pressed" from="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/HBoxContainer/TakeControl" to="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/HBoxContainer/TakeControl" method="_on_TakeControl_pressed"]
+[connection signal="toggled" from="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/HBoxContainer/Invincible" to="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/HBoxContainer/Invincible" method="_on_Invincible_toggled"]
+[connection signal="pressed" from="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/HBoxContainer/ProduceOffspring" to="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/HBoxContainer/ProduceOffspring" method="_on_ProduceOffspring_pressed"]
 [connection signal="item_selected" from="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/TabContainer/Neural network/Neurons/HBoxContainer/DisplayProfile" to="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/TabContainer/Neural network/Neurons" method="_on_OptionButton_item_selected"]
 [connection signal="toggled" from="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/TabContainer/DNA/HBoxContainer/ShowDNA" to="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation" method="_on_Show_toggled"]
 [connection signal="pressed" from="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/TabContainer/DNA/HBoxContainer/ApplyDNA" to="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation" method="_on_ApplyDNA_pressed"]
