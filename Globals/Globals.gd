@@ -2,6 +2,7 @@ extends Node
 
 
 var current_food_count := 0
+var food_counts = []
 var draw_senses := false
 var draw_current_senses := false
 var boppies_died := 0
@@ -14,11 +15,25 @@ var kloppies_cannibals = false
 var use_random_seed = true
 onready var simulation_real_start_time = OS.get_datetime()
 onready var simulation_unix_start_time = OS.get_unix_time()
+var icon_font = DynamicFont.new()
 
+
+signal FoodEaten(Food)
+
+var color = Color(1, 0, 0)
 
 var rng = RandomNumberGenerator.new()
 
+func add_food(food_type, add=1):
+	food_counts[food_type] += add
+
+func _init():
+	for i in range(len(Data.FoodType.keys())):
+		food_counts.append(0)
+
 func _ready():
+	icon_font.font_data = load("res://Resources/Fonts/FontAwesome/otfs/Font Awesome 5 Free-Solid-900.otf")
+	icon_font.size = 40
 	if use_random_seed:
 		rng.randomize()
 	else:

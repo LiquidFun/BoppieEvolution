@@ -1,4 +1,4 @@
-[gd_scene load_steps=69 format=2]
+[gd_scene load_steps=70 format=2]
 
 [ext_resource path="res://UI/GameUI/BoppieInformation.gd" type="Script" id=1]
 [ext_resource path="res://UI/GameUI/BoppieFittnessPlot.gd" type="Script" id=2]
@@ -102,6 +102,12 @@ shortcut = SubResource( 39 )
 [sub_resource type="StyleBoxFlat" id=43]
 bg_color = Color( 0.6, 0.6, 0.6, 0 )
 
+[sub_resource type="DynamicFontData" id=7]
+font_path = "res://Resources/Fonts/FredokaOne-Regular.ttf"
+
+[sub_resource type="DynamicFont" id=8]
+font_data = SubResource( 7 )
+
 [sub_resource type="Gradient" id=31]
 offsets = PoolRealArray( 0.569507 )
 colors = PoolColorArray( 0.188235, 0.407843, 0.168627, 0.521569 )
@@ -165,11 +171,7 @@ action = "produce_and_focus_offspring"
 [sub_resource type="ShortCut" id=42]
 shortcut = SubResource( 41 )
 
-[sub_resource type="DynamicFontData" id=7]
-font_path = "res://Resources/Fonts/FredokaOne-Regular.ttf"
-
-[sub_resource type="DynamicFont" id=8]
-font_data = SubResource( 7 )
+[sub_resource type="StyleBoxEmpty" id=47]
 
 [node name="UI" type="CanvasLayer"]
 pause_mode = 2
@@ -246,6 +248,7 @@ __meta__ = {
 [node name="Time" type="HBoxContainer" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer"]
 margin_right = 135.0
 margin_bottom = 23.0
+hint_tooltip = "[Real time shown programmatically]"
 
 [node name="IconTime" type="Label" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer/Time"]
 margin_top = 3.0
@@ -403,7 +406,7 @@ custom_constants/margin_bottom = 10
 margin_left = 10.0
 margin_top = 10.0
 margin_right = 330.0
-margin_bottom = 383.0
+margin_bottom = 450.0
 mouse_filter = 2
 size_flags_vertical = 0
 
@@ -425,7 +428,7 @@ script = ExtResource( 4 )
 [node name="PanelContainer" type="PanelContainer" parent="RightSidePanel/VBoxContainer"]
 margin_top = 17.0
 margin_right = 320.0
-margin_bottom = 373.0
+margin_bottom = 440.0
 mouse_filter = 2
 size_flags_vertical = 0
 custom_styles/panel = SubResource( 9 )
@@ -435,7 +438,7 @@ __meta__ = {
 
 [node name="MarginContainer" type="MarginContainer" parent="RightSidePanel/VBoxContainer/PanelContainer"]
 margin_right = 320.0
-margin_bottom = 356.0
+margin_bottom = 423.0
 grow_horizontal = 0
 rect_min_size = Vector2( 300, 0 )
 mouse_filter = 2
@@ -451,7 +454,7 @@ __meta__ = {
 margin_left = 10.0
 margin_top = 10.0
 margin_right = 310.0
-margin_bottom = 346.0
+margin_bottom = 413.0
 mouse_filter = 2
 
 [node name="Header" type="HBoxContainer" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
@@ -513,88 +516,141 @@ Total count of boppie spawns
 "
 script = ExtResource( 3 )
 
-[node name="Apples" type="Label" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/CountContainer"]
+[node name="Alive" type="Label" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/CountContainer"]
 margin_right = 11.0
 margin_bottom = 23.0
 custom_fonts/font = SubResource( 6 )
 text = "0"
 valign = 2
 
-[node name="AppleIcon" type="Label" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/CountContainer"]
+[node name="AliveIcon" type="Label" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/CountContainer"]
 margin_left = 15.0
 margin_top = 3.0
-margin_right = 81.0
+margin_right = 125.0
 margin_bottom = 19.0
-hint_tooltip = "Food"
+hint_tooltip = "Spawns"
 mouse_filter = 1
 size_flags_horizontal = 3
 custom_fonts/font = SubResource( 4 )
-text = "  "
-valign = 2
-
-[node name="Born" type="Label" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/CountContainer"]
-margin_left = 85.0
-margin_right = 96.0
-margin_bottom = 23.0
-custom_fonts/font = SubResource( 6 )
-text = "0"
-valign = 2
-
-[node name="BornIcon" type="Label" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/CountContainer"]
-margin_left = 100.0
-margin_top = 3.0
-margin_right = 167.0
-margin_bottom = 19.0
-hint_tooltip = "Food"
-mouse_filter = 1
-size_flags_horizontal = 3
-custom_fonts/font = SubResource( 4 )
-text = "  "
+text = "  "
 valign = 2
 
 [node name="Died" type="Label" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/CountContainer"]
-margin_left = 171.0
-margin_right = 182.0
+margin_left = 129.0
+margin_right = 140.0
 margin_bottom = 23.0
 custom_fonts/font = SubResource( 6 )
 text = "0"
 valign = 2
 
 [node name="DiedIcon" type="Label" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/CountContainer"]
-margin_left = 186.0
+margin_left = 144.0
 margin_top = 3.0
-margin_right = 252.0
+margin_right = 255.0
 margin_bottom = 19.0
-hint_tooltip = "Food"
+hint_tooltip = "Deaths"
 mouse_filter = 1
 size_flags_horizontal = 3
 custom_fonts/font = SubResource( 4 )
 text = "  "
 valign = 2
 
-[node name="Spawned" type="Label" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/CountContainer"]
-margin_left = 256.0
-margin_right = 267.0
+[node name="Apples" type="Label" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/CountContainer"]
+margin_left = 259.0
+margin_right = 270.0
 margin_bottom = 23.0
 custom_fonts/font = SubResource( 6 )
 text = "0"
 valign = 2
 
-[node name="SpawnedIcon" type="Label" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/CountContainer"]
-margin_left = 271.0
+[node name="AppleIcon" type="Label" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/CountContainer"]
+margin_left = 274.0
 margin_top = 3.0
-margin_right = 299.0
+margin_right = 300.0
 margin_bottom = 19.0
-hint_tooltip = "Food"
+hint_tooltip = "Current Food Count"
 mouse_filter = 1
+custom_fonts/font = SubResource( 4 )
+text = "  "
+valign = 2
+
+[node name="CountContainer2" type="HBoxContainer" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
+margin_top = 68.0
+margin_right = 300.0
+margin_bottom = 91.0
+hint_tooltip = "Current count of apples
+Total count of boppie births 
+Total count of boppie deaths
+Total count of boppie spawns
+(A birth is when a boppie reproduces,
+ a spawn is when a boppie is
+ spawned when there are fewer than
+ 10 boppies in the world)
+"
+script = ExtResource( 3 )
+
+[node name="Born" type="Label" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/CountContainer2"]
+margin_right = 11.0
+margin_bottom = 23.0
+custom_fonts/font = SubResource( 6 )
+text = "0"
+valign = 2
+
+[node name="BornIcon" type="Label" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/CountContainer2"]
+margin_left = 15.0
+margin_top = 3.0
+margin_right = 123.0
+margin_bottom = 19.0
+hint_tooltip = "Births"
+mouse_filter = 1
+size_flags_horizontal = 3
+custom_fonts/font = SubResource( 4 )
+text = "  "
+valign = 2
+
+[node name="Spawned" type="Label" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/CountContainer2"]
+margin_left = 127.0
+margin_right = 138.0
+margin_bottom = 23.0
+custom_fonts/font = SubResource( 6 )
+text = "0"
+valign = 2
+
+[node name="SpawnedIcon" type="Label" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/CountContainer2"]
+margin_left = 142.0
+margin_top = 3.0
+margin_right = 251.0
+margin_bottom = 19.0
+hint_tooltip = "Spawns"
+mouse_filter = 1
+size_flags_horizontal = 3
 custom_fonts/font = SubResource( 4 )
 text = "  "
 valign = 2
 
-[node name="ButtonContainer" type="HBoxContainer" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
-margin_top = 68.0
+[node name="Meat" type="Label" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/CountContainer2"]
+margin_left = 255.0
+margin_right = 266.0
+margin_bottom = 23.0
+custom_fonts/font = SubResource( 6 )
+text = "0"
+valign = 2
+
+[node name="MeatIcon" type="Label" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/CountContainer2"]
+margin_left = 270.0
+margin_top = 3.0
 margin_right = 300.0
-margin_bottom = 96.0
+margin_bottom = 19.0
+hint_tooltip = "Births"
+mouse_filter = 1
+custom_fonts/font = SubResource( 4 )
+text = "  "
+valign = 2
+
+[node name="ButtonContainer" type="HBoxContainer" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
+margin_top = 95.0
+margin_right = 300.0
+margin_bottom = 123.0
 alignment = 1
 
 [node name="FollowFittest" type="Button" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/ButtonContainer"]
@@ -609,9 +665,9 @@ text = "Follow fittest"
 script = ExtResource( 22 )
 
 [node name="ButtonContainer2" type="HBoxContainer" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
-margin_top = 100.0
+margin_top = 127.0
 margin_right = 300.0
-margin_bottom = 130.0
+margin_bottom = 157.0
 alignment = 1
 
 [node name="Performance" type="CheckBox" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/ButtonContainer2"]
@@ -642,15 +698,15 @@ text = "Show vision"
 script = ExtResource( 23 )
 
 [node name="HSeparator3" type="HSeparator" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
-margin_top = 134.0
+margin_top = 161.0
 margin_right = 300.0
-margin_bottom = 144.0
+margin_bottom = 171.0
 custom_constants/separation = 10
 
 [node name="TabContainer" type="TabContainer" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
-margin_top = 148.0
+margin_top = 175.0
 margin_right = 300.0
-margin_bottom = 322.0
+margin_bottom = 349.0
 custom_styles/panel = SubResource( 43 )
 
 [node name="Boppie count" type="Control" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/TabContainer"]
@@ -733,15 +789,44 @@ script = ExtResource( 15 )
 plot = NodePath("../../TabContainer/3Ø Fittest")
 
 [node name="HSeparator2" type="HSeparator" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
-margin_top = 326.0
+margin_top = 353.0
 margin_right = 300.0
-margin_bottom = 336.0
+margin_bottom = 363.0
 custom_constants/separation = 10
 
+[node name="TabContainer2" type="TabContainer" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
+margin_top = 367.0
+margin_right = 300.0
+margin_bottom = 403.0
+size_flags_vertical = 13
+
+[node name="✕" type="HBoxContainer" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/TabContainer2"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 4.0
+margin_top = 32.0
+margin_right = -4.0
+margin_bottom = -4.0
+size_flags_vertical = 12
+
+[node name="Fittest" type="ItemList" parent="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/TabContainer2"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 4.0
+margin_top = 32.0
+margin_right = -4.0
+margin_bottom = 231.0
+rect_min_size = Vector2( 0, 400 )
+custom_fonts/font = SubResource( 8 )
+allow_reselect = true
+auto_height = true
+script = ExtResource( 11 )
+
 [node name="LeftSidePanel" type="MarginContainer" parent="."]
-margin_right = 340.0
-margin_bottom = 486.0
+margin_right = 400.0
 mouse_filter = 2
+size_flags_vertical = 13
 custom_constants/margin_right = 10
 custom_constants/margin_top = 10
 custom_constants/margin_left = 10
@@ -751,13 +836,13 @@ custom_constants/margin_bottom = 10
 margin_left = 10.0
 margin_top = 10.0
 margin_right = 438.0
-margin_bottom = 476.0
+margin_bottom = 221.0
 mouse_filter = 2
 custom_styles/panel = SubResource( 9 )
 
 [node name="InsideMargin" type="MarginContainer" parent="LeftSidePanel/PanelContainer"]
 margin_right = 428.0
-margin_bottom = 466.0
+margin_bottom = 211.0
 mouse_filter = 2
 custom_constants/margin_right = 10
 custom_constants/margin_top = 10
@@ -768,7 +853,7 @@ custom_constants/margin_bottom = 10
 margin_left = 10.0
 margin_top = 10.0
 margin_right = 418.0
-margin_bottom = 456.0
+margin_bottom = 201.0
 mouse_filter = 2
 size_flags_vertical = 15
 custom_constants/separation = 0
@@ -1097,27 +1182,33 @@ custom_constants/separation = 10
 [node name="TabContainer" type="TabContainer" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
 margin_top = 155.0
 margin_right = 408.0
-margin_bottom = 446.0
-size_flags_vertical = 15
+margin_bottom = 191.0
+rect_min_size = Vector2( 408, 0 )
+size_flags_vertical = 13
 
-[node name="Neural network" type="VBoxContainer" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/TabContainer"]
+[node name="✕" type="HBoxContainer" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/TabContainer"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 4.0
 margin_top = 32.0
 margin_right = -4.0
 margin_bottom = -4.0
+size_flags_vertical = 12
 
-[node name="Neurons" type="PanelContainer" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/TabContainer/Neural network"]
-margin_right = 400.0
-margin_bottom = 150.0
+[node name="Neural network" type="PanelContainer" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/TabContainer"]
+visible = false
+margin_left = 4.0
+margin_top = 32.0
+margin_right = 404.0
+margin_bottom = 182.0
 grow_horizontal = 0
 grow_vertical = 0
 rect_min_size = Vector2( 400, 150 )
 mouse_filter = 2
+custom_styles/panel = SubResource( 47 )
 script = ExtResource( 7 )
 
-[node name="HBoxContainer" type="HBoxContainer" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/TabContainer/Neural network/Neurons"]
+[node name="HBoxContainer" type="HBoxContainer" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/TabContainer/Neural network"]
 margin_left = 7.0
 margin_top = 7.0
 margin_right = 393.0
@@ -1125,7 +1216,7 @@ margin_bottom = 27.0
 size_flags_vertical = 0
 alignment = 2
 
-[node name="DisplayProfile" type="OptionButton" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/TabContainer/Neural network/Neurons/HBoxContainer"]
+[node name="DisplayProfile" type="OptionButton" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/TabContainer/Neural network/HBoxContainer"]
 margin_left = 286.0
 margin_right = 386.0
 margin_bottom = 20.0
@@ -1199,20 +1290,6 @@ breakpoint_gutter = true
 wrap_enabled = true
 caret_blink = true
 
-[node name="Fittest" type="ItemList" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/TabContainer"]
-visible = false
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = 4.0
-margin_top = 32.0
-margin_right = -4.0
-margin_bottom = 231.0
-rect_min_size = Vector2( 0, 400 )
-custom_fonts/font = SubResource( 8 )
-allow_reselect = true
-auto_height = true
-script = ExtResource( 11 )
-
 [node name="Tween" type="Tween" parent="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation"]
 
 [connection signal="pressed" from="StatusBar/VBoxContainer/MarginContainer/HBoxContainer/TimeScaleContainer/PauseSpeedButton" to="StatusBar/VBoxContainer/MarginContainer/HBoxContainer/TimeScaleContainer/PauseSpeedButton" method="_on_ChangeSpeedButton_pressed"]
@@ -1226,13 +1303,13 @@ script = ExtResource( 11 )
 [connection signal="timeout" from="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/TabContainer/3Ø Fittest/Timer" to="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/TabContainer/3Ø Fittest" method="replot"]
 [connection signal="toggled" from="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/DisablePlotBelow2" to="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/DisablePlotBelow2" method="_on_DisablePlotBelow_toggled"]
 [connection signal="toggled" from="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2/DisablePlotBelow" to="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2/DisablePlotBelow" method="_on_DisablePlotBelow_toggled"]
+[connection signal="item_selected" from="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/TabContainer2/Fittest" to="RightSidePanel/VBoxContainer/PanelContainer/MarginContainer/VBoxContainer/TabContainer2/Fittest" method="_on_Fittest_item_selected"]
 [connection signal="pressed" from="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/ButtonContainer/TakeControl" to="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/ButtonContainer/TakeControl" method="_on_TakeControl_pressed"]
 [connection signal="toggled" from="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/ButtonContainer/Invincible" to="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/ButtonContainer/Invincible" method="_on_Invincible_toggled"]
 [connection signal="pressed" from="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/ButtonContainer/ProduceOffspring" to="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/ButtonContainer/ProduceOffspring" method="_on_ProduceOffspring_pressed"]
-[connection signal="item_selected" from="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/TabContainer/Neural network/Neurons/HBoxContainer/DisplayProfile" to="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/TabContainer/Neural network/Neurons" method="_on_OptionButton_item_selected"]
+[connection signal="item_selected" from="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/TabContainer/Neural network/HBoxContainer/DisplayProfile" to="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/TabContainer/Neural network" method="_on_OptionButton_item_selected"]
 [connection signal="toggled" from="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/TabContainer/DNA/HBoxContainer/ShowDNA" to="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation" method="_on_Show_toggled"]
 [connection signal="pressed" from="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/TabContainer/DNA/HBoxContainer/ApplyDNA" to="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation" method="_on_ApplyDNA_pressed"]
 [connection signal="pressed" from="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/TabContainer/DNA/HBoxContainer/CopyDNA" to="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation" method="_on_CopyDNA_pressed"]
 [connection signal="pressed" from="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/TabContainer/DNA/HBoxContainer/PasteDNA" to="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation" method="_on_PasteDNA_pressed"]
 [connection signal="gui_input" from="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/TabContainer/DNA/DNA" to="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation" method="_on_DNA_gui_input"]
-[connection signal="item_selected" from="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/TabContainer/Fittest" to="LeftSidePanel/PanelContainer/InsideMargin/BoppieInformation/TabContainer/Fittest" method="_on_Fittest_item_selected"]

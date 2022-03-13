@@ -89,9 +89,9 @@ config/icon="res://Resources/Icon/Boppie.png"
 
 [autoload]
 
+Data="*res://Globals/Data.gd"
 Globals="*res://Globals/Globals.gd"
 Utils="*res://Globals/Utils.gd"
-Data="*res://Globals/Data.gd"
 InnovationManager="*res://Globals/InnovationManager.gd"
 
 [display]

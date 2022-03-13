@@ -28,7 +28,7 @@ func _process(delta):
 
 func _on_Trap_body_entered(body):
 	if body is Boppie:
-		body.take_damage(5)
+		body.take_damage(12)
 		bloodiness = min(bloodiness + 1, spikes)
 		if not Globals.performance_mode:
 			update()

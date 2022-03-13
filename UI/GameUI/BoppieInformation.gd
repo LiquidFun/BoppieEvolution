@@ -5,7 +5,7 @@ onready var show_dna = false
 var opened = false
 onready var left_side_panel = get_parent().get_parent().get_parent()
 
-onready var neurons = get_node("TabContainer/Neural network/Neurons")
+onready var neurons = get_node("TabContainer/Neural network")
 onready var dna = $TabContainer/DNA/DNA
 
 func _ready():

@@ -75,14 +75,10 @@ Quickstart: after starting a simulation: press `9` to simulate quickly. After a 
 * Add sexual reproduction, as in the real world merging DNA from two individuals has greatly benefited survival of the fittest
 * Add loading/saving of simulations
 * Add areas of high ground productivity (where more food spawns)
+* Add seasons where more or less food spawns
 * Add (for example), a river in the middle of the map, which separates the species on the left/right of it. 
 * Encode how many creatures are reproduced in the DNA of the creature (number of children)
-* Make boppies leave flesh after death
 * Change meat-eating from boolean to a float, where it essentially becomes meat-tolerance or meat effectiveness (a factor of how much energy can be gained from meat). However high meat-tolerance means low 
-* Extend boppie color as part of DNA 
-    * Ideas: 
-        * HSL (where H is part of DNA, S shows energy, L = .5 or meat-tolerance )
-        * RGB (where R, G is part of DNA, B shows meat-tolerance)
 * Different parallel simulations where the best are merged into one
 
 ### UI/UX
@@ -95,15 +91,17 @@ Quickstart: after starting a simulation: press `9` to simulate quickly. After a 
 * Improve display of recurrent connections
 * Use textures on the ground (fertile vs infertile land)
 * Show version/commit id in application
-* Make the fittest tab somehow always selectable
+* Add eye button to hide eye containers
 * Add world configuration tab with seed and other such stuff
 * Add high-contrast (bright world background) and large font mode for beamer presentations
+* Plots
+    * Change y-scale once higher values have been achieved
 * Ease of use:
     * Make the hotkey button more apparent (e.g. show a HOTKEYS text after starting for a couple seconds)
     * Add help tooltips for boppie and world window
     * Show WASD + SHIFT display when controlling boppie
     * Add buttons for common actions 
-        * Eat food, show sensors
+        * Eat food, show sensors, stop following
         * Load and save simulations
 * Alternative display of neural network, where the input neurons are shown at the positions of the sensory neurons near the actual boppie
 * Add menu bar at the top: Simulation/Help, with multiple dropdown menu options to restart simulation, back to menu, keyboard help, explanation help etc
@@ -134,16 +132,22 @@ Quickstart: after starting a simulation: press `9` to simulate quickly. After a 
 
 ### v0.4.0 (not yet released)
 
-* Added progress bars for energy/water/offspring, improving legibility
-* Left panel is now for boppies, right panel is for world, status bar has been cleaned up
-* Ease of use:
-    * Added tooltips for most buttons
-    * Added buttons for common actions:
-        * Faster/slower game-speeds, pause play
-        * Take control of boppie, make invincible, produce offspring
-        * Performance mode
-        * Follow fittest boppie
-        * Show all vision rays
+* UI/UX Improvements
+    * Added progress bars for energy/water/offspring, improving legibility
+    * Left panel is now for boppies, right panel is for world, status bar has been cleaned up
+    * Fittest table now in right world panel
+    * Plants now have plant icon
+    * Plots
+        * Current value is now displayed in the top right
+    * Ease of use:
+        * Added tooltips for most buttons
+        * Added buttons for common actions:
+            * Faster/slower game-speeds, pause play
+            * Take control of boppie, make invincible, produce offspring
+            * Performance mode
+            * Follow fittest boppie
+            * Show all vision rays
+* Added meat after death of boppies
 
 ### v0.3.0 (2022-03-09)
 
@@ -205,3 +209,10 @@ Quickstart: after starting a simulation: press `9` to simulate quickly. After a 
 ### Papers
 
 * [Neuroevolution of Augmenting Topologies](http://nn.cs.utexas.edu/downloads/papers/stanley.ec02.pdf) by K. Stanley and R. Miikkulainen, 2002
+
+## Credits
+
+### Fonts
+
+* [Font awesome 5](https://fontawesome.com/versions) ([CC BY 4.0](https://fontawesome.com/license/free))
+* [FredokaOne](https://fonts.google.com/specimen/Fredoka+One) ([Open Font License](https://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL))

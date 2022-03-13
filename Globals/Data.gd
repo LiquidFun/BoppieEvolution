@@ -2,6 +2,7 @@ extends Node
 
 enum NNInput {ENERGY, RAY_DIST, RAY_TYPE, EATS, DANGER_SENSE}
 enum Raytype {NONE, OWLIE, KLOPPIE, FOOD}
+enum FoodType {PLANT, MEAT}
 enum Sense {
 	HUNGER = 1 << 0,
 	VISION_RAY_EATS = 1 << 1,

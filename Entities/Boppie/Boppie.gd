@@ -259,40 +259,42 @@ func pop_temp_ai():
 	temp_ai = null
 	
 func calculate_ai_input(delta):
-	for sense_bit in Data.Sense.values():
-		set_nn_input_neurons(delta, sense_bit)
-	
-func set_nn_input_neurons(delta, sense_bit):
-	if sense_bit & senses.bitmask:
-		var index = ai.sense_bit_to_index[sense_bit]
-		var loss = 1.0 - delta * 10
-		match sense_bit:
-			Data.Sense.HUNGER:
-				nn_input_array[index] = (max_energy - energy) / max_energy
-			Data.Sense.VISION_RAY_EATS:
-				for i in range(vision_rays.size()):
-					nn_input_array[index+i] *= loss
-					if vision_rays[i].collision_type() == eats:
-						nn_input_array[index+i] = 1.0 - vision_rays[i].collision_distance() / 2.0
-			Data.Sense.DANGER_SENSE:
-				var activations = $DangerSense.get_activations()
-				for i in range(danger_sense_parts):
-					nn_input_array[index + i] *= loss
-					nn_input_array[index + i] = max(nn_input_array[index + i], activations[i])
-			Data.Sense.TIMER:
-				nn_input_array[index] = timer_neuron.neuron_value()
-			Data.Sense.THIRST:
-				nn_input_array[index] = (max_water - water) / max_water
-			Data.Sense.WATER_RAY:
-				nn_input_array[index] = 1.0 - $WaterRay.collision_distance() / 2.0
-			Data.Sense.GROUND:
-				nn_input_array[index] = 1 - ground_movement_penalty_factor
-				nn_input_array[index + 1] = $TerrainSense.resistance_ahead
-			Data.Sense.ALLY_SENSE:
-				var activations = $AllySense.get_activations()
-				for i in range(danger_sense_parts):
-					nn_input_array[index + i] *= loss
-					nn_input_array[index + i] = max(nn_input_array[index + i], activations[i])
+	var index
+	var loss = 1.0 - delta * 10
+	if senses.bitmask & Data.Sense.HUNGER:
+		index = ai.sense_bit_to_index[Data.Sense.HUNGER]
+		nn_input_array[index] = (max_energy - energy) / max_energy
+	if senses.bitmask & Data.Sense.VISION_RAY_EATS:
+		index = ai.sense_bit_to_index[Data.Sense.VISION_RAY_EATS]
+		for i in range(vision_rays.size()):
+			nn_input_array[index+i] *= loss
+			if vision_rays[i].collision_type() == eats:
+				nn_input_array[index+i] = 1.0 - vision_rays[i].collision_distance() / 2.0
+	if senses.bitmask & Data.Sense.DANGER_SENSE:
+		index = ai.sense_bit_to_index[Data.Sense.DANGER_SENSE]
+		var activations = $DangerSense.get_activations()
+		for i in range(danger_sense_parts):
+			nn_input_array[index + i] *= loss
+			nn_input_array[index + i] = max(nn_input_array[index + i], activations[i])
+	if senses.bitmask & Data.Sense.TIMER:
+		index = ai.sense_bit_to_index[Data.Sense.TIMER]
+		nn_input_array[index] = timer_neuron.neuron_value()
+	if senses.bitmask & Data.Sense.THIRST:
+		index = ai.sense_bit_to_index[Data.Sense.THIRST]
+		nn_input_array[index] = (max_water - water) / max_water
+	if senses.bitmask & Data.Sense.WATER_RAY:
+		index = ai.sense_bit_to_index[Data.Sense.WATER_RAY]
+		nn_input_array[index] = 1.0 - $WaterRay.collision_distance() / 2.0
+	if senses.bitmask & Data.Sense.GROUND:
+		index = ai.sense_bit_to_index[Data.Sense.GROUND]
+		nn_input_array[index] = 1 - ground_movement_penalty_factor
+		nn_input_array[index + 1] = $TerrainSense.resistance_ahead
+	if senses.bitmask & Data.Sense.ALLY_SENSE:
+		index = ai.sense_bit_to_index[Data.Sense.ALLY_SENSE]
+		var activations = $AllySense.get_activations()
+		for i in range(danger_sense_parts):
+			nn_input_array[index + i] *= loss
+			nn_input_array[index + i] = max(nn_input_array[index + i], activations[i])
 
 		
 # ==========================================================================

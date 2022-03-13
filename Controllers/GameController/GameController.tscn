@@ -21,6 +21,7 @@ script = ExtResource( 3 )
 
 [node name="FoodTimer" type="Timer" parent="."]
 pause_mode = 1
+process_mode = 0
 autostart = true
 
 [node name="SaveDialog" parent="." instance=ExtResource( 4 )]

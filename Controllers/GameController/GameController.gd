@@ -31,7 +31,7 @@ var lookup_boppie_type_to_config = {}
 # Simulation settings
 export var max_food_count = 150
 export var food_per_500ms = 7
-export var spawn_food_on_death = false
+export var spawn_food_on_death = true
 export var keep_n_fittest_boppies = 30
 export var kloppies_cannibals = false
 export var number_of_lakes = 1
@@ -187,8 +187,8 @@ func _on_FoodEaten(food):
 
 
 func spawn_food(count=max_food_count):
-	var target_food_count = min(max_food_count, Globals.current_food_count + count)
-	while Globals.current_food_count < target_food_count:
+	var target_food_count = min(max_food_count, Globals.food_counts[Data.FoodType.PLANT] + count)
+	while Globals.food_counts[Data.FoodType.PLANT] < target_food_count:
 		add_food(random_empty_world_coordinate())
 
 func take_control_of_boppie(boppie):
@@ -344,8 +344,9 @@ func _on_BoppieDied(boppie):
 			take_control_of_boppie(null)
 	if spawn_food_on_death:
 		var food = food_scene.instance()
+		food.food_type = Data.FoodType.MEAT
 		food.global_position = boppie.global_position
-		food.modulate = food.modulate.darkened(.3)
+		# food.modulate = food.modulate.darkened(.3)
 		add_child(food)
 	
 func _on_BoppieOffspring(boppie):
