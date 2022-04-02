@@ -16,9 +16,9 @@ func _init():
 	draw_eyebrows = true
 	eats = Data.Raytype.KLOPPIE if Globals.kloppies_cannibals else Data.Raytype.OWLIE
 	max_boost_factor = 3.0
-	max_energy = 40
-	ray_length = 500
-	required_offspring_energy = 20
+	# max_energy = 40
+	# ray_length = 500
+	# required_offspring_energy = 20
 	size_increases = [.9, 1.2, 1.5]
 	type = "Kloppie"
 	

@@ -57,6 +57,7 @@ func _draw():
 func _on_Lake_body_entered(body: Node) -> void:
 	if body is Boppie:
 		body.ground_movement_penalty_factor = 1 - resistance
+		body.times_drank += 1
 		body.update_water(100)
 
 

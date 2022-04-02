@@ -27,14 +27,12 @@ func _physics_process(_delta):
 		self.visible = true
 		if is_colliding():
 			var collider = get_collider()
-			if collider is Owlie:
+			if collider is Food:
 				self.modulate = Color.green
-			elif collider is Kloppie:
-				self.modulate = Color.cyan
-			elif collider is Food:
-				self.modulate = Color.red
 			elif collider is Area2D:
 				self.modulate = Color.blue
+			else:
+				self.modulate = Color.red
 		else:
 			self.modulate = Color.white
 	else:

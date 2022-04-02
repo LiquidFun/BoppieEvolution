@@ -10,7 +10,7 @@ var nutrition := 20.0
 var ground_movement_penalty_factor = 1
 
 # This is reduced down to 0.5 or so, essentially if a boppie does not manage to eat anything
-# then it gets a large penalty und it has eaten a few foodstuffs.
+# then it gets a large penalty until it has eaten a few foodstuffs.
 var no_food_eaten_penalty = 3.0
 
 
@@ -26,7 +26,7 @@ var turn_speed := 2.0
 var ray_angle := deg2rad(20)
 var ray_length := 300.0
 var armor := 0.0
-var meat_tolerance := 0.0
+var meat_tolerance := 0.0 setget set_meat_tolerance
 var danger_sense_radius = 150.0
 var max_boost_factor := 2.0
 var max_backwards_factor := -0.75
@@ -64,6 +64,7 @@ var dna_allowed_values = {
 	"max_boost_factor": Data.DNABounds.new(1.5, 2.5, "x*2"), # 2.5 - 5
 	"max_backwards_factor": Data.DNABounds.new(-1.0, -0.5), 
 	"offspring_mutability": Data.DNABounds.new(0.03, 0.3, "", 0.05, 0.05),
+	"offspring_count": Data.DNABounds.new(1, 5, "", 1, 0),
 	"ai.dna": null,
 	"generation.i": null,
 	"senses.bitmask": null,
@@ -115,6 +116,7 @@ var dead = false
 # Counters
 var offspring_count = 0
 var times_eaten = 0
+var times_drank = 0
 var spawn_time = 0
 
 signal BoppieClicked(Boppie)
@@ -136,6 +138,7 @@ func _init(ai=null):
 	randomize_dna()
 	
 func _ready():
+	initialize_rays()
 	initialize_dna()
 	spawn_time = Globals.elapsed_time
 	# energy_gradient = load(energy_gradient)
@@ -147,7 +150,6 @@ func _ready():
 	)
 	$Tween.start()
 	$SpawnParticles.emitting = true
-	initialize_rays()
 
 # ==========================================================================
 # DNA
@@ -224,6 +226,33 @@ func get_fancy_dna_str():
 	return fancy
 	
 # ==========================================================================
+# Meat tolerance
+# ==========================================================================
+	
+func set_meat_tolerance(tolerance):
+	meat_tolerance = tolerance
+	var for_carrion = 0.3
+	var for_live_meat = 0.7
+	var bitmask = 0
+	if tolerance < for_carrion:
+		bitmask = Globals.PLANT_BIT
+	elif for_carrion <= tolerance and tolerance < for_live_meat:
+		bitmask = Globals.MEAT_BIT | Globals.PLANT_BIT
+		draw_body_type = BodyType.HEXAGONAL
+	elif for_live_meat <= tolerance:
+		bitmask = Globals.MEAT_BIT
+		draw_teeth = true
+		draw_body_type = BodyType.HEXAGONAL
+		draw_eyebrows = true
+		
+	collision_mask |= bitmask
+	for vision_ray in vision_rays:
+		vision_ray.collision_mask |= bitmask
+		
+	self.update()
+		
+	
+# ==========================================================================
 # Rays
 # ==========================================================================
 
@@ -268,8 +297,9 @@ func calculate_ai_input(delta):
 		index = ai.sense_bit_to_index[Data.Sense.VISION_RAY_EATS]
 		for i in range(vision_rays.size()):
 			nn_input_array[index+i] *= loss
-			if vision_rays[i].collision_type() == eats:
-				nn_input_array[index+i] = 1.0 - vision_rays[i].collision_distance() / 2.0
+			var dist = vision_rays[i].collision_distance()
+			if dist < 2:
+				nn_input_array[index+i] = 1.0 - dist / 2.0
 	if senses.bitmask & Data.Sense.DANGER_SENSE:
 		index = ai.sense_bit_to_index[Data.Sense.DANGER_SENSE]
 		var activations = $DangerSense.get_activations()
@@ -481,7 +511,8 @@ func produce_offspring():
 func eat(food):
 	no_food_eaten_penalty = max(0.5, no_food_eaten_penalty * 0.7)
 	times_eaten += 1
-	update_energy(food.nutrition)
+	var effectiveness = meat_tolerance if food.food_type == Data.FoodType.MEAT else 1 - meat_tolerance
+	update_energy(food.nutrition * effectiveness)
 	
 func fitness():
 	return (Globals.elapsed_time - spawn_time) * difficulty

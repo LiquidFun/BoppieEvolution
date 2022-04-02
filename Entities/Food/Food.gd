@@ -28,12 +28,14 @@ func _ready():
 			nutrition = 5
 			draw_icon = "" # Plant icon
 			draw_color = Color.green
+			collision_layer = Globals.PLANT_BIT
 		Data.FoodType.MEAT:
 			nutrition = 10
 			draw_icon = "" # Bacon icon
 			draw_color = Color.darkred
 			scale_anim_time = 0.5
 			deteriorate_time = 60
+			collision_layer = Globals.MEAT_BIT
 			
 	$Tween.interpolate_property(
 		self, "scale", Vector2.ONE * .01, Vector2.ONE * .5, 

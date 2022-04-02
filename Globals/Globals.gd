@@ -1,7 +1,6 @@
 extends Node
 
 
-var current_food_count := 0
 var food_counts = []
 var draw_senses := false
 var draw_current_senses := false
@@ -16,7 +15,8 @@ var use_random_seed = true
 onready var simulation_real_start_time = OS.get_datetime()
 onready var simulation_unix_start_time = OS.get_unix_time()
 var icon_font = DynamicFont.new()
-
+const MEAT_BIT = 1<<10
+const PLANT_BIT = 1<<9
 
 signal FoodEaten(Food)
 

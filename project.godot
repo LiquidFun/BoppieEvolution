@@ -290,6 +290,8 @@ make_invincible={
 2d_physics/layer_5="Traps"
 2d_physics/layer_6="Water"
 2d_physics/layer_7="Terrain"
+2d_physics/layer_10="Plant"
+2d_physics/layer_11="Meat"
 2d_physics/layer_16="UI/Mouse"
 
 [physics]
