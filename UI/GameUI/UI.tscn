@@ -278,12 +278,12 @@ autostart = true
 
 [node name="TimeScaleContainer" type="HBoxContainer" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer"]
 margin_left = 145.0
-margin_right = 213.0
+margin_right = 252.0
 margin_bottom = 23.0
 
 [node name="PauseSpeedButton" type="Button" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer/TimeScaleContainer"]
 pause_mode = 2
-margin_right = 13.0
+margin_right = 26.0
 margin_bottom = 23.0
 hint_tooltip = "space"
 custom_fonts/font = SubResource( 15 )
@@ -294,8 +294,8 @@ script = ExtResource( 16 )
 factor = 0.0
 
 [node name="DecreaseSpeedButton" type="Button" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer/TimeScaleContainer"]
-margin_left = 17.0
-margin_right = 30.0
+margin_left = 30.0
+margin_right = 56.0
 margin_bottom = 23.0
 hint_tooltip = "-"
 custom_fonts/font = SubResource( 15 )
@@ -305,8 +305,8 @@ text = ""
 script = ExtResource( 16 )
 
 [node name="TimeScale" type="Label" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer/TimeScaleContainer"]
-margin_left = 34.0
-margin_right = 51.0
+margin_left = 60.0
+margin_right = 77.0
 margin_bottom = 23.0
 hint_tooltip = "Target simulation speed up (may not be achievable on higher speeds, see top-right for real speed-up). However a higher number still simulates quicker, as it reduces the number of ticks simulated per second."
 mouse_filter = 1
@@ -317,8 +317,8 @@ script = ExtResource( 8 )
 
 [node name="IncreaseSpeedButton" type="Button" parent="StatusBar/VBoxContainer/MarginContainer/HBoxContainer/TimeScaleContainer"]
 pause_mode = 2
-margin_left = 55.0
-margin_right = 68.0
+margin_left = 81.0
+margin_right = 107.0
 margin_bottom = 23.0
 hint_tooltip = "+"
 custom_fonts/font = SubResource( 15 )

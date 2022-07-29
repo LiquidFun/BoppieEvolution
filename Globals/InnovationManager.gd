@@ -4,7 +4,7 @@ var innovation_id = 0
 # 0th element is ignored 
 var innovations: Array = [["Input", "Output"]]
 var common_innovation_ids: Array = []
-var fully_connected_neurons: int = 2
+var fully_connected_neurons: int = 0
 var max_ray_count_additional = 2
 var danger_sense_parts = 4
 var nn_input_initial_neurons = []
@@ -44,13 +44,13 @@ func initialize_nn_input_neurons():
 func get_nn_input_neurons_deprecated():
 	var input_neurons = []
 	input_neurons.append("Hunger") # Hunger 
-	nn_input_initial_neurons.append(input_neurons[-1])
+	#nn_input_initial_neurons.append(input_neurons[-1])
 	for i in range(1 + 2 * max_ray_count_additional):
 		input_neurons.append("VisionRayEats" + str(i))
 		nn_input_initial_neurons.append(input_neurons[-1])
 	for i in range(danger_sense_parts):
 		input_neurons.append("DangerSense" + str(i))
-		nn_input_initial_neurons.append(input_neurons[-1])
+		#nn_input_initial_neurons.append(input_neurons[-1])
 	input_neurons.append("Timer1")
 	input_neurons.append("Water1") # Thirst
 	nn_input_initial_neurons.append(input_neurons[-1])
@@ -62,7 +62,7 @@ func get_nn_input_neurons_deprecated():
 	nn_input_initial_neurons.append(input_neurons[-1])
 	for i in range(danger_sense_parts):
 		input_neurons.append("AllySense" + str(i))
-		nn_input_initial_neurons.append(input_neurons[-1])
+		#nn_input_initial_neurons.append(input_neurons[-1])
 	input_neurons.append("Bias")
 	return input_neurons
 

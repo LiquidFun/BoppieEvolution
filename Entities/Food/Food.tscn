@@ -64,7 +64,7 @@ hue_variation = -0.2
 hue_variation_random = 1.0
 
 [sub_resource type="CircleShape2D" id=13]
-radius = 5.19125
+radius = 12.9786
 
 [node name="Food" type="Area2D"]
 z_index = 10

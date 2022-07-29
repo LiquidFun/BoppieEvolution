@@ -304,7 +304,7 @@ func check_boppies():
 		var boppies = get_tree().get_nodes_in_group(config.group)
 		if Globals.elapsed_time - last_difficulty_level_change_time > 1200:
 			if difficulty_level <= 20 and boppies.size() > 40:
-				lookup_boppie_type_to_config["Kloppie"].min_count = 3
+				# lookup_boppie_type_to_config["Kloppie"].min_count = 3
 				difficulty_level += 1
 				last_difficulty_level_change_time = Globals.elapsed_time
 				Globals.difficulty += .01

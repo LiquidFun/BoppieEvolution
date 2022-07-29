@@ -65,7 +65,7 @@ func _process(_delta):
 		offspring_energy_modulo, 
 		boppie.required_offspring_energy,
 	]
-	$OffspringProgressBar/OffspringBarContainer/OffspringCount.text = str(boppie.offspring_count)
+	$OffspringProgressBar/OffspringBarContainer/OffspringCount.text = str(boppie.offspring_counter)
 	$OffspringProgressBar.value = offspring_energy_modulo
 	$OffspringProgressBar/OffspringBarContainer/Generation.text = "%d" % boppie.generation.i
 	var level = ["I", "II", "III", "IV", "V", "VI"][boppie.level - 1]

@@ -172,7 +172,7 @@ func strengthen_important_connections(factor=1):
 		var curr = connection[0]
 		var inputs = connection[1]
 		for i in range(0, len(inputs), 3):
-			inputs[i+1] += factor * inputs[i+2]
+			inputs[i+1] += clamp(factor * inputs[i+2], -10, 10)
 		
 
 func mutate(property, mutability):

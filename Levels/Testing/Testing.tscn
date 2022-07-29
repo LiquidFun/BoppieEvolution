@@ -10,3 +10,4 @@ min_count_config = {
 "Owlie": 10,
 "Trap": 10
 }
+background_color = Color( 0.678431, 0.678431, 0.678431, 1 )

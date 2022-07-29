@@ -12,6 +12,7 @@ var ground_movement_penalty_factor = 1
 # This is reduced down to 0.5 or so, essentially if a boppie does not manage to eat anything
 # then it gets a large penalty until it has eaten a few foodstuffs.
 var no_food_eaten_penalty = 3.0
+var food_type = Data.FoodType.MEAT
 
 
 # Based on DNA
@@ -108,13 +109,14 @@ var level = 1
 var energy = max_energy * (0.8 + Globals.rng.randf() * 0.2)
 var water = max_water
 var offspring_energy = 0
+var offspring_count = 1
 var eats = Data.Raytype.FOOD
 
 var movement := 0.0
 var dead = false
 
 # Counters
-var offspring_count = 0
+var offspring_counter = 0
 var times_eaten = 0
 var times_drank = 0
 var spawn_time = 0
@@ -245,6 +247,7 @@ func set_meat_tolerance(tolerance):
 		draw_body_type = BodyType.HEXAGONAL
 		draw_eyebrows = true
 		
+	collision_mask -= collision_mask & (Globals.PLANT_BIT | Globals.MEAT_BIT)
 	collision_mask |= bitmask
 	for vision_ray in vision_rays:
 		vision_ray.collision_mask |= bitmask
@@ -262,6 +265,7 @@ func initialize_rays():
 	for i in range(1, ray_count_additional+1):
 		add_ray(start_angle + ray_angle * i, true)
 		add_ray(start_angle - ray_angle * i, true)
+	set_meat_tolerance(meat_tolerance)
 	
 func add_ray(angle_radians, push_back=true, ray=null):
 	if ray == null:
@@ -473,9 +477,9 @@ func update_water(add_water):
 	water = min(max_water, water+add_water)
 		
 func update_energy(add_energy):
-	var reward_factor = add_energy * abs(add_energy) / 1000.0
-	if reward_factor > 0.01:
-		ai.strengthen_important_connections(reward_factor)
+	#var reward_factor = add_energy * abs(add_energy) / 1000.0
+	#if reward_factor > 0.01:
+	#	ai.strengthen_important_connections(reward_factor)
 	energy += add_energy
 	if energy > max_energy:
 		var old_level = curr_level()
